@@ -107,6 +107,7 @@ iframe {
 }
 #carouselbox h1 {
   margin-top: 0px;
+  margin-bottom: 20px;
   padding-top: 0px;
 }
 
@@ -306,6 +307,10 @@ h2 {
   filter: alpha(opacity=0);
   /* modern browsers */
   opacity: 0;
+}
+
+h1 {
+  font-size: 20pt;
 }
 
 h1, h2, h3, h5 {
