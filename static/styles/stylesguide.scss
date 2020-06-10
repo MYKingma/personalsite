@@ -377,8 +377,25 @@ p {
 			width: 22%;
 		}
 	}
+	.list-unstyled {
+		h5 {
+			font-size: 5vw;
+		}
+		button {
+			font-size: 3vw;
+			margin-bottom: 5px;
+		}
+		p {
+			font-size: 3vw;
+		}
+	}
 	.container {
 		min-height: 400px;
+	}
+}
+.list-unstyled {
+	button {
+		margin-bottom: 5px;
 	}
 }
 
