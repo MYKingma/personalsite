@@ -1,0 +1,358 @@
+@charset "UTF-8";
+a, a:hover, a:visited {
+  text-decoration: none;
+}
+
+#advanced {
+  margin-left: 10px;
+}
+
+.dropdown-menu {
+  min-width: 200px;
+  padding: 10px;
+}
+
+#navbarDropdownMenuLink {
+  outline: none;
+}
+
+@media (min-width: 992px) {
+  #login {
+    margin-bottom: 10px;
+  }
+}
+.invalidlogin {
+  color: grey;
+  font-size: 8pt;
+  padding-left: 3px;
+  padding-top: 3px;
+}
+
+#forgotbutton, #login {
+  font-size: 15px;
+}
+
+#footerimg {
+  position: fixed;
+  bottom: 0px;
+  right: 0px;
+  width: 30px;
+  margin-right: 15px;
+  margin-bottom: 15px;
+}
+
+iframe {
+  max-width: 100%;
+  max-height: 300px;
+}
+
+.opening_hours {
+  margin: 0px;
+  font-size: 10pt;
+}
+
+.carousel-item {
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center;
+}
+
+.fa-star, .fa-star-half {
+  color: gold;
+}
+
+.fa-heart {
+  color: #f2463a;
+}
+
+#buttonbox {
+  background-color: #ebe1e3;
+  text-align: center;
+  margin-bottom: 20px;
+  padding: 0px 10px 15px 10px;
+  border-radius: 0px 0px 15px 15px;
+}
+#buttonbox button {
+  font-size: 13.8px;
+  width: 24%;
+  margin-right: 0.1vw;
+}
+
+#carouselbox {
+  background-color: #ebe1e3;
+  padding: 20px;
+  border-radius: 15px 15px 0px 0px;
+  margin-top: 20px;
+}
+#carouselbox span {
+  float: right;
+}
+#carouselbox h1 {
+  margin-top: 0px;
+  padding-top: 0px;
+}
+
+.reviewform {
+  /* Ratings widget */
+  /* Hide radio */
+  /* Order correctly by floating highest to the right */
+  /* The star of the show */
+  /* Click + hover color */
+  /* color previous stars on hover */
+  /* Hover highlights */
+  background-color: #FBF7F8;
+  padding: 15px 15px 15px 15px;
+  border-radius: 15px;
+  margin-top: 15px;
+}
+.reviewform .rate {
+  display: inline-block;
+  border: 0;
+}
+.reviewform .rate > input {
+  display: none;
+}
+.reviewform .rate > label {
+  float: right;
+}
+.reviewform .rate > label:before {
+  display: inline-block;
+  font-size: 1.1rem;
+  padding: 0.3rem 0.2rem;
+  margin-right: 0;
+  cursor: pointer;
+  font-family: "Font Awesome 5 Free";
+  font-weight: 900;
+  content: "";
+  /* full star */
+}
+.reviewform input:checked ~ label,
+.reviewform label:hover, .reviewform label:hover ~ label {
+  color: gold;
+}
+.reviewform input:checked + label:hover, .reviewform input:checked ~ label:hover,
+.reviewform input:checked ~ label:hover ~ label,
+.reviewform label:hover ~ input:checked ~ label {
+  color: orange;
+}
+.reviewform .btn {
+  margin-top: 10px;
+}
+.reviewform textarea {
+  width: 100%;
+  padding: 12px 12px 100px;
+  border-radius: 4px;
+  box-sizing: border-box;
+  resize: none;
+}
+.reviewform p {
+  color: grey;
+  margin: 0px;
+}
+.reviewform h2 {
+  margin-top: 0px;
+}
+
+.reviewbox {
+  background-color: #FBF7F8;
+  padding: 15px 15px 15px 15px;
+  border-radius: 15px;
+  margin-top: 15px;
+}
+.reviewbox a, .reviewbox a:hover {
+  text-decoration-line: none;
+  color: grey;
+  font-style: normal;
+  font-size: 10px;
+}
+.reviewbox a:hover {
+  color: black;
+}
+.reviewbox span {
+  float: right;
+  font-size: 10px;
+  font-weight: normal;
+  color: grey;
+}
+.reviewbox h3 {
+  font-size: 15px;
+  margin-bottom: 5px;
+}
+.reviewbox p {
+  font-style: italic;
+  font-size: 15px;
+}
+
+.detailbox {
+  background-color: #FBF7F8;
+  border-radius: 15px;
+  margin-top: 20px;
+  padding: 15px;
+}
+.detailbox p {
+  margin: 0px;
+  font-size: 15px;
+}
+.detailbox h2 {
+  font-size: 20px;
+  margin-top: 0px;
+}
+.detailbox .newdetail {
+  margin-top: 15px;
+}
+.detailbox span {
+  float: right;
+}
+.detailbox a {
+  text-decoration: underline;
+  color: black;
+}
+.detailbox a:hover {
+  color: #9c0315;
+}
+
+h2 {
+  margin-top: 10px;
+}
+
+.list, .list:hover, .list:visited {
+  color: inherit;
+  /* blue colors for links too */
+  text-decoration: inherit;
+  /* no underline */
+}
+
+.media {
+  padding: 10px;
+  background: #FBF7F8;
+  border-radius: 15px;
+  padding: 20px;
+  margin-bottom: 5px;
+}
+
+.media:hover {
+  background: #F7F3F4;
+}
+
+.toright {
+  color: grey;
+  font-size: 15px;
+  float: right;
+}
+.toright p {
+  margin: 0px;
+  text-align: right;
+}
+
+.searchadress {
+  margin: 0px;
+  font-size: 13px;
+}
+
+.subtitle {
+  color: grey;
+}
+
+.icon {
+  max-width: 15px;
+  margin-bottom: 2px;
+}
+
+.advancedlabel {
+  font-size: 15px;
+  color: grey;
+}
+
+.center-cropped {
+  width: 75px;
+  height: 75px;
+  background-position: center center;
+  background-repeat: no-repeat;
+  overflow: hidden;
+  margin-right: 15px;
+}
+
+#maxpriceinput {
+  margin-top: 31px;
+}
+
+/* Set the image to fill its parent and make transparent */
+.center-cropped img {
+  min-height: 100%;
+  min-width: 100%;
+  /* IE 8 */
+  -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=0)";
+  /* IE 5-7 */
+  filter: alpha(opacity=0);
+  /* modern browsers */
+  opacity: 0;
+}
+
+h1, h2, h3, h5 {
+  font-family: "Oswald", sans-serif;
+}
+
+h2 {
+  font-size: 25px;
+}
+
+#spinner {
+  margin-right: 15px;
+}
+
+#cancel {
+  margin-top: 20px;
+}
+
+#visible {
+  margin-bottom: 10px;
+}
+
+#footer {
+  height: 120px;
+  background-color: #9c0315;
+  margin-right: 60px;
+  margin-top: 50px;
+  padding: 20px;
+  color: white;
+}
+#footer p {
+  font-family: "Oswald", sans-serif;
+  margin-bottom: 0px;
+}
+#footer #copyright {
+  margin-top: 0px;
+  font-size: 10px;
+}
+
+@media (max-width: 628px) {
+  #footerimg {
+    display: none;
+  }
+
+  #footer {
+    margin-right: 0px;
+  }
+}
+@media (max-width: 489px) {
+  .mobile {
+    display: none;
+  }
+
+  #buttonbox {
+    margin: 0px;
+  }
+  #buttonbox button {
+    font-size: 8pt;
+    width: 22%;
+  }
+
+  .container {
+    min-height: 400px;
+  }
+}
+.container {
+  min-height: 560px;
+}
+
+/*# sourceMappingURL=stylesguide.css.map */

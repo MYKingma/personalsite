@@ -1,0 +1,197 @@
+<!-- location.html for implementing a city guide webapp
+
+Maurice Kingma
+Minor Programmeren - Web App Studio
+
+Location page
+-->
+
+{% extends "base.html" %}
+
+<!-- page title -->
+{% block title %}Stadsgids - {{ location.name }}{% endblock %}
+
+<!-- page content -->
+{% block content %}
+<div class="container">
+	<div class="row">
+		<div class=col-lg-8>
+			<div id="carouselbox">
+				<h1>{{ location.name }}
+					{% if recommendation %}
+					<span><button class="btn btn-danger">AANRADER</button></span>
+					{% endif %}
+				</h1>
+				<div id="demo" class="carousel slide" data-ride="carousel">
+
+				  <!-- Indicators -->
+				  <ul class="carousel-indicators">
+				    <li data-target="#demo" data-slide-to="0" class="active"></li>
+				    <li data-target="#demo" data-slide-to="1"></li>
+				    <li data-target="#demo" data-slide-to="2"></li>
+				  </ul>
+  
+				  <!-- The slideshow -->
+				  <div class="carousel-inner embed-responsive embed-responsive-16by9">
+				      <div class="carousel-item active embed-responsive-item" style="background-image: url('{{ location.photo1 }}');">
+				      </div>
+				      <div class="carousel-item embed-responsive-item" style="background-image: url('{{ location.photo2 }}');">
+				      </div>
+				      <div class="carousel-item embed-responsive-item" style="background-image: url('{{ location.photo3 }}');">
+				      </div>
+				    </div>
+  
+				  <!-- Left and right controls -->
+				  <a class="carousel-control-prev" href="#demo" data-slide="prev">
+				    <span class="carousel-control-prev-icon"></span>
+				  </a>
+				  <a class="carousel-control-next" href="#demo" data-slide="next">
+				    <span class="carousel-control-next-icon"></span>
+				  </a>
+				</div>
+			</div>	
+			{% if current_user.is_authenticated %}
+			<div id="buttonbox">
+				<button id="jsbutton" class="btn btn-dark" data-location="{{ location.place_id }}" data-button="favourite"><span class="mobile">Favoriet </span><i id="heart" class="{{ location.favourite }} fa-heart" aria-hidden="true"></i></button>
+				<button id="jsbutton" class="btn btn-dark" data-location="{{ location.place_id }}" data-button="recommend" data-locationname="{{ location.name }}" data-website="{{ location.website if location.website != None }}"><span class="mobile">Is dit wat?  </span><i id="finger" class="{{ location.req }} fa-hand-point-up"></i></button>
+				<a href="#reviewform"><button class="btn btn-dark"><span class="mobile">Review </span><i class="far fa-edit"></i></button></a>
+				<a href="#reviewrow"><button class="btn btn-dark"><i class="fa fa-star" aria-hidden="true"></i> {{ location.guiderating }} <span class="mobile" style="font-size: 7px;">{{ location.count|string + " reviews" if location.count }}</span></button></a>
+			</div>
+			{% endif %}
+			{% for role in current_user.roles %}
+			{% if "Administrator" == role.name %}
+			{% if recommendation or visible == false %}
+			<a href="{{ url_for('changenew', place_id=location.place_id, name=location.name) }}"><button class="btn btn-outline-secondary btn-block">Wijzig {{ location.name }}</button></a>
+			{% else %}
+			<a href="{{ url_for('createnew', place_id=location.place_id, name=location.name) }}"><button class="btn btn-outline-secondary btn-block">Raad {{ location.name }} aan</button></a>
+			{% endif %}
+			{% endif %}
+			{% endfor %}
+			{% if recommendation %}
+			<p>{{ recommendation.review }}</p>
+			{% endif %}
+			{% if current_user.is_authenticated %}
+			{% if location.ownreview != None %}
+			<h2 id="reviewform">Eigen review</h2>
+			<div class="reviewbox">
+				<h3>{{ location.ownreview.user.username }}<span>{{ location.ownreview.date.strftime("%-d %B %Y") }}</span></h3>
+				<p>{{ location.ownreview.review if location.ownreview.review else "Geen toelichting" }}<span id="stars">{{ location.ownreview.stars }}</span></p>
+				<p><a href="{{ url_for('deletereview', name=location.name, place_id=location.place_id) }}">Verwijder</a></p>
+			</div>
+			{% endif %}
+			{% endif %}
+			
+			{% if  location.reviews|length > 0 %}
+			<h2 id="reviewrow">Reviews van andere gebruikers</h2>
+			{% for review in location.reviews %}
+			<div class="reviewbox">
+				<h3>{{ review.user.username }}<span>{{ review.date.strftime("%-d %B %Y") }}</span></h3>
+				<p>{{ review.review if review.review else "Geen toelichting" }}<span id="stars">{{ review.stars }}</span></p>
+				<button id="upvote" data-review_id="{{ review.id }}" class="{% set idlist = [] %}{% for upvote in review.upvotes %}
+				{{ idlist.append(upvote.user_id) }}
+				{% endfor %}
+				{{ 'btn btn-danger btn-sm' if current_user.id in idlist else 'btn btn-outline-danger btn-sm'}}">Nuttig ({{ review.get_upvote_count() }})</button>
+			</div>
+			{% endfor %}
+			{% endif %}
+			{% if location.ownreview == None %}
+			<div id="reviewform" class="reviewform">
+				<h2>Schrijf een review</h2>
+				<form action="{{ url_for('location', name=location.name, place_id=location.place_id) }}" method="post">
+					<p>Geef een beoordeling</p>
+					<fieldset class="rate">
+					    <input data-input="" type="radio" id="rating10" name="rating" value="5" /><label for="rating10" title="5 stars"></label>
+					    <input data-input="" type="radio" id="rating8" name="rating" value="4" /><label for="rating8" title="4 stars"></label>
+					    <input data-input="" type="radio" id="rating6" name="rating" value="3" /><label for="rating6" title="3 stars"></label>
+					    <input data-input="" type="radio" id="rating4" name="rating" value="2" /><label for="rating4" title="2 stars"></label>
+					    <input data-input="" type="radio" id="rating2" name="rating" value="1" /><label for="rating2" title="1 star"></label>
+					</fieldset>
+					<p for="reviewinput">Schrijf iets over {{ location.name }}</p>
+					<textarea class="form-control" type="text" id="reviewinput" name=review></textarea>
+					<input class="btn btn-secondary" type="submit" id="review">
+					<p class="errorrev"></p>
+				</form>
+			</div>
+			{% endif %}			
+		</div>
+		<div class="col-lg-4">
+			<div class="detailbox">
+				<h2>Kaart</h2>
+				<iframe width="700" height="450" frameborder="0" style="border:0"
+				src="{{ location.map }}" allowfullscreen></iframe>
+				{% for details in location.address %}
+				<p>{{ details.strip() }}</p>
+				{% endfor %}
+				<h2 class="newdetail">Openingstijden</h2>
+				{% if location.opening_hours %}
+				{% if location.opening_hours[0] == "24" %}
+				<p class="opening_hours" >24 uur per dag geopend</p>
+				{% elif location.opening_hours[0] != "24" %}
+				<p class="opening_hours" >Maandag<span>{{ location.opening_hours.0 }}</span></p>
+				<p class="opening_hours" >Dinsdag<span>{{ location.opening_hours.0 }}</span></p>
+				<p class="opening_hours" >Woensdag<span>{{ location.opening_hours.0 }}</span></p>
+				<p class="opening_hours" >Donderdag<span>{{ location.opening_hours.0 }}</span></p>
+				<p class="opening_hours" >Vrijdag<span>{{ location.opening_hours.0 }}</span></p>
+				<p class="opening_hours" >Zaterdag<span>{{ location.opening_hours.0 }}</span></p>
+				<p class="opening_hours" >Zondag<span>{{ location.opening_hours.0 }}</span></p>
+				{% elif location.open %}
+				<p class="opening_hours" >{{ location.open }}</p>
+				{% endif %}
+				{% elif recommendation.opening %}
+				
+				{% if recommendation.opening|length > 30 %}
+				{% set opening = recommendation.opening.replace('{', '').replace('}', '').split(',') %}
+				<p class="opening_hours" >Maandag<span>{{ opening[0] }}</span></p>
+				<p class="opening_hours" >Dinsdag<span>{{ opening[1] }}</span></p>
+				<p class="opening_hours" >Woensdag<span>{{ opening[2] }}</span></p>
+				<p class="opening_hours" >Donderdag<span>{{ opening[3] }}</span></p>
+				<p class="opening_hours" >Vrijdag<span>{{ opening[4] }}</span></p>
+				<p class="opening_hours" >Zaterdag<span>{{ opening[5] }}</span></p>
+				<p class="opening_hours" >Zondag<span>{{ opening[6] }}</span></p>
+				{% else %}
+				<p class="opening_hours" >{{ recommendation.opening }}</p>
+				{% endif %}
+				
+				
+				
+				{% else %}
+				<p>Onbekend</p>
+				{% endif %}
+				{% if recommendation %}
+				<h2 class="newdetail">Tip</h2>
+				<p>{{ recommendation.tip }}</p>
+				{% endif %}
+				<h2 class="newdetail">Details</h2>
+				<p>Soort
+					<span>{% for type in location.types %}
+					{{ type }}
+					{% endfor %}</span>
+				</p>
+				{% if location.price_level %}
+				<p>Prijsklasse <span>{{ location.price_level }}</span></p>
+				{% elif recommendation.price_level %}
+				{% if not recommendation.price_level == 0 %}
+				{% set price = recommendation.price_level * "€" %}
+				<p>Prijsklasse <span>{{ price }}</span></p>
+				{% endif %}
+				{% else %}
+				<p>Prijsklasse <span>Onbekend</span></p>
+				{% endif %}
+				{% if location.phone %}
+				<p>Telefoon <span>{{ location.phone }}</span></p>
+				{% endif %}
+				{% if location.website %}
+				<p>Website<span><a href="{{ location.website }}">{{ location.name }}</a></span></p>
+				{% endif %}
+				<h2 class="newdetail">Google beooordeling</h2>
+				<p>Gemiddeld<span id="stars">{{ location.rating }}</span></p>
+			</div>
+		</div>
+	</div>
+</div>
+{% endblock %}
+
+{% block script %}
+<script type="text/javascript" src="{{ url_for('static', filename='js/location.js')}}"></script>
+<script type="text/javascript" src="{{ url_for('static', filename='js/star.js')}}"></script>
+{% endblock %}

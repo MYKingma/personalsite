@@ -1,0 +1,107 @@
+<!-- register.html for implementing a city guide webapp
+
+Maurice Kingma
+Minor Programmeren - Web App Studio
+
+Layout registration page
+-->
+
+{% extends "base.html" %}
+
+<!-- page title -->
+{% block title %}Stadsgids - Registreren{% endblock %}
+
+<!-- page content -->
+{% block content %}
+<div class="container">
+	<h1>Registreren</h1>
+
+	<form id="form" action="{{ url_for('register') }}" method="post" class="needs-validation" style="max-width: 700px;" novalidate>
+	
+		<div class="form-row">
+			<div class="form-group col-sm-6">
+				<label>Gebruikersnaam</label>
+				<input class="form-control" type="text" id="username" name="username" aria-describedby="usernamehelp" required>
+
+				<!-- username client side message -->
+				<div class="invalid-feedback" id="usernameerrormessage">Geef een gebruikersnaam op</div>
+
+				<!-- username server side message -->
+				<small id="usernamehelp" class="form-text text-muted">
+				{% with messages = get_flashed_messages(category_filter=["username"]) %}
+					{% if messages %}
+						{% for message in messages %}
+							{{ message }}
+						{% endfor %}
+					{% else %}
+						de gebruikersnaam is zichtbaar bij recensies
+					{% endif %}
+				{% endwith %}
+				</small>
+			</div>
+			<div class="form-group col-sm-6">
+				<label>E-mail</label>
+				<input class="form-control" type="email" id="email" name="email" aria-describedby="emailhelp" required>
+
+				<!-- email client side message -->
+				<div class="invalid-feedback" id="emailerrormessage">Geef een geldig e-mailadres op</div>
+
+				<!-- email server side message -->
+				<small id="emailhelp" class="form-text text-muted">
+				{% with messages = get_flashed_messages(category_filter=["email"]) %}
+					{% if messages %}
+						{% for message in messages %}
+							{{ message }}
+						{% endfor %}
+					{% endif %}
+				{% endwith %}
+				</small>
+			</div>
+		</div>
+	
+		<div class="form-row">
+			<div class="form-group col-sm-6">
+				<label>Voornaam</label>
+				<input class="form-control" type="text" id="firstname" name="firstname" required>
+				<div class="invalid-feedback">Geef een voornaam op</div>
+			</div>
+			<div class="form-group col-sm-6">
+				<label>Achternaam</label>
+				<input class="form-control" type="text" id="lastname" name="lastname" required>
+				<div class="invalid-feedback">Geef een achternaam op</div>
+			</div>
+		</div>
+		<div class="form-row">
+			<div class="form-group col-sm-6">
+				<label>Wachtwoord</label>
+				<input class="form-control" type="password" id="password1" name="password1" required>
+				<div class="invalid-feedback" id="invalidpassword1">Geef een wachtwoord op</div>
+			</div>
+		
+			<div class="form-group col-sm-6">
+				<label>Herhaal wachtwoord</label>
+				<input class="form-control" type="password" id="password2" name="password2" aria-describedby="passwordhelp" required>
+			
+				<!-- password client side message -->
+				<div id="passworderrormessage" class="invalid-feedback">Herhaal het wachtwoord</div>
+	
+				<!-- password server side messages -->
+				<small id="passwordhelp" class="form-text text-muted">
+				{% with messages = get_flashed_messages(category_filter=["password"]) %}
+				   {% if messages %}
+					   {% for message in messages %}
+				         {{ message }}
+						{% endfor %}
+				   {% endif %}
+				{% endwith %}
+				</small>
+			</div>
+		</div>
+		<input id="button" class="btn btn-dark" type="submit">
+	</form>
+</div>
+{% endblock %}
+
+{% block script %}
+<script type="text/javascript" src="{{ url_for('static', filename='js/register.js')}}"></script>
+{% endblock %}

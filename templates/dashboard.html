@@ -1,0 +1,25 @@
+<!-- dashboard.html for implementing a city guide webapp
+
+Maurice Kingma
+Minor Programmeren - Web App Studio
+
+Layout registration page
+-->
+
+{% extends "base.html" %}
+
+<!-- page title -->
+{% block title %}Stadsgids - Dashboard{% endblock %}
+
+<!-- page content -->
+{% block content %}
+<div class="container">
+	<h1>Dashboard</h1>
+
+	<h3>extra menulinks</h3>
+	<a href="{{ url_for('controlnew') }}">Nieuwe locaties</a>
+	<a href="{{ url_for('newsletter') }}">Nieuwsbrieven</a>
+	<a href="{{ url_for('admin.index_view') }}">Database</a>
+	<a href="{{ url_for('guide') }}">Terug</a>
+</div>
+{% endblock %}

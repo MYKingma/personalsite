@@ -1,0 +1,21 @@
+<!-- new.html for implementing a city guide webapp
+
+Maurice Kingma
+Minor Programmeren - Web App Studio
+
+Layout newly added page
+-->
+
+{% extends "base.html" %}
+
+<!-- page title -->
+{% block title %}Stadsgids - nieuw{% endblock %}
+
+<!-- page content -->
+{% block content %}
+
+<h1>Nieuw toegevoegde locaties</h1>
+
+<h3>extra menulinks</h3>
+<a href="{{ url_for('guide') }}">Terug</a>
+{% endblock %}

@@ -1,0 +1,102 @@
+<!-- changenew.html for implementing a city guide webapp
+
+Maurice Kingma
+Minor Programmeren - Web App Studio
+
+Layout page for changing locations
+-->
+
+{% extends "base.html" %}
+
+<!-- page title -->
+{% block title %}Stadsgids - Dashboard{% endblock %}
+
+<!-- page content -->
+{% block content %}
+<div class="container">
+	<h1>Locatie wijzigen</h1>
+	<a href="{{ url_for('location', name=name, place_id=recommendation.place_id)}}" target="_blank"><h2>{{ name }}</h2></a>
+	<form class="needs-validation" action="{{ url_for('controlnew') }}" method="post" novalidate>
+		<div class="form-group">
+			<label for="review">Beoordeling</label>
+			<textarea id="review" type="text" class="form-control" name="review" required>{{ recommendation.review }}</textarea>
+			<div class="invalid-feedback">Geef een tekstbeoordeling</div>
+		</div>
+		<div class="form-group">
+			<label for="tip">Tip</label>
+			<textarea id="tip" type="text" class="form-control" name="tip" required>{{ recommendation.tip }}</textarea>
+			<div class="invalid-feedback">Geef een tip</div>
+		</div>
+		<div class="form-group">
+			<label for="price_level">Prijsklasse (was {{ recommendation.price_level }})</label>
+			<select id="price_level" name="price_level" class="custom-select">
+				<option value="0" selected>Onbekend</option>
+				<option value="1">€</option>
+				<option value="2">€€</option>
+				<option value="3">€€€</option>
+				<option value="4">€€€€</option>
+			</select>
+		</div>
+		<div class="form-row">
+			<div class="col">
+				<div class="form-group">
+					<label for="openmonday">Openingstijden maandag</label>
+					<input class="form-control" value="{{ recommendation.opening }}" value="{{ recommendation.opening[0] if weektext }}" type="text" name="monday" id="openmonday" placeholder="00:00–00:00">
+				</div>
+			</div>
+			<div class="col">
+				<div class="form-group">
+					<label for="opentuesday">Openingstijden dinsdag</label>
+					<input value="{{ recommendation.opening[1] if weektext }}" class="form-control" type="text" name="tuesday" id="opentuesday" placeholder="00:00–00:00">
+				</div>
+			</div>
+		</div>
+		<div class="form-row">
+			<div class="col">
+				<div class="form-group">
+					<label for="openwednesday">Openingstijden woensdag</label>
+					<input value="{{ recommendation.opening[2] if weektext }}" class="form-control" type="text" name="wednesday" id="openwednesday" placeholder="00:00–00:00">
+				</div>
+			</div>
+			<div class="col">
+				<div class="form-group">
+					<label for="openthursday">Openingstijden donderdag</label>
+					<input value="{{ recommendation.opening[3] if weektext }}" class="form-control" type="text" name="thursday" id="openthursday" placeholder="00:00–00:00">
+				</div>
+			</div>
+		</div>
+		<div class="form-row">
+			<div class="col">
+				<div class="form-group">
+					<label for="openfriday">Openingstijden vrijdag</label>
+					<input value="{{ recommendation.opening[4] if weektext }}" class="form-control" type="text" name="friday" id="openfriday" placeholder="00:00–00:00">
+				</div>
+			</div>
+			<div class="col">
+				<div class="form-group">
+					<label for="opensaturday">Openingstijden zaterdag</label>
+					<input value="{{ recommendation.opening[5] if weektext }}" class="form-control" type="text" name="saturday" id="opensaturday" placeholder="00:00–00:00">
+				</div>
+			</div>
+		</div>
+		<div class="form-row">
+			<div class="col-6">
+				<div class="form-group">
+					<label for="opensunday">Openingstijden zondag</label>
+					<input value="{{ recommendation.opening[6] if weektext }}" class="form-control" type="text" name="sunday" id="opensunday" placeholder="00:00–00:00">
+				</div>
+			</div>
+		</div>
+		<div id="visible" class="form-check">
+			<input class="form-check-input" type="checkbox" value="True" name="visible">
+			<label class="form-check-label">
+			Zichtbaar
+			</label>
+		</div>
+		<input type="hidden" name="place_id" value="{{ recommendation.place_id }}">
+		<input type="hidden" name="action" value="change">
+		<input id="visible" type="submit" class="btn btn-outline-secondary">
+	</form>
+	<a href="{{ url_for('controlnew')}}"><button class="btn btn-outline-dark">Annuleer</button></a>
+</div>
+{% endblock %}

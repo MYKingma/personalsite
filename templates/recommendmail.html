@@ -1,0 +1,15 @@
+<style>
+	p {
+		font-weight: normal;
+		font-size: 10pt;
+	}
+</style>
+<h1>Aanvraag voor aanbeveling<h1>
+
+<p>{{ name }} vraagt zich af of {{ location }} een leuke plek is om een keer te bezoeken. Hieronder de link naar de website van {{ location }} en het e-mailadres van {{ name }} om direct een antwoord te sturen.</p>
+
+<p>Naam: {{ name }}</p>
+<p>E-mail: {{ email }}</p>
+<p>Locatie: {{ location }}</p>
+<p>Website locatie: {{ website }}</p>
+<p>Link Stadsgids: http://127.0.0.1:5000{{ url_for('location', name=location, place_id=place_id)}}</p>

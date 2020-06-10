@@ -1,0 +1,20 @@
+<!-- createnewsletter.html for implementing a city guide webapp
+
+Maurice Kingma
+Minor Programmeren - Web App Studio
+
+Layout for creating a newsletter
+-->
+
+{% extends "base.html" %}
+
+<!-- page title -->
+{% block title %}Stadsgids - Nieuwsbrieven{% endblock %}
+
+<!-- page content -->
+{% block content %}
+<h1>Nieuwsbrief opstellen</h1>
+
+<h3>extra menulinks</h3>
+<a href="{{ url_for('newsletter') }}">Terug</a>
+{% endblock %}

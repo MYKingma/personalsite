@@ -1,0 +1,30 @@
+<!-- forgot.html for implementing a city guide webapp
+
+Maurice Kingma
+Minor Programmeren - Web App Studio
+
+Page to request new password
+-->
+
+{% extends "base.html" %}
+
+<!-- page title -->
+{% block title %}Stadsgids - Wachtwoord Vergeten{% endblock %}
+
+<!-- page content -->
+{% block content %}
+<div class="container">
+	<h1>Wachtwoord opnieuw instellen</h1>
+	<p>Geef hier je emailadres op, we sturen vervolgens een link om jouw wachtwoord opnieuw in te stellen. Deze link is 1 uur geldig. Email niet ontvangen of link verlopen? Check je spam-inbox of vraag een nieuwe link aan.</p>
+	<form class="needs-validation" action="{{ url_for('forgot') }}" method="post" novalidate>
+		<div class="form-group">
+			<label for="forgotemail">E-mail</label>
+			<input class="form-control" type="email" id="forgotemail" name="email" required>
+			<div class="invalid-feedback">Geef een geldig e-mailadres op</div>
+		</div>
+		<div class="form-group">
+			<input type="submit" class="btn btn-outline-success my-2 my-sm-0">
+		</div>
+	</form>
+</div>
+{% endblock %}

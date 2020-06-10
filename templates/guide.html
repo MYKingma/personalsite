@@ -1,0 +1,24 @@
+<!-- guide.html for implementing a city guide webapp
+
+Maurice Kingma
+Minor Programmeren - Web App Studio
+
+Guide homepage layout
+-->
+
+{% extends "base.html" %}
+
+<!-- page title -->
+{% block title %}Stadsgids Amsterdam{% endblock %}
+
+<!-- page content -->
+{% block content %}
+<div class="container">
+	<h1>Stadsgids</h1>
+	<h2>Homepagina van de stadsgids app</h2>
+
+	<h3>Lijst met content en links</h3>
+	<a href="{{ url_for('new') }}">Nieuw toegevoegd</a>
+	<a href="{{ url_for('weekend') }}">Weekend-tips</a>
+</div>
+{% endblock %}

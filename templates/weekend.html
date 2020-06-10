@@ -1,0 +1,21 @@
+<!-- weekend.html for implementing a city guide webapp
+
+Maurice Kingma
+Minor Programmeren - Web App Studio
+
+Layout weekend tips page
+-->
+
+{% extends "base.html" %}
+
+<!-- page title -->
+{% block title %}Stadsgids - weekend{% endblock %}
+
+<!-- page content -->
+{% block content %}
+
+<h1>Weekend tips</h1>
+
+<h3>extra menulinks</h3>
+<a href="{{ url_for('guide') }}">Terug</a>
+{% endblock %}
