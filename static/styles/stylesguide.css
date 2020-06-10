@@ -225,6 +225,8 @@ iframe {
 .detailbox a {
   text-decoration: underline;
   color: black;
+  font-family: "Roboto", sans-serif;
+  font-weight: normal;
 }
 .detailbox a:hover {
   color: #9c0315;

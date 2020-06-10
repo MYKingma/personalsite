@@ -16,23 +16,29 @@ Search page layout
 <div class="container">
 	<div class="row">
 		<div class="col-md-8">
-	
-	
-	
+
+
+
+			{% if not search %}
+			<p>searchinfo</p>
+			{% else %}
 			{% if results|length > 0 %}
 			<h1>Resultaten</h1>
 			<ul class="list-unstyled">
+			{% else %}
+			<p class="nolist">noresults</p>
+			{% endif %}
 			{% endif %}
 			{% for result in results %}
 				<a class="list" href="{{ url_for('location', place_id=result.place_id, name=result.name) }}">
 					<li class="media">
-						
-						<div class="center-cropped" 
+
+						<div class="center-cropped"
 						     style="background-image: url('{{ result.photos }}');">
 						  <img src="{{ result.photos }}" />
 						</div>
-						
-						
+
+
 						<div class="media-body">
 							<h5 class="mt-0 mb-1">{{ result.name }}
 								<span class="toright">
@@ -40,7 +46,7 @@ Search page layout
 								<button class="btn btn-danger btn-sm">AANRADER</button>
 								{% endif %}
 								<p><img class="icon" src="{{ result.icon }}" alt="{{ result.types }}"></p><p>{{ result.price_level }}</p><p>{{ result.opening_hours }}</p></span>
-							
+
 							</h5>
 							<p class="searchadress"><span id="stars">{{ result.rating }}</span></p>
 							<p class="searchadress">{{ result["formatted_address"][0] }}</p>
@@ -51,7 +57,7 @@ Search page layout
 			</ul>
 		</div>
 		<div class="col-md-4">
-			
+
 			<h2>Geavanceerd zoeken</h2>
 			<form class="advanced" action="{{ url_for('search') }}" method="post">
 				<div class="form-group">
@@ -62,7 +68,7 @@ Search page layout
 					<select class="form-control form-control-sm" id="typeinput" name="type">
 						{% for key, value in types.items() %}
 						<option value="{{ key }}">{{ value }}</option>
-						{% endfor %}	
+						{% endfor %}
 					</select>
 				</div>
 				<div class="form-row">
@@ -101,10 +107,10 @@ Search page layout
 				<div id="show" class="spinner-border spinner-border-sm text-danger" role="status" style="display: none">
 				  <span class="sr-only">Loading...</span>
 				</div>
-				
-				
-				
-				
+
+
+
+
 			</form>
 		</div>
 	</div>
@@ -115,4 +121,3 @@ Search page layout
 <script type="text/javascript" src="{{ url_for('static', filename='js/star.js')}}"></script>
 <script type="text/javascript" src="{{ url_for('static', filename='js/spinner.js')}}"></script>
 {% endblock %}
-  

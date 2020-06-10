@@ -532,6 +532,7 @@ def location(place_id, name):
             data = res.json()
             location["name"] = data["result"]["name"]
             location["address"] = data["result"]["formatted_address"].split(",")
+            location["applemapslink"] = data["result"]["formatted_address"]
             location["icon"] = data["result"]["icon"]
             location["place_id"] = data["result"]["place_id"]
             if "formatted_phone_number" in data["result"]:
@@ -609,7 +610,7 @@ def new():
 @app.route('/stadsgids/zoeken', methods=["GET", "POST"])
 def search():
     if request.method == "GET":
-        return render_template("search.html", types=TYPES_DICT)
+        return render_template("search.html", search=False, types=TYPES_DICT)
 
     # declare result list
     results = []
@@ -658,7 +659,7 @@ def search():
             if recommendation:
                 if recommendation.visible:
                     result["recommended"] = True
-        return render_template("search.html", results=results, types=TYPES_DICT)
+        return render_template("search.html", search=True, results=results, types=TYPES_DICT)
 
     # get filters if advanced search
     minprice = int(request.form.get('minprice'))
@@ -717,7 +718,7 @@ def search():
         if recommendation:
             if recommendation.visible:
                 result["recommended"] = True
-    return render_template("search.html", results=results, types=TYPES_DICT)
+    return render_template("search.html", search=True, results=results, types=TYPES_DICT)
 
 @app.route('/stadsgids/weekend')
 @login_required
