@@ -8,7 +8,7 @@ Base layout for other pages
 
 <!DOCTYPE html>
 <html lang="nl">
-	
+
 	<!-- page head properties -->
 	<head>
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -16,11 +16,12 @@ Base layout for other pages
 		<link href="{{ url_for('static', filename='styles/stylesguide.css') }}" rel="stylesheet">
 		<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.13.0/css/all.css">
 		<link href="https://fonts.googleapis.com/css2?family=Oswald&display=swap" rel="stylesheet">
-		<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap" rel="stylesheet">
-		
+		<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300&display=swap" rel="stylesheet">
+
+
 		<title>{%- block title -%}{%- endblock -%}</title>
 	</head>
-	
+
 	<!-- page body -->
 	<body id="page">
 		<nav style="background-color: #9c0315;" class="navbar navbar-expand-lg navbar-dark">
@@ -28,7 +29,7 @@ Base layout for other pages
 				<img src="{{ url_for('static', filename='picto/cross.png') }}" width="30" height="30" class="d-inline-block align-top" alt="">
 				Stadsgids
 			</a>
-		
+
 			<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarTogglerDemo02" aria-controls="navbarTogglerDemo02" aria-expanded="false" aria-label="Toggle navigation">
 				<span class="navbar-toggler-icon"></span>
 			</button>
@@ -38,7 +39,7 @@ Base layout for other pages
 					<li class="nav-item">
 						<a class="nav-link" href="{{ url_for('guide') }}">Home</a>
 					</li>
-				
+
 					{% for role in current_user.roles %}
 					{% if role.name == 'Administrator' %}
 					<li class="nav-item">
@@ -63,12 +64,12 @@ Base layout for other pages
 									<input class="form-control" type="password" id="passwordinput" name="password" placeholder="Wachtwoord">
 									<div class="invalidlogin" id="invalidpassword"></div>
 								</div>
-							
+
 								<div class="form-group">
 									<button id="login" class="btn btn-secondary" type="submit">Log in</button>
 									<a id="forgotbutton" href="{{ url_for('forgot') }}" class="btn btn-outline-secondary my-2 my-sm-0">Wachtwoord vergeten</a>
 								</div>
-							</form>	
+							</form>
 						</div>
 					</li>
 					<li class="nav-item">

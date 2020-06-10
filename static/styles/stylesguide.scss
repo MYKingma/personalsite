@@ -75,11 +75,13 @@ iframe {
 	}
 	background-color: #ebe1e3;
 	text-align: center;
-	margin-bottom: 20px;
+	margin-bottom: 15px;
 	padding: 0px 10px 15px 10px;
 	border-radius: 0px 0px 15px 15px;
 }
-
+#changelocation {
+	margin-bottom: 15px;
+}
 #carouselbox {
 	background-color: #ebe1e3;
 	padding: 20px;
@@ -287,6 +289,9 @@ h2 {
 
 h1, h2, h3, h5 {
 	font-family: 'Oswald', sans-serif;
+}
+p {
+	font-family: 'Roboto', sans-serif;
 }
 
 #spinner {

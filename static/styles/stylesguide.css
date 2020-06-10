@@ -68,7 +68,7 @@ iframe {
 #buttonbox {
   background-color: #ebe1e3;
   text-align: center;
-  margin-bottom: 20px;
+  margin-bottom: 15px;
   padding: 0px 10px 15px 10px;
   border-radius: 0px 0px 15px 15px;
 }
@@ -76,6 +76,10 @@ iframe {
   font-size: 13.8px;
   width: 24%;
   margin-right: 0.1vw;
+}
+
+#changelocation {
+  margin-bottom: 15px;
 }
 
 #carouselbox {
@@ -292,6 +296,10 @@ h2 {
 
 h1, h2, h3, h5 {
   font-family: "Oswald", sans-serif;
+}
+
+p {
+  font-family: "Roboto", sans-serif;
 }
 
 #spinner {
