@@ -30,7 +30,7 @@ Location page
 				    <li data-target="#demo" data-slide-to="1"></li>
 				    <li data-target="#demo" data-slide-to="2"></li>
 				  </ul>
-  
+
 				  <!-- The slideshow -->
 				  <div class="carousel-inner embed-responsive embed-responsive-16by9">
 				      <div class="carousel-item active embed-responsive-item" style="background-image: url('{{ location.photo1 }}');">
@@ -40,7 +40,7 @@ Location page
 				      <div class="carousel-item embed-responsive-item" style="background-image: url('{{ location.photo3 }}');">
 				      </div>
 				    </div>
-  
+
 				  <!-- Left and right controls -->
 				  <a class="carousel-control-prev" href="#demo" data-slide="prev">
 				    <span class="carousel-control-prev-icon"></span>
@@ -49,7 +49,7 @@ Location page
 				    <span class="carousel-control-next-icon"></span>
 				  </a>
 				</div>
-			</div>	
+			</div>
 			{% if current_user.is_authenticated %}
 			<div id="buttonbox">
 				<button id="jsbutton" class="btn btn-dark" data-location="{{ location.place_id }}" data-button="favourite"><span class="mobile">Favoriet </span><i id="heart" class="{{ location.favourite }} fa-heart" aria-hidden="true"></i></button>
@@ -61,9 +61,9 @@ Location page
 			{% for role in current_user.roles %}
 			{% if "Administrator" == role.name %}
 			{% if recommendation or visible == false %}
-			<a href="{{ url_for('changenew', place_id=location.place_id, name=location.name) }}"><button class="btn btn-outline-secondary btn-block">Wijzig {{ location.name }}</button></a>
+			<a href="{{ url_for('changenew', place_id=location.place_id, name=location.name) }}"><button id="changelocation" class="btn btn-outline-secondary btn-block">Wijzig {{ location.name }}</button></a>
 			{% else %}
-			<a href="{{ url_for('createnew', place_id=location.place_id, name=location.name) }}"><button class="btn btn-outline-secondary btn-block">Raad {{ location.name }} aan</button></a>
+			<a href="{{ url_for('createnew', place_id=location.place_id, name=location.name) }}"><button id="changelocation" class="btn btn-outline-secondary btn-block">Raad {{ location.name }} aan</button></a>
 			{% endif %}
 			{% endif %}
 			{% endfor %}
@@ -80,7 +80,7 @@ Location page
 			</div>
 			{% endif %}
 			{% endif %}
-			
+
 			{% if  location.reviews|length > 0 %}
 			<h2 id="reviewrow">Reviews van andere gebruikers</h2>
 			{% for review in location.reviews %}
@@ -112,7 +112,7 @@ Location page
 					<p class="errorrev"></p>
 				</form>
 			</div>
-			{% endif %}			
+			{% endif %}
 		</div>
 		<div class="col-lg-4">
 			<div class="detailbox">
@@ -138,7 +138,7 @@ Location page
 				<p class="opening_hours" >{{ location.open }}</p>
 				{% endif %}
 				{% elif recommendation.opening %}
-				
+
 				{% if recommendation.opening|length > 30 %}
 				{% set opening = recommendation.opening.replace('{', '').replace('}', '').split(',') %}
 				<p class="opening_hours" >Maandag<span>{{ opening[0] }}</span></p>
@@ -151,9 +151,9 @@ Location page
 				{% else %}
 				<p class="opening_hours" >{{ recommendation.opening }}</p>
 				{% endif %}
-				
-				
-				
+
+
+
 				{% else %}
 				<p>Onbekend</p>
 				{% endif %}
