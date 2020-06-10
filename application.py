@@ -554,12 +554,16 @@ def location(place_id, name):
             if "photos" in data["result"]:
                 photo = requests.get("https://maps.googleapis.com/maps/api/place/photo", params={"key": GOOGLE_API_KEY, "maxwidth": "1000", "photoreference": data["result"]["photos"][0]["photo_reference"]})
                 if photo.status_code == 200:
+                    location["photo1source"] = data["result"]["photos"][0]["html_attributions"][0]
                     location["photo1"] = photo.url
+                    print(location["photo1source"])
                 if len(data["result"]["photos"]) > 1:
                     photo = requests.get("https://maps.googleapis.com/maps/api/place/photo", params={"key": GOOGLE_API_KEY, "maxwidth": "1000", "photoreference": data["result"]["photos"][1]["photo_reference"]})
                     if photo.status_code == 200:
+                        location["photo2source"] = data["result"]["photos"][1]["html_attributions"][0]
                         location["photo2"] = photo.url
                 if len(data["result"]["photos"]) > 2:
+                    location["photo3source"] = data["result"]["photos"][2]["html_attributions"][0]
                     photo = requests.get("https://maps.googleapis.com/maps/api/place/photo", params={"key": GOOGLE_API_KEY, "maxwidth": "1000", "photoreference": data["result"]["photos"][2]["photo_reference"]})
                     if photo.status_code == 200:
                         location["photo3"] = photo.url
