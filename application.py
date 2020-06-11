@@ -683,58 +683,59 @@ def search():
     type = request.form.get('type')
     opennow = request.form.get('opennow')
     keyword = request.form.get('query')
+    recommended = request.form.get('recommended')
+    if not recommended:
+        # set params for request
+        params = {"key": GOOGLE_API_KEY, "keyword": keyword, "location": "52.348460,4.885954", "radius": "10000"}
 
-    # set params for request
-    params = {"key": GOOGLE_API_KEY, "keyword": keyword, "location": "52.348460,4.885954", "radius": "10000"}
+        # add params for filters
+        if opennow:
+            params["opennow"] = ""
+        if minprice != 0 or maxprice != 4:
+            params["minprice"] = request.form.get('minprice')
+            params["maxprice"] = request.form.get('maxprice')
+        if type:
+            params["type"] = type
 
-    # add params for filters
-    if opennow:
-        params["opennow"] = ""
-    if minprice != 0 or maxprice != 4:
-        params["minprice"] = request.form.get('minprice')
-        params["maxprice"] = request.form.get('maxprice')
-    if type:
-        params["type"] = type
+        # google places nearby search api request
+        res = requests.get("https://maps.googleapis.com/maps/api/place/nearbysearch/json", params=params)
+        data = res.json()
 
-    # google places nearby search api request
-    res = requests.get("https://maps.googleapis.com/maps/api/place/nearbysearch/json", params=params)
-    data = res.json()
+        for result in data["results"]:
+            # check if place in amsterdam and filter for types and adult content
+            if "Amsterdam" in result["vicinity"].replace(',', '').split() and any(item in API_TYPES for item in result["types"]) and not any(item in RESULT_FILTER for item in result["name"].lower().split()):
 
-    for result in data["results"]:
-        # check if place in amsterdam and filter for types and adult content
-        if "Amsterdam" in result["vicinity"].replace(',', '').split() and any(item in API_TYPES for item in result["types"]) and not any(item in RESULT_FILTER for item in result["name"].lower().split()):
+                # set result variables
+                result["formatted_address"] = result["vicinity"].split(", ")
+                if "photos" in result:
 
-            # set result variables
-            result["formatted_address"] = result["vicinity"].split(", ")
-            if "photos" in result:
+                    # google places photo api request for thumbnail
+                    photo = requests.get("https://maps.googleapis.com/maps/api/place/photo", params={"key": GOOGLE_API_KEY, "maxwidth": "250", "photoreference": result["photos"][0]["photo_reference"]})
+                    if photo.status_code == 200:
+                        result["photos"] = photo.url
+                    else:
+                        result["photos"] = None
 
-                # google places photo api request for thumbnail
-                photo = requests.get("https://maps.googleapis.com/maps/api/place/photo", params={"key": GOOGLE_API_KEY, "maxwidth": "250", "photoreference": result["photos"][0]["photo_reference"]})
-                if photo.status_code == 200:
-                    result["photos"] = photo.url
-                else:
-                    result["photos"] = None
+                # set result variables
+                if "opening_hours" in result:
+                    if "open_now" in result["opening_hours"]:
+                        if result["opening_hours"]["open_now"] == True:
+                            result["opening_hours"] = "Nu open"
+                        elif result["opening_hours"]["open_now"] == False:
+                            result["opening_hours"] = "Gesloten"
+                    else:
+                        result["opening_hours"] = ""
+                if "price_level" in result:
+                    result["price_level"] = result["price_level"] * "€"
+                results.append(result)
 
-            # set result variables
-            if "opening_hours" in result:
-                if "open_now" in result["opening_hours"]:
-                    if result["opening_hours"]["open_now"] == True:
-                        result["opening_hours"] = "Nu open"
-                    elif result["opening_hours"]["open_now"] == False:
-                        result["opening_hours"] = "Gesloten"
-                else:
-                    result["opening_hours"] = ""
-            if "price_level" in result:
-                result["price_level"] = result["price_level"] * "€"
-            results.append(result)
-
-    # check if recommendation should be visible
-    for result in results:
-        recommendation = Recommendation.query.filter_by(place_id=result["place_id"]).first()
-        if recommendation:
-            if recommendation.visible:
-                result["recommended"] = True
-    return render_template("search.html", search=True, results=results, types=TYPES_DICT)
+        # check if recommendation should be visible
+        for result in results:
+            recommendation = Recommendation.query.filter_by(place_id=result["place_id"]).first()
+            if recommendation:
+                if recommendation.visible:
+                    result["recommended"] = True
+        return render_template("search.html", search=True, results=results, types=TYPES_DICT)
 
 @app.route('/stadsgids/weekend')
 @login_required

@@ -96,21 +96,19 @@ Search page layout
 				</div>
 				<div class="form-group">
 					<div class="form-check">
-					  <input class="form-check-input" type="checkbox" value="True" id="opennowinput" name="opennow">
-					  <label class="form-check-label advancedlabel" for="opennowinput">
-					    Toon alleen open locaties
-					  </label>
+						<input class="form-check-input" type="checkbox" value="True" id="opennowinput" name="opennow">
+						<label class="form-check-label advancedlabel" for="opennowinput">Toon alleen open locaties</label>
+					</div>
+					<div class="form-check">
+						<input class="form-check-input" type="checkbox" value="True" id="recommendinput" name="recommended">
+						<label class="form-check-label advancedlabel" for="recommendinput">Toon alleen  <button id="checklabel" class="btn btn-danger btn-sm">AANRADERS</button></label>
 					</div>
 				</div>
 				<input type="hidden" name="form" value="advanced">
 				<button id="spinner" class="btn btn-outline-danger my-2 my-sm-0" type="submit">Zoeken</button>
 				<div id="show" class="spinner-border spinner-border-sm text-danger" role="status" style="display: none">
-				  <span class="sr-only">Loading...</span>
+					<span class="sr-only">Loading...</span>
 				</div>
-
-
-
-
 			</form>
 		</div>
 	</div>

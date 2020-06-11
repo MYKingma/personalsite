@@ -280,6 +280,13 @@ h2 {
   /* no underline */
 }
 
+#checklabel {
+  font-size: 7pt;
+  font-family: "Oswald", sans-serif;
+  font-weight: bold;
+  padding: 2px 10px 2px 10px;
+}
+
 .media {
   padding: 10px;
   background: #FBF7F8;

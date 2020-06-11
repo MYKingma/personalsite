@@ -108,7 +108,7 @@ Location page
 			<div class="reviewbox">
 				<h3>{{ location.ownreview.user.username }}<span>{{ location.ownreview.date.strftime("%-d %B %Y") }}</span></h3>
 				<p>{{ location.ownreview.review if location.ownreview.review else "Geen toelichting" }}<span id="stars">{{ location.ownreview.stars }}</span></p>
-				<p><a href="{{ url_for('deletereview', name=location.name, place_id=location.place_id) }}">Verwijder</a></p>
+				<button class="btn btn-outline-danger btn-sm">Nuttig ({{ location.ownreview.get_upvote_count() }})</button><span><p><a href="{{ url_for('deletereview', name=location.name, place_id=location.place_id) }}">Verwijder</a></p></span>
 			</div>
 			{% endif %}
 			{% endif %}
