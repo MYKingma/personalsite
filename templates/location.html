@@ -83,6 +83,20 @@ Location page
 			{% if recommendation %}
 			<p>{{ recommendation.review }}</p>
 			{% endif %}
+			{% if events and current_user.is_authenticated %}
+			<h2>Evenementen</h2>
+			<div class="scrollbox">
+					{% for event in events %}
+					<div class="card">
+						<div class="card-body">
+							<h5 class="card-title">{{ event.title }}</h5>
+							<h6 class="card-subtitle mb-2 text-muted"><i class="far fa-calendar-alt"></i> {{ event.date.strftime("%-d %B %Y") }} - <i class="far fa-clock"></i> {{ event.date.strftime("%H:%M") }}</h6>
+							<p class="card-text">{{ event.description }}</p>
+						</div>
+					</div>
+					{% endfor %}
+			</div>
+			{% endif %}
 			{% if current_user.is_authenticated %}
 			{% if location.ownreview != None %}
 			<h2 id="reviewform">Eigen review</h2>

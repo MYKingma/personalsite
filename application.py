@@ -58,6 +58,7 @@ admin.add_view(AdminView(Role, db.session))
 admin.add_view(AdminView(UserRoles, db.session))
 admin.add_view(AdminView(Recommendation, db.session))
 admin.add_view(AdminView(Review, db.session))
+admin.add_view(AdminView(Event, db.session))
 admin.add_link(MenuLink(name='Back to site', url='/stadsgids/dashboard'))
 
 
@@ -480,6 +481,9 @@ def location(place_id, name):
         else:
             visible = True
 
+    # check if location has events an get event info
+    events = Event.query.filter_by(place_id=place_id).order_by(Event.date).all()
+
     # check for login and get user-location info
     if current_user.is_authenticated:
         user = User.query.get(current_user.id)
@@ -590,7 +594,7 @@ def location(place_id, name):
             map = requests.get("https://www.google.com/maps/embed/v1/place", params={"key": GOOGLE_API_KEY, "q": "place_id:" + place_id})
             if map.status_code == 200:
                 location["map"] = map.url
-        return render_template("location.html", location=location, recommendation=recommendation, visible=visible)
+        return render_template("location.html", location=location, recommendation=recommendation, visible=visible, events=events)
 
     # get review information
     stars = request.form.get('rating')

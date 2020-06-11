@@ -66,7 +66,19 @@ iframe {
 .fa-heart {
 	color: #f2463a;
 }
-
+// events
+.scrollbox {
+	margin-bottom: 15px;
+	display: flex;
+	white-space: normal;
+	overflow: auto;
+	overflow-x: scroll;
+	.card {
+		min-width: 300px;
+		margin-right: 15px;
+		border: 1px solid #9c0315;
+	}
+}
 #buttonbox {
 	button {
 		font-size: 13.8px;
