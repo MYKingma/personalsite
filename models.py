@@ -24,7 +24,7 @@ class User(db.Model, UserMixin):
     requests = db.relationship('Request', cascade="all, delete-orphan")
     reviews = db.relationship('Review', cascade="all, delete-orphan")
     roles = db.relationship('Role', secondary='user_roles')
-    
+
     def __init__(self, username, firstname, lastname, password, email):
         self.username = username
         self.firstname = firstname
@@ -37,24 +37,24 @@ class User(db.Model, UserMixin):
         self.favourites = []
         self.requests = []
         self.reviews = []
-    
+
     def get_user_roles(self):
         roles = []
         for role in self.roles:
             roles.append(role.name)
         return roles
-    
+
 class Role(db.Model):
     __tablename__ = 'roles'
     id = db.Column(db.Integer(), primary_key=True)
     name = db.Column(db.String(50), unique=True)
-        
+
 class UserRoles(db.Model):
     __tablename__ = 'user_roles'
     id = db.Column(db.Integer(), primary_key=True)
     user_id = db.Column(db.Integer(), db.ForeignKey('users.id', ondelete='CASCADE'), nullable=False)
     role_id = db.Column(db.Integer(), db.ForeignKey('roles.id', ondelete='CASCADE'), nullable=False)
-    
+
 class Recommendation(db.Model):
     __tablename__ = 'recommendations'
     id = db.Column(db.Integer(), primary_key=True)
@@ -65,7 +65,7 @@ class Recommendation(db.Model):
     opening = db.Column(db.String())
     price_level = db.Column(db.String(128))
     visible = db.Column(db.Boolean(), nullable=False)
-    
+
     def __init__(self, place_id, review, tip, opening, price_level, visible):
         self.place_id = place_id
         self.date = datetime.datetime.now()
@@ -74,27 +74,27 @@ class Recommendation(db.Model):
         self.opening = opening
         self.price_level = price_level
         self.visible = visible
-        
+
 class Favourite(db.Model):
     __tablename__ = 'favourites'
     id = db.Column(db.Integer(), primary_key=True)
     place_id = db.Column(db.String(128), nullable=False)
     user_id = db.Column(db.Integer(), db.ForeignKey('users.id'), nullable=False)
-    
+
     def __init__(self, place_id):
         self.place_id = place_id
         self.user_id = current_user.id
-        
+
 class Request(db.Model):
     __tablename__ = 'requests'
     id = db.Column(db.Integer(), primary_key=True)
     place_id = db.Column(db.String(128), nullable=False)
     user_id = db.Column(db.Integer(), db.ForeignKey('users.id'), nullable=False)
-    
+
     def __init__(self, place_id):
         self.place_id = place_id
         self.user_id = current_user.id
-    
+
 class Review(db.Model):
     __tablename__ = 'reviews'
     id = db.Column(db.Integer(), primary_key=True)
@@ -105,45 +105,45 @@ class Review(db.Model):
     review = db.Column(db.String(128))
     upvotes = db.relationship('Upvote', cascade="all, delete-orphan")
     user = db.relationship('User')
-    
+
     def __init__(self, place_id, stars, review):
         self.place_id = place_id
         self.user_id = current_user.id
         self.date = datetime.datetime.now()
         self.stars = stars
         self.review = review
-        
+
     def get_upvote_count(self):
         count = 0
         for upvote in self.upvotes:
             count = count + 1
         return count
-    
+
 class Upvote(db.Model):
     __tablename__ = 'upvotes'
     id = db.Column(db.Integer(), primary_key=True)
     user_id = db.Column(db.Integer(), db.ForeignKey('users.id'), nullable=False)
     review_id = db.Column(db.Integer(), db.ForeignKey('reviews.id'), nullable=False)
-    
+
     def __init__(self, review_id):
         self.review_id = review_id
         self.user_id = current_user.id
-    
+
 class Event(db.Model):
     __tablename__ = 'events'
     id = db.Column(db.Integer(), primary_key=True)
     place_id = db.Column(db.String(128), nullable=False)
     date = db.Column(db.DateTime(), nullable=False)
     title = db.Column(db.String(128), nullable=False)
-    description = db.Column(db.String(128), nullable=False)
-    
+    description = db.Column(db.Text(), nullable=False)
+
 class Friday(db.Model):
     __tablename__ = 'friday_tips'
     id = db.Column(db.Integer(), primary_key=True)
     place_id = db.Column(db.String(128), nullable=False)
     date = db.Column(db.DateTime(), nullable=False)
     description = db.Column(db.String(128), nullable=False)
-    
+
 class Blog(db.Model):
     __tablename__ = 'blog'
     id = db.Column(db.Integer(), primary_key=True)

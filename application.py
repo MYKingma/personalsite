@@ -548,7 +548,7 @@ def location(place_id, name):
             data = res.json()
             location["name"] = data["result"]["name"]
             location["address"] = data["result"]["formatted_address"].split(",")
-            location["applemapslink"] = data["result"]["formatted_address"]
+            location["applemapslink"] = location["address"][0]
             location["icon"] = data["result"]["icon"]
             location["place_id"] = data["result"]["place_id"]
             if "formatted_phone_number" in data["result"]:

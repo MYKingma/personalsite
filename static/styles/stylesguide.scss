@@ -82,6 +82,7 @@ iframe {
 	overflow: auto;
 	overflow-x: scroll;
 	.card {
+		max-width: 300px;
 		min-width: 300px;
 		margin-right: 15px;
 		border: 1px solid #9c0315;
@@ -435,4 +436,5 @@ p {
 
 .container {
 	min-height: 560px;
+	margin-top: 10px;
 }
