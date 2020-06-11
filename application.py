@@ -757,7 +757,7 @@ def controlnew():
     opening = ["monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"]
     for day in opening:
         time = request.form.get(day)
-        if time == "" or time == "Onbekend":
+        if time == "" or time == "Onbekend" or time == "onbekend":
             opening = "Onbekend"
             break
         elif time == '24' or time == "24 uur per dag geopend":

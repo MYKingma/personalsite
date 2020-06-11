@@ -77,6 +77,18 @@ iframe {
   width: 24%;
   margin-right: 0.1vw;
 }
+#buttonbox p {
+  font-weight: bolder;
+  padding-left: 20px;
+  padding-right: 20px;
+}
+#buttonbox p a {
+  text-decoration: none;
+  color: #9c0315;
+}
+#buttonbox p a:hover {
+  color: grey;
+}
 
 #changelocation {
   margin-bottom: 15px;

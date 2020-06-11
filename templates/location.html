@@ -66,6 +66,10 @@ Location page
 				<a href="#reviewform"><button class="btn btn-dark"><span class="mobile">Review </span><i class="far fa-edit"></i></button></a>
 				<a href="#reviewrow"><button class="btn btn-dark"><i class="fa fa-star" aria-hidden="true"></i> {{ location.guiderating }} <span class="mobile" style="font-size: 7px;">{{ location.count|string + " reviews" if location.count }}</span></button></a>
 			</div>
+			{% else %}
+			<div id="buttonbox">
+				<p>Met een account heb je toegang tot nog meer functies! Zo kun je locties toevoegen aan je favorieten en krijg je updates over nieuwe locaties of speciale evenementen.</p><p><a href="{{ url_for('register') }}">Registreer je hier</a> om hiervan te profiteren. Heb je al een account? Log dan in via het menu!</p>
+			</div>
 			{% endif %}
 			{% for role in current_user.roles %}
 			{% if "Administrator" == role.name %}

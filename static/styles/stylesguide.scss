@@ -73,6 +73,18 @@ iframe {
 		width: 24%;
 		margin-right: 0.1vw;
 	}
+	p {
+		font-weight: bolder;
+		padding-left: 20px;
+		padding-right: 20px;
+		a {
+			text-decoration: none;
+			color: #9c0315;
+		}
+		a:hover {
+			color: grey;
+		}
+	}
 	background-color: #ebe1e3;
 	text-align: center;
 	margin-bottom: 15px;
