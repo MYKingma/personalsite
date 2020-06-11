@@ -46,9 +46,18 @@ iframe {
   max-height: 300px;
 }
 
+.tab-pane {
+  margin-top: 15px;
+  margin-bottom: 15px;
+}
+
 .opening_hours {
   margin: 0px;
   font-size: 10pt;
+}
+
+#openingtimes, .openingtimes {
+  margin-bottom: 15px;
 }
 
 .carousel-item {

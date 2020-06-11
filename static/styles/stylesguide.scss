@@ -47,12 +47,20 @@ iframe {
 	max-width: 100%;
 	max-height: 300px;
 }
+// change location page
+.tab-pane {
+	margin-top: 15px;
+	margin-bottom: 15px;
+}
+
 // location page
 .opening_hours {
 	margin: 0px;
 	font-size: 10pt;
 }
-
+#openingtimes, .openingtimes {
+	margin-bottom: 15px;
+}
 .carousel-item {
 	background-size: cover;
 	background-repeat: no-repeat;

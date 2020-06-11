@@ -83,18 +83,23 @@ Location page
 			{% if recommendation %}
 			<p>{{ recommendation.review }}</p>
 			{% endif %}
+			{% for role in current_user.roles %}
+			{% if "Administrator" == role.name %}
+			<a href="{{ url_for('create_event', place_id=location.place_id, name=location.name) }}"><button id="changelocation" class="btn btn-outline-secondary btn-block">Voeg evenement voor {{ location.name }} toe</button></a>
+			{% endif %}
+			{% endfor %}
 			{% if events and current_user.is_authenticated %}
 			<h2>Evenementen</h2>
 			<div class="scrollbox">
-					{% for event in events %}
-					<div class="card">
-						<div class="card-body">
-							<h5 class="card-title">{{ event.title }}</h5>
-							<h6 class="card-subtitle mb-2 text-muted"><i class="far fa-calendar-alt"></i> {{ event.date.strftime("%-d %B %Y") }} - <i class="far fa-clock"></i> {{ event.date.strftime("%H:%M") }}</h6>
-							<p class="card-text">{{ event.description }}</p>
-						</div>
+				{% for event in events %}
+				<div class="card">
+					<div class="card-body">
+						<h5 class="card-title">{{ event.title }}</h5>
+						<h6 class="card-subtitle mb-2 text-muted"><i class="far fa-calendar-alt"></i> {{ event.date.strftime("%-d %B %Y") }} - <i class="far fa-clock"></i> {{ event.date.strftime("%H:%M") }}</h6>
+						<p class="card-text">{{ event.description }}</p>
 					</div>
-					{% endfor %}
+				</div>
+				{% endfor %}
 			</div>
 			{% endif %}
 			{% if current_user.is_authenticated %}
@@ -107,7 +112,6 @@ Location page
 			</div>
 			{% endif %}
 			{% endif %}
-
 			{% if  location.reviews|length > 0 %}
 			<h2 id="reviewrow">Reviews van andere gebruikers</h2>
 			{% for review in location.reviews %}

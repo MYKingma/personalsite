@@ -28,7 +28,7 @@ Layout page for changing locations
 			<div class="invalid-feedback">Geef een tip</div>
 		</div>
 		<div class="form-group">
-			<label for="price_level">Prijsklasse (was {{ recommendation.price_level }})</label>
+			<label for="price_level">Prijsklasse (was {{ 'onbekend' if recommendation.price_level == "0" else recommendation.price_level }})</label>
 			<select id="price_level" name="price_level" class="custom-select">
 				<option value="0" selected>Onbekend</option>
 				<option value="1">€</option>
@@ -37,66 +37,90 @@ Layout page for changing locations
 				<option value="4">€€€€</option>
 			</select>
 		</div>
-		<div class="form-row">
-			<div class="col">
-				<div class="form-group">
-					<label for="openmonday">Openingstijden maandag</label>
-					<input class="form-control" value="{{ recommendation.opening }}" value="{{ recommendation.opening[0] if weektext }}" type="text" name="monday" id="openmonday" placeholder="00:00–00:00">
-				</div>
+		<ul class="nav nav-tabs" id="myTab" role="tablist">
+			<li class="nav-item">
+				<a class="nav-link active" id="home-tab" data-toggle="tab" href="#home" role="tab" aria-controls="home" aria-selected="true">Openingstijden</a>
+			</li>
+			<li class="nav-item">
+				<a class="nav-link" id="profile-tab" data-toggle="tab" href="#profile" role="tab" aria-controls="profile" aria-selected="false">Evenementen</a>
+			</li>
+		</ul>
+		<div class="tab-content" id="myTabContent">
+			<div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
+				<p>24 bij maandag voor "24 uur per dag geopend", laat leeg als onbekend.</p>
+	  			<div class="form-row">
+	  				<div class="col">
+	  					<div class="form-group">
+	  						<label for="openmonday">Openingstijden maandag</label>
+	  						<input class="form-control" value="{{ recommendation.opening }}" value="{{ recommendation.opening[0] if weektext }}" type="text" name="monday" id="openmonday" placeholder="00:00–00:00">
+	  					</div>
+	  				</div>
+	  				<div class="col">
+	  					<div class="form-group">
+	  						<label for="opentuesday">Openingstijden dinsdag</label>
+	  						<input value="{{ recommendation.opening[1] if weektext }}" class="form-control" type="text" name="tuesday" id="opentuesday" placeholder="00:00–00:00">
+	  					</div>
+	  				</div>
+	  			</div>
+	  			<div class="form-row">
+	  				<div class="col">
+	  					<div class="form-group">
+	  						<label for="openwednesday">Openingstijden woensdag</label>
+	  						<input value="{{ recommendation.opening[2] if weektext }}" class="form-control" type="text" name="wednesday" id="openwednesday" placeholder="00:00–00:00">
+	  					</div>
+	  				</div>
+	  				<div class="col">
+	  					<div class="form-group">
+	  						<label for="openthursday">Openingstijden donderdag</label>
+	  						<input value="{{ recommendation.opening[3] if weektext }}" class="form-control" type="text" name="thursday" id="openthursday" placeholder="00:00–00:00">
+	  					</div>
+	  				</div>
+	  			</div>
+	  			<div class="form-row">
+	  				<div class="col">
+	  					<div class="form-group">
+	  						<label for="openfriday">Openingstijden vrijdag</label>
+	  						<input value="{{ recommendation.opening[4] if weektext }}" class="form-control" type="text" name="friday" id="openfriday" placeholder="00:00–00:00">
+	  					</div>
+	  				</div>
+	  				<div class="col">
+	  					<div class="form-group">
+	  						<label for="opensaturday">Openingstijden zaterdag</label>
+	  						<input value="{{ recommendation.opening[5] if weektext }}" class="form-control" type="text" name="saturday" id="opensaturday" placeholder="00:00–00:00">
+	  					</div>
+	  				</div>
+	  			</div>
+	  			<div class="form-row">
+	  				<div class="col-6">
+	  					<div class="form-group">
+	  						<label for="opensunday">Openingstijden zondag</label>
+	  						<input value="{{ recommendation.opening[6] if weektext }}" class="form-control" type="text" name="sunday" id="opensunday" placeholder="00:00–00:00">
+	  					</div>
+	  				</div>
+	  			</div>
 			</div>
-			<div class="col">
-				<div class="form-group">
-					<label for="opentuesday">Openingstijden dinsdag</label>
-					<input value="{{ recommendation.opening[1] if weektext }}" class="form-control" type="text" name="tuesday" id="opentuesday" placeholder="00:00–00:00">
-				</div>
-			</div>
-		</div>
-		<div class="form-row">
-			<div class="col">
-				<div class="form-group">
-					<label for="openwednesday">Openingstijden woensdag</label>
-					<input value="{{ recommendation.opening[2] if weektext }}" class="form-control" type="text" name="wednesday" id="openwednesday" placeholder="00:00–00:00">
-				</div>
-			</div>
-			<div class="col">
-				<div class="form-group">
-					<label for="openthursday">Openingstijden donderdag</label>
-					<input value="{{ recommendation.opening[3] if weektext }}" class="form-control" type="text" name="thursday" id="openthursday" placeholder="00:00–00:00">
-				</div>
-			</div>
-		</div>
-		<div class="form-row">
-			<div class="col">
-				<div class="form-group">
-					<label for="openfriday">Openingstijden vrijdag</label>
-					<input value="{{ recommendation.opening[4] if weektext }}" class="form-control" type="text" name="friday" id="openfriday" placeholder="00:00–00:00">
-				</div>
-			</div>
-			<div class="col">
-				<div class="form-group">
-					<label for="opensaturday">Openingstijden zaterdag</label>
-					<input value="{{ recommendation.opening[5] if weektext }}" class="form-control" type="text" name="saturday" id="opensaturday" placeholder="00:00–00:00">
-				</div>
-			</div>
-		</div>
-		<div class="form-row">
-			<div class="col-6">
-				<div class="form-group">
-					<label for="opensunday">Openingstijden zondag</label>
-					<input value="{{ recommendation.opening[6] if weektext }}" class="form-control" type="text" name="sunday" id="opensunday" placeholder="00:00–00:00">
+			<div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab">
+				<div id="events" class="scrollbox">
+					{% for event in events %}
+					<div class="card">
+						<div class="card-body">
+							<h5 class="card-title">{{ event.title }}</h5>
+							<h6 class="card-subtitle mb-2 text-muted"><i class="far fa-calendar-alt"></i> {{ event.date.strftime("%-d %B %Y") }} - <i class="far fa-clock"></i> {{ event.date.strftime("%H:%M") }}</h6>
+							<p class="card-text">{{ event.description }}</p>
+							<a href="{{url_for('delete_event', name=name, event_id=event.id)}}">verwijder</a>
+						</div>
+					</div>
+					{% endfor %}
 				</div>
 			</div>
 		</div>
 		<div id="visible" class="form-check">
 			<input class="form-check-input" type="checkbox" value="True" name="visible">
-			<label class="form-check-label">
-			Zichtbaar
-			</label>
+			<label class="form-check-label">Zichtbaar</label>
 		</div>
 		<input type="hidden" name="place_id" value="{{ recommendation.place_id }}">
 		<input type="hidden" name="action" value="change">
 		<input id="visible" type="submit" class="btn btn-outline-secondary">
 	</form>
-	<a href="{{ url_for('controlnew')}}"><button class="btn btn-outline-dark">Annuleer</button></a>
 </div>
 {% endblock %}

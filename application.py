@@ -106,6 +106,15 @@ def deletereview(place_id, name):
     flash(f"Review verwijderd", "success")
     return redirect(url_for('location', place_id=place_id, name=name))
 
+@app.route('/deleteevent/<event_id>/<name>')
+def delete_event(event_id, name):
+    # delete own review
+    event = Event.query.filter_by(id=event_id).first()
+    db.session.delete(event)
+    db.session.commit()
+    flash(f"Evenement verwijderd", "success")
+    return redirect(url_for('changenew', place_id=event.place_id, name=name))
+
 @app.route('/stadsgids/resetwachtwoord', methods=["POST"])
 def reset():
     # get email and passwords
@@ -481,8 +490,11 @@ def location(place_id, name):
         else:
             visible = True
 
-    # check if location has events an get event info
+    # check if location has events an get event info when date is yet to come
     events = Event.query.filter_by(place_id=place_id).order_by(Event.date).all()
+    for event in events:
+        if event.date < datetime.datetime.now():
+            events.remove(event)
 
     # check for login and get user-location info
     if current_user.is_authenticated:
@@ -795,13 +807,32 @@ def controlnew():
 def changenew(place_id, name):
     # get recommendation and set variable for existing weektext
     recommendation = Recommendation.query.filter_by(place_id=place_id).first()
+    events = Event.query.filter_by(place_id=place_id).order_by(Event.date).all()
     weektext = type(recommendation.opening) == list
-    return render_template("changenew.html", recommendation=recommendation, weektext=weektext, name=name)
+    return render_template("changenew.html", recommendation=recommendation, weektext=weektext, name=name, events=events)
 
 @app.route('/stadsgids/dashboard/nieuw/opstellen/<name>/<place_id>')
 @role_required('Administrator')
 def createnew(name, place_id):
     return render_template("createnew.html", name=name, place_id=place_id)
+
+@app.route('/stadsgids/dashboard/nieuw/evenement/<name>/<place_id>', methods=["GET", "POST"])
+@role_required('Administrator')
+def create_event(name, place_id):
+    if request.method == "GET":
+        return render_template("createevent.html", name=name, place_id=place_id)
+
+    title = request.form.get("title")
+    date = request.form.get("date")
+    time = request.form.get("time")
+    description = request.form.get("description")
+    date_string = date + "/" + time
+    datetime_object = datetime.datetime.strptime(date_string, '%d-%m-%Y/%H:%M')
+
+    event = Event(title=title, date=datetime_object, description=description, place_id=place_id)
+    db.session.add(event)
+    db.session.commit()
+    return redirect(url_for("location", name=request.form.get("name"), place_id=request.form.get("place_id")))
 
 @app.route('/stadsgids/dashboard/nieuwsbrief')
 @role_required('Administrator')
