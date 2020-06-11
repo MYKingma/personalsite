@@ -1,18 +1,20 @@
 #knock {
-  padding: 7px;
   background-size: cover;
+  margin: auto;
+  margin-top: 20px;
+  width: 97vw;
 }
 
 #title {
   font-family: "Bebas Neue", cursive;
-  margin: 0;
-  padding: 15px;
-  background: #28143c;
-  font-size: 12vw;
   text-align: center;
-  color: white;
-  mix-blend-mode: multiply;
-  animation: glow 5s infinite;
+  margin: 0;
+  border: 12px double;
+  color: black;
+  mix-blend-mode: screen;
+  background-color: white;
+  font-size: 15vw;
+  animation: glow 10s infinite;
 }
 
 @keyframes glow {
@@ -20,36 +22,36 @@
     text-shadow: 0 0 10px white;
   }
   15% {
-    text-shadow: 2px 2px 10px white, -2px -2px 10px white;
+    text-shadow: 2px 2px 10px #646464, -2px -2px 10px #646464;
   }
   30% {
-    text-shadow: 2px 2px 4px rgba(255, 255, 255, 0.7), -2px -2px 4px rgba(255, 255, 255, 0.7);
+    text-shadow: 2px 2px 4px rgba(100, 100, 100, 0.7), -2px -2px 4px rgba(100, 100, 100, 0.7);
   }
   50% {
-    text-shadow: 20px 20px 50px rgba(255, 255, 255, 0.5), -20px -20px 50px rgba(255, 255, 255, 0.5);
+    text-shadow: 320px 320px 450px white, -220px -220px 350px white;
   }
 }
 body {
-  background: black;
+  background: white;
   font-family: "Oswald", sans-serif;
   text-align: center;
 }
 
 p {
   margin: 0px;
-  color: white;
-  font-size: 10pt;
+  color: black;
+  font-size: 12pt;
 }
 
 h1 {
   color: grey;
   margin: 0px;
   margin-top: 30px;
-  font-size: 12pt;
+  font-size: 18pt;
 }
 
 label {
-  color: white;
+  color: black;
 }
 
 input {
@@ -118,7 +120,7 @@ textarea {
   color: grey;
 }
 
-/* 
+/*
 =====
 MENU STYLES Author
 
@@ -146,14 +148,13 @@ March 5, 2018
 
 /* skin */
 .menu {
-  background-color: black;
-  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.12), 0 1px 2px 0 rgba(0, 0, 0, 0.24);
+  background-color: white;
 }
 
 .menu__link {
   padding: 2rem 1.5rem;
   font-weight: 700;
-  color: #fff;
+  color: black;
   text-decoration: none;
   text-transform: uppercase;
 }
@@ -176,7 +177,7 @@ March 5, 2018
   content: "";
   width: 0;
   height: 3px;
-  background-color: #fff;
+  background-color: black;
   will-change: width;
   transition: width 0.1s ease-out;
   position: absolute;
