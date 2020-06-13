@@ -23,6 +23,7 @@ from sqlalchemy.sql import func
 import datetime
 import requests
 import locale
+import ast
 
 from models import *
 
@@ -684,6 +685,7 @@ def search():
     opennow = request.form.get('opennow')
     keyword = request.form.get('query')
     recommended = request.form.get('recommended')
+
     if not recommended:
         # set params for request
         params = {"key": GOOGLE_API_KEY, "keyword": keyword, "location": "52.348460,4.885954", "radius": "10000"}
@@ -803,14 +805,15 @@ def controlnew():
         flash("Aanbeveling gewijzigd", 'success' )
     return render_template("controlnew.html")
 
-@app.route('/stadsgids/dashboard/nieuw/wijzigen/<name>/<place_id>')
+@app.route('/stadsgids/dashboard/nieuw/wijzigen/<name>/<place_id>/<types>')
 @role_required('Administrator')
-def changenew(place_id, name):
+def changenew(place_id, name, types):
     # get recommendation and set variable for existing weektext
     recommendation = Recommendation.query.filter_by(place_id=place_id).first()
     events = Event.query.filter_by(place_id=place_id).order_by(Event.date).all()
     weektext = type(recommendation.opening) == list
-    return render_template("changenew.html", recommendation=recommendation, weektext=weektext, name=name, events=events)
+    typeslist = ast.literal_eval(types)
+    return render_template("changenew.html", recommendation=recommendation, weektext=weektext, name=name, events=events, types=typeslist, API_TYPES=API_TYPES, TYPES_DICT=TYPES_DICT)
 
 @app.route('/stadsgids/dashboard/nieuw/opstellen/<name>/<place_id>')
 @role_required('Administrator')

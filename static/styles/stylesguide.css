@@ -49,6 +49,13 @@ iframe {
 .tab-pane {
   margin-top: 15px;
   margin-bottom: 15px;
+  background-color: #fff8f5;
+  padding: 10px;
+  border-radius: 10px;
+}
+
+.form-check-label {
+  margin-right: 10px;
 }
 
 .opening_hours {
