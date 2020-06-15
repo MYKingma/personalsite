@@ -122,13 +122,14 @@ Layout page for changing locations
 			</div>
 			<div class="tab-pane fade" id="types" role="tabpanel" aria-labelledby="types-tab">
 				<div id="types">
-					{% if types %}
+					{% if recommendation.type %}
+					{% set typelist = recommendation.type.replace('{', '').replace('}', '').split(',') %}
 					<p>Geselecteerde categorieën</p>
 					<div class="form-row">
-						{% for type in types %}
+						{% for type in typelist %}
 						<div class="form-group col-6">
 							<div id="visible" class="form-check">
-								<input class="form-check-input" type="checkbox" value="{{ type }}" name="visible" checked>
+								<input class="form-check-input" type="checkbox" value="{{ type }}" name="type" checked>
 								<label class="form-check-label">{{ type }}</label>
 							</div>
 						</div>
@@ -139,10 +140,10 @@ Layout page for changing locations
 					<div class="form-row">
 						{% for type in API_TYPES %}
 						{% set nltype = TYPES_DICT[type] %}
-						{% if nltype not in types %}
+						{% if nltype not in types or nltype not in typelist %}
 						<div class="form-group">
 							<div id="visible" class="form-check">
-								<input class="form-check-input" type="checkbox" value="{{ type }}" name="visible">
+								<input class="form-check-input" type="checkbox" value="{{ nltype }}" name="type">
 								<label class="form-check-label">{{ nltype }}</label>
 							</div>
 						</div>

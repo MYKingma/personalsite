@@ -485,6 +485,7 @@ def location(place_id, name):
     # check if location is recommended and get recommendation info
     recommendation = Recommendation.query.filter_by(place_id=place_id).first()
     if recommendation:
+        print(recommendation.type)
         if not recommendation.visible:
             recommendation = None
             visible = False
@@ -765,6 +766,7 @@ def controlnew():
     place_id = request.form.get('place_id')
     review = request.form.get('review')
     tip = request.form.get('tip')
+    types = request.form.getlist('type')
     visible = True if request.form.get('visible') else False
     if int(request.form.get('price_level')) != 0:
         price_level = int(request.form.get('price_level'))
@@ -790,7 +792,7 @@ def controlnew():
 
     # check if new recommendation or change existing
     if action == "new":
-        newrecommendation = Recommendation(place_id=place_id, review=review, tip=tip, visible=visible, price_level=price_level, opening=opening)
+        newrecommendation = Recommendation(place_id=place_id, review=review, tip=tip, visible=visible, price_level=price_level, opening=opening, type=types)
         db.session.add(newrecommendation)
         db.session.commit()
         flash("Aanbeveling toegevoegd", 'success' )
@@ -801,6 +803,7 @@ def controlnew():
         recommendation.visible = visible
         recommendation.price_level = price_level
         recommendation.opening = opening
+        recommendation.type = types
         db.session.commit()
         flash("Aanbeveling gewijzigd", 'success' )
     return render_template("controlnew.html")
@@ -817,7 +820,7 @@ def changenew(place_id, name, types):
 
 @app.route('/stadsgids/dashboard/nieuw/opstellen/<name>/<place_id>/<types>')
 @role_required('Administrator')
-def createnew(name, place_id):
+def createnew(name, place_id, types):
     typeslist = ast.literal_eval(types)
     return render_template("createnew.html", name=name, place_id=place_id, types=typeslist, API_TYPES=API_TYPES, TYPES_DICT=TYPES_DICT)
 

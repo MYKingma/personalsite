@@ -159,17 +159,16 @@ Location page
 				<p class="opening_hours" >24 uur per dag geopend</p>
 				{% elif location.opening_hours[0] != "24" %}
 				<p class="opening_hours" >Maandag<span>{{ location.opening_hours.0 }}</span></p>
-				<p class="opening_hours" >Dinsdag<span>{{ location.opening_hours.0 }}</span></p>
-				<p class="opening_hours" >Woensdag<span>{{ location.opening_hours.0 }}</span></p>
-				<p class="opening_hours" >Donderdag<span>{{ location.opening_hours.0 }}</span></p>
-				<p class="opening_hours" >Vrijdag<span>{{ location.opening_hours.0 }}</span></p>
-				<p class="opening_hours" >Zaterdag<span>{{ location.opening_hours.0 }}</span></p>
-				<p class="opening_hours" >Zondag<span>{{ location.opening_hours.0 }}</span></p>
+				<p class="opening_hours" >Dinsdag<span>{{ location.opening_hours.1 }}</span></p>
+				<p class="opening_hours" >Woensdag<span>{{ location.opening_hours.2 }}</span></p>
+				<p class="opening_hours" >Donderdag<span>{{ location.opening_hours.3 }}</span></p>
+				<p class="opening_hours" >Vrijdag<span>{{ location.opening_hours.4 }}</span></p>
+				<p class="opening_hours" >Zaterdag<span>{{ location.opening_hours.5 }}</span></p>
+				<p class="opening_hours" >Zondag<span>{{ location.opening_hours.6 }}</span></p>
 				{% elif location.open %}
 				<p class="opening_hours" >{{ location.open }}</p>
 				{% endif %}
 				{% elif recommendation.opening %}
-
 				{% if recommendation.opening|length > 30 %}
 				{% set opening = recommendation.opening.replace('{', '').replace('}', '').split(',') %}
 				<p class="opening_hours" >Maandag<span>{{ opening[0] }}</span></p>
@@ -182,9 +181,6 @@ Location page
 				{% else %}
 				<p class="opening_hours" >{{ recommendation.opening }}</p>
 				{% endif %}
-
-
-
 				{% else %}
 				<p>Onbekend</p>
 				{% endif %}
@@ -193,11 +189,19 @@ Location page
 				<p>{{ recommendation.tip }}</p>
 				{% endif %}
 				<h2 class="newdetail">Details</h2>
+				{% if recommendation.type %}
+				<p>Soort
+					<span>
+					{{ recommendation.type.replace('{', '').replace('}', '').replace(',', ' ') }}
+					</span>
+				</p>
+				{% else %}
 				<p>Soort
 					<span>{% for type in location.types %}
 					{{ type }}
 					{% endfor %}</span>
 				</p>
+				{% endif %}
 				{% if location.price_level %}
 				<p>Prijsklasse <span>{{ location.price_level }}</span></p>
 				{% elif recommendation.price_level %}

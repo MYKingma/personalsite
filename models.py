@@ -67,7 +67,7 @@ class Recommendation(db.Model):
     price_level = db.Column(db.String(128))
     visible = db.Column(db.Boolean(), nullable=False)
 
-    def __init__(self, place_id, review, tip, opening, price_level, visible):
+    def __init__(self, place_id, review, tip, opening, price_level, visible, type):
         self.place_id = place_id
         self.date = datetime.datetime.now()
         self.review = review
@@ -75,6 +75,7 @@ class Recommendation(db.Model):
         self.opening = opening
         self.price_level = price_level
         self.visible = visible
+        self.type = type
 
 class Favourite(db.Model):
     __tablename__ = 'favourites'

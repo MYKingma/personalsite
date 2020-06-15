@@ -37,61 +37,124 @@ Layout page for adding new locations
 				<option value="4">€€€€</option>
 			</select>
 		</div>
-		<div class="form-row">
-			<div class="col">
-				<div class="form-group">
-					<label for="openmonday">Openingstijden maandag</label>
-					<input class="form-control" type="text" name="monday" id="openmonday" placeholder="00:00–00:00">
+		<ul class="nav nav-tabs" id="myTab" role="tablist">
+			<li class="nav-item">
+				<a class="nav-link active" id="opening-tab" data-toggle="tab" href="#opening" role="tab" aria-controls="opening" aria-selected="true">Openingstijden</a>
+			</li>
+			<li class="nav-item">
+				<a class="nav-link" id="events-tab" data-toggle="tab" href="#events" role="tab" aria-controls="events" aria-selected="false">Evenementen</a>
+			</li>
+			<li class="nav-item">
+				<a class="nav-link" id="types-tab" data-toggle="tab" href="#types" role="tab" aria-controls="events" aria-selected="false">Categorieën</a>
+			</li>
+		</ul>
+		<div class="tab-content" id="myTabContent">
+			<div class="tab-pane fade show active" id="opening" role="tabpanel" aria-labelledby="opening-tab">
+				<p>24 bij maandag voor "24 uur per dag geopend", laat leeg als onbekend.</p>
+				<div class="form-row">
+					<div class="col">
+						<div class="form-group">
+							<label for="openmonday">Openingstijden maandag</label>
+							<input class="form-control" type="text" name="monday" id="openmonday" placeholder="00:00–00:00">
+						</div>
+					</div>
+					<div class="col">
+						<div class="form-group">
+							<label for="opentuesday">Openingstijden dinsdag</label>
+							<input class="form-control" type="text" name="tuesday" id="opentuesday" placeholder="00:00–00:00">
+						</div>
+					</div>
+				</div>
+				<div class="form-row">
+					<div class="col">
+						<div class="form-group">
+							<label for="openwednesday">Openingstijden woensdag</label>
+							<input class="form-control" type="text" name="wednesday" id="openwednesday" placeholder="00:00–00:00">
+						</div>
+					</div>
+					<div class="col">
+						<div class="form-group">
+							<label for="openthursday">Openingstijden donderdag</label>
+							<input class="form-control" type="text" name="thursday" id="openthursday" placeholder="00:00–00:00">
+						</div>
+					</div>
+				</div>
+				<div class="form-row">
+					<div class="col">
+						<div class="form-group">
+							<label for="openfriday">Openingstijden vrijdag</label>
+							<input class="form-control" type="text" name="friday" id="openfriday" placeholder="00:00–00:00">
+						</div>
+					</div>
+					<div class="col">
+						<div class="form-group">
+							<label for="opensaturday">Openingstijden zaterdag</label>
+							<input class="form-control" type="text" name="saturday" id="opensaturday" placeholder="00:00–00:00">
+						</div>
+					</div>
+				</div>
+				<div class="form-row">
+					<div class="col-6">
+						<div class="form-group">
+							<label for="opensunday">Openingstijden zondag</label>
+							<input class="form-control" type="text" name="sunday" id="opensunday" placeholder="00:00–00:00">
+						</div>
+					</div>
 				</div>
 			</div>
-			<div class="col">
-				<div class="form-group">
-					<label for="opentuesday">Openingstijden dinsdag</label>
-					<input class="form-control" type="text" name="tuesday" id="opentuesday" placeholder="00:00–00:00">
+			<div class="tab-pane fade" id="events" role="tabpanel" aria-labelledby="events-tab">
+				<div id="events" class="scrollbox">
+					{% if events %}
+					{% for event in events %}
+					<div class="card">
+						<div class="card-body">
+							<h5 class="card-title">{{ event.title }}</h5>
+							<h6 class="card-subtitle mb-2 text-muted"><i class="far fa-calendar-alt"></i> {{ event.date.strftime("%-d %B %Y") }} - <i class="far fa-clock"></i> {{ event.date.strftime("%H:%M") }}</h6>
+							<p class="card-text">{{ event.description }}</p>
+							<a href="{{url_for('delete_event', name=name, event_id=event.id)}}">verwijder</a>
+						</div>
+					</div>
+					{% endfor %}
+					{% else %}
+					<p>Maak evenementen aan via de locatiepagina, hierna kunnen ze hier worden verwijderd.</p>
+					{% endif %}
 				</div>
 			</div>
-		</div>
-		<div class="form-row">
-			<div class="col">
-				<div class="form-group">
-					<label for="openwednesday">Openingstijden woensdag</label>
-					<input class="form-control" type="text" name="wednesday" id="openwednesday" placeholder="00:00–00:00">
-				</div>
-			</div>
-			<div class="col">
-				<div class="form-group">
-					<label for="openthursday">Openingstijden donderdag</label>
-					<input class="form-control" type="text" name="thursday" id="openthursday" placeholder="00:00–00:00">
-				</div>
-			</div>
-		</div>
-		<div class="form-row">
-			<div class="col">
-				<div class="form-group">
-					<label for="openfriday">Openingstijden vrijdag</label>
-					<input class="form-control" type="text" name="friday" id="openfriday" placeholder="00:00–00:00">
-				</div>
-			</div>
-			<div class="col">
-				<div class="form-group">
-					<label for="opensaturday">Openingstijden zaterdag</label>
-					<input class="form-control" type="text" name="saturday" id="opensaturday" placeholder="00:00–00:00">
-				</div>
-			</div>
-		</div>
-		<div class="form-row">
-			<div class="col-6">
-				<div class="form-group">
-					<label for="opensunday">Openingstijden zondag</label>
-					<input class="form-control" type="text" name="sunday" id="opensunday" placeholder="00:00–00:00">
+			<div class="tab-pane fade" id="types" role="tabpanel" aria-labelledby="types-tab">
+				<div id="types">
+					{% if types %}
+					<p>Geselecteerde categorieën</p>
+					<div class="form-row">
+						{% for type in types %}
+						<div class="form-group col-6">
+							<div id="visible" class="form-check">
+								<input class="form-check-input" type="checkbox" value="{{ type }}" name="type" checked>
+								<label class="form-check-label">{{ type }}</label>
+							</div>
+						</div>
+						{% endfor %}
+					</div>
+					{% endif %}
+					<p>Andere categorieën</p>
+					<div class="form-row">
+						{% for type in API_TYPES %}
+						{% set nltype = TYPES_DICT[type] %}
+						{% if nltype not in types %}
+						<div class="form-group">
+							<div id="visible" class="form-check">
+								<input class="form-check-input" type="checkbox" value="{{ nltype }}" name="type">
+								<label class="form-check-label">{{ nltype }}</label>
+							</div>
+						</div>
+						{% endif %}
+						{% endfor %}
+					</div>
 				</div>
 			</div>
 		</div>
 		<div id="visible" class="form-check">
 			<input class="form-check-input" type="checkbox" value="True" name="visible">
-			<label class="form-check-label">
-			Zichtbaar
-			</label>
+			<label class="form-check-label">Zichtbaar</label>
 		</div>
 		<input type="hidden" name="place_id" value="{{ place_id }}">
 		<input type="hidden" name="action" value="new">
