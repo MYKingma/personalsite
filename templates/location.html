@@ -74,9 +74,9 @@ Location page
 			{% for role in current_user.roles %}
 			{% if "Administrator" == role.name %}
 			{% if recommendation or visible == false %}
-			<a href="{{ url_for('changenew', place_id=location.place_id, name=location.name, types=location.types) }}"><button id="changelocation" class="btn btn-outline-secondary btn-block">Wijzig {{ location.name }}</button></a>
+			<a href="{{ url_for('changenew', place_id=location.place_id, name=location.name, types=location.types, opening=location.opening) }}"><button id="changelocation" class="btn btn-outline-secondary btn-block">Wijzig {{ location.name }}</button></a>
 			{% else %}
-			<a href="{{ url_for('createnew', place_id=location.place_id, name=location.name, types=location.types) }}"><button id="changelocation" class="btn btn-outline-secondary btn-block">Raad {{ location.name }} aan</button></a>
+			<a href="{{ url_for('createnew', place_id=location.place_id, name=location.name, types=location.types, opening=location.opening) }}"><button id="changelocation" class="btn btn-outline-secondary btn-block">Raad {{ location.name }} aan</button></a>
 			{% endif %}
 			{% endif %}
 			{% endfor %}
