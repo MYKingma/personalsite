@@ -59,6 +59,7 @@ class Recommendation(db.Model):
     __tablename__ = 'recommendations'
     id = db.Column(db.Integer(), primary_key=True)
     place_id = db.Column(db.String(128), nullable=False)
+    type = db.Column(db.String(128), nullable=False)
     date = db.Column(db.DateTime(), nullable=False)
     review = db.Column(db.Text())
     tip = db.Column(db.Text())

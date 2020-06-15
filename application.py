@@ -815,10 +815,11 @@ def changenew(place_id, name, types):
     typeslist = ast.literal_eval(types)
     return render_template("changenew.html", recommendation=recommendation, weektext=weektext, name=name, events=events, types=typeslist, API_TYPES=API_TYPES, TYPES_DICT=TYPES_DICT)
 
-@app.route('/stadsgids/dashboard/nieuw/opstellen/<name>/<place_id>')
+@app.route('/stadsgids/dashboard/nieuw/opstellen/<name>/<place_id>/<types>')
 @role_required('Administrator')
 def createnew(name, place_id):
-    return render_template("createnew.html", name=name, place_id=place_id)
+    typeslist = ast.literal_eval(types)
+    return render_template("createnew.html", name=name, place_id=place_id, types=typeslist, API_TYPES=API_TYPES, TYPES_DICT=TYPES_DICT)
 
 @app.route('/stadsgids/dashboard/nieuw/evenement/<name>/<place_id>', methods=["GET", "POST"])
 @role_required('Administrator')
