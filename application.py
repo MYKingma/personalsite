@@ -88,7 +88,7 @@ locale.setlocale(locale.LC_ALL, "nl_NL")
 # test code
 @app.route('/test')
 def test():
-    return redirect(url_for('guide'))
+    return render_template('confirmmail.html', firstname=firstname, email="mauricekingma@me.com", link=link)
 
 # handlers
 @app.route('/loguit')
@@ -224,8 +224,12 @@ def new_conformation():
 
     # send email for confirmation
     msg = Message("Bevestig je e-mailadres om je account te activeren", recipients=[email])
-    msg.body = "klik op de volgende link: http://127.0.0.1:5000/stadsgids/emailbevestigen/" + token
-    mail.send(msg)
+    link = request.url_root + "stadsgids/emailbevestigen/" + token
+    msg.html = render_template('confirmmail.html')
+    try:
+        mail.send(msg)
+    except:
+        flash(f"E-mail met een nieuwe bevestigingslink versturen mislukt, controleer het e-mailadres ({email}).", "warning")
     flash(f"E-mail verstuurd naar {email} met een nieuwe bevestigingslink", "success")
     return redirect(url_for('guide'))
 
@@ -262,7 +266,8 @@ def action_location():
             if place_id == req.place_id:
                 return jsonify({"success": False})
 
-        # send email for request
+        # send email for request /stadsgids/locatie/<name>/<place_id>
+        link = request.url_root + "stadsgids/locatie/" + name + "/" + place_id
         msg = Message(f"{user.firstname} vraagt zich af of {name} een leuke plek is om te bezoeken", recipients=["mauricekingma@me.com"])
         msg.html = render_template("recommendmail.html", name=user.firstname, email=user.email, location=name, website=website, place_id=place_id)
         mail.send(msg)
@@ -382,10 +387,11 @@ def register():
     serializer = URLSafeTimedSerializer(app.config['SECRET_KEY'])
     token = serializer.dumps(email, salt=app.config['SECURITY_PASSWORD_SALT'])
 
-    # send email for confirmation
-    msg = Message("Bevestig je e-mailadres om je account te activeren", recipients=[email])
-    msg.body = "klik op de volgende link: http://127.0.0.1:5000/stadsgids/emailbevestigen/" + token
+        # send email for confirmation
 
+    msg = Message("Bevestig je e-mailadres om je account te activeren", recipients=[email])
+    link = request.url_root + "stadsgids/emailbevestigen/" + token
+    msg.html = render_template('confirmmail.html', firstname=firstname, email=email, link=link)
     try:
         mail.send(msg)
     except:
@@ -451,7 +457,8 @@ def forgot():
 
     # send email for confirmation
     msg = Message("Reset je wachwoord", recipients=[email])
-    msg.body = "klik op de volgende link om je wachtwoord opnieuw in te stellen: http://127.0.0.1:5000/stadsgids/resetwachtwoord/" + token
+    link = request.url_root + "stadsgids/resetwachtwoord/" + token
+    msg.html = render_template('resetpassmail.html', firstname=user.firstname, link=link)
     try:
         mail.send(msg)
     except:
@@ -569,7 +576,6 @@ def location(place_id, name):
             else:
                 location["open"] = "Onbekend"
                 location["opening"] = False
-            print(location["opening"])
 
             # google photos api request for a maximum of 3 photos
             if "photos" in data["result"]:

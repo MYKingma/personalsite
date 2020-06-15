@@ -12,15 +12,16 @@ document.addEventListener('DOMContentLoaded', () => {
 		button.onclick = () => {
 			const place = button.dataset.location;
 			const action = button.dataset.button;
-			const locationname = button.dataset.locationname
-		
+			const locationname = button.dataset.locationname;
+			const website = button.dataset.website;
+
 			// create new http request
 			const request = new XMLHttpRequest();
 			request.open('POST', '/location/action');
-			request.onload = () => {						
+			request.onload = () => {
 				const data = JSON.parse(request.responseText);
-			
-				// show message if not available					
+
+				// show message if not available
 	            if (data.success && action == "favourite") {
 					if (document.querySelector('#heart').className == "fas fa-heart") {
 						document.querySelector('#heart').className = "far fa-heart";
@@ -58,13 +59,14 @@ document.addEventListener('DOMContentLoaded', () => {
 					window.scrollTo(0, 0)
 	            }
 			};
-		
+
 			// add username to request
 			const data = new FormData();
 			data.append('place_id', place);
 			data.append('button', action);
 			data.append('locationname', locationname);
-		
+			data.append('website', website)
+
 			// send request
 			request.send(data);
 		};
@@ -73,11 +75,11 @@ document.addEventListener('DOMContentLoaded', () => {
 		button.onclick = () => {
 			const action = "upvote";
 			const review = button.dataset.review_id;
-		
+
 			// create new http request
 			const request = new XMLHttpRequest();
 			request.open('POST', '/location/action');
-			
+
 			request.onload = () => {
 				const data = JSON.parse(request.responseText);
 				if (data.success) {
@@ -95,13 +97,13 @@ document.addEventListener('DOMContentLoaded', () => {
 			const data = new FormData();
 			data.append('review_id', review);
 			data.append('button', action);
-					
+
 			// send request
 			request.send(data);
-			
+
 		};
 	});
-	
+
 	document.querySelector('#review').onclick = () => {
 		radios = document.querySelectorAll('[data-input]');
 		for (i = 0; i < radios.length; i++) {

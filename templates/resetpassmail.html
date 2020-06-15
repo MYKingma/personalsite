@@ -42,13 +42,11 @@
 	<h1 class="title">Stadsgids<h1>
 </div>
 <div class="container">
-	<p>{{ name }} vraagt zich af of {{ location }} een leuke plek is om een keer te bezoeken. Hieronder de link naar de website van {{ location }} en het e-mailadres van {{ name }} om direct een antwoord te sturen.</p>
+	<p>Beste {{ firstname }},</p>
+	<p>Hieronder vind je de link om je wachtwoord opnieuw in te stellen. Heb je deze link niet zelf aangevraagd? Dan kun je deze email als niet verzonden beschouwen.</p>
+	<a href="{{ link }}">Klik hier om je wachtwoord opnieuw in te stellen</a>
+	<p>Als er nog vragen of problemen zijn kan je altijd antwoorden op deze e-mail.</p>
+	<p>Veel plezier met de gids en hartelijke groet,</p>
 	<br>
-	<p>Naam: {{ name }}</p>
-	<p>E-mail: {{ email }}</p>
-	<p>Locatie: {{ location }}</p>
-	<a href="{{ website }}">Website van {{ location }}</a>
-	<br>
-	<br>
-	<a href="{{ link }}">Klik hier om naar de Stadsgids-pagina te gaan voor {{ location }}</a>
+	<p>Maurice</p>
 </div>
