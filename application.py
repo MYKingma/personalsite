@@ -485,7 +485,6 @@ def location(place_id, name):
     # check if location is recommended and get recommendation info
     recommendation = Recommendation.query.filter_by(place_id=place_id).first()
     if recommendation:
-        print(recommendation.type)
         if not recommendation.visible:
             recommendation = None
             visible = False
@@ -557,6 +556,7 @@ def location(place_id, name):
                 location["phone"] = data["result"]["formatted_phone_number"]
             if "formatted_phone_number" in data["result"]:
                 location["phone"] = data["result"]["formatted_phone_number"]
+            location["opening"] = True
             if "opening_hours" in data["result"]:
                 if "weekday_text" in data["result"]["opening_hours"]:
                     for i in range(len(data["result"]["opening_hours"]["weekday_text"])):
@@ -568,9 +568,6 @@ def location(place_id, name):
                 location["open"] = "Permanent gesloten"
             else:
                 location["open"] = "Onbekend"
-            if "open" in location or "opening_hours" in location:
-                location["opening"] = True
-            else:
                 location["opening"] = False
             print(location["opening"])
 
@@ -594,6 +591,8 @@ def location(place_id, name):
             # set location varibles
             if "price_level" in data["result"]:
                  location["price_level"] = data["result"]["price_level"] * "€"
+            else:
+                location["price_level"] = False
             if "rating" in data["result"]:
                 location["rating"] = data["result"]["rating"]
             if "user_ratings_total" in data["result"]:
@@ -813,21 +812,21 @@ def controlnew():
         flash("Aanbeveling gewijzigd", 'success' )
     return render_template("controlnew.html")
 
-@app.route('/stadsgids/dashboard/nieuw/wijzigen/<name>/<place_id>/<types>/<opening>')
+@app.route('/stadsgids/dashboard/nieuw/wijzigen/<name>/<place_id>/<types>/<opening>/<price_level>')
 @role_required('Administrator')
-def changenew(place_id, name, types, opening):
+def changenew(place_id, name, types, opening, price_level):
     # get recommendation and set variable for existing weektext
     recommendation = Recommendation.query.filter_by(place_id=place_id).first()
     events = Event.query.filter_by(place_id=place_id).order_by(Event.date).all()
     weektext = type(recommendation.opening) == list
     typeslist = ast.literal_eval(types)
-    return render_template("changenew.html", recommendation=recommendation, weektext=weektext, name=name, events=events, types=typeslist, API_TYPES=API_TYPES, TYPES_DICT=TYPES_DICT, opening=opening)
+    return render_template("changenew.html", recommendation=recommendation, weektext=weektext, name=name, events=events, types=typeslist, API_TYPES=API_TYPES, TYPES_DICT=TYPES_DICT, opening=opening, price_level=price_level)
 
-@app.route('/stadsgids/dashboard/nieuw/opstellen/<name>/<place_id>/<types>/<opening>')
+@app.route('/stadsgids/dashboard/nieuw/opstellen/<name>/<place_id>/<types>/<opening>/<price_level>')
 @role_required('Administrator')
-def createnew(name, place_id, types, opening):
+def createnew(name, place_id, types, opening, price_level):
     typeslist = ast.literal_eval(types)
-    return render_template("createnew.html", name=name, place_id=place_id, types=typeslist, API_TYPES=API_TYPES, TYPES_DICT=TYPES_DICT, opening=opening)
+    return render_template("createnew.html", name=name, place_id=place_id, types=typeslist, API_TYPES=API_TYPES, TYPES_DICT=TYPES_DICT, opening=opening, price_level=price_level)
 
 @app.route('/stadsgids/dashboard/nieuw/evenement/<name>/<place_id>', methods=["GET", "POST"])
 @role_required('Administrator')

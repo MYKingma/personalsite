@@ -74,9 +74,9 @@ Location page
 			{% for role in current_user.roles %}
 			{% if "Administrator" == role.name %}
 			{% if recommendation or visible == false %}
-			<a href="{{ url_for('changenew', place_id=location.place_id, name=location.name, types=location.types, opening=location.opening) }}"><button id="changelocation" class="btn btn-outline-secondary btn-block">Wijzig {{ location.name }}</button></a>
+			<a href="{{ url_for('changenew', place_id=location.place_id, name=location.name, types=location.types, opening=location.opening, price_level=location.price_level) }}"><button id="changelocation" class="btn btn-outline-secondary btn-block">Wijzig {{ location.name }}</button></a>
 			{% else %}
-			<a href="{{ url_for('createnew', place_id=location.place_id, name=location.name, types=location.types, opening=location.opening) }}"><button id="changelocation" class="btn btn-outline-secondary btn-block">Raad {{ location.name }} aan</button></a>
+			<a href="{{ url_for('createnew', place_id=location.place_id, name=location.name, types=location.types, opening=location.opening, price_level=location.price_level) }}"><button id="changelocation" class="btn btn-outline-secondary btn-block">Raad {{ location.name }} aan</button></a>
 			{% endif %}
 			{% endif %}
 			{% endfor %}
@@ -202,12 +202,12 @@ Location page
 					{% endfor %}</span>
 				</p>
 				{% endif %}
-				{% if location.price_level %}
-				<p>Prijsklasse <span>{{ location.price_level }}</span></p>
-				{% elif recommendation.price_level %}
-				{% if not recommendation.price_level == 0 %}
-				{% set price = recommendation.price_level * "€" %}
+				{% if recommendation.price_level %}
+				{% if not recommendation.price_level|int == 0 %}
+				{% set price = recommendation.price_level|int * "€" %}
 				<p>Prijsklasse <span>{{ price }}</span></p>
+				{% elif location.price_level %}
+				<p>Prijsklasse <span>{{ location.price_level }}</span></p>
 				{% endif %}
 				{% else %}
 				<p>Prijsklasse <span>Onbekend</span></p>
