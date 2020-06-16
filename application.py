@@ -96,7 +96,7 @@ def test():
     link = request.url_root + "stadsgids/"
     msg.html = render_template('confirmmail.html', firstname="firstname", email="mauricekingma@me.com", link=link)
     from runworker import conn
-    queue = rq.Queue('stadsgids', connection=conn)
+    queue = rq.Queue('default', connection=conn)
 
     job = queue.enqueue('task.send_mail', msg)
     print(job.get_id())
