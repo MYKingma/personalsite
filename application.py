@@ -26,6 +26,7 @@ import locale
 import ast
 import rq
 from redis import Redis
+from runworker import conn
 
 from models import *
 
@@ -86,6 +87,9 @@ app.config['SECURITY_PASSWORD_SALT'] = os.getenv("SECURITY_PASSWORD_SALT")
 # set locale to dutch
 locale.setlocale(locale.LC_ALL, "nl_NL")
 
+# set worker Queue
+queue = rq.Queue('default', connection=conn)
+
 
 # test code
 @app.route('/test')
@@ -95,11 +99,10 @@ def test():
     msg = Message("Bevestig je e-mailadres om je account te activeren", recipients=[email])
     link = request.url_root + "stadsgids/"
     msg.html = render_template('confirmmail.html', firstname="firstname", email="mauricekingma@me.com", link=link)
-    from runworker import conn
-    queue = rq.Queue('default', connection=conn)
+
+
 
     job = queue.enqueue('task.send_mail', msg)
-    print(job.get_id())
 
     return render_template('confirmmail.html', firstname="firstname", email="mauricekingma@me.com", link=link)
 
@@ -314,8 +317,23 @@ def index():
 def about():
     return render_template("about.html")
 
-@app.route('/contact')
+@app.route('/contact', methods=["GET", "POST"])
 def contact():
+    if request.method == "GET":
+        return render_template("contact.html")
+
+    # get form information
+    name = request.form.get("name")
+    email = request.form.get("email")
+    message = request.form.get("message")
+
+    # send email to author
+    msg = Message(f"{name} heeft je een bericht gestuurd via mauricekingma.nl", recipients=["mauricekingma@me.com"])
+    link = request.url_root + "stadsgids/emailbevestigen/" + token
+    msg.html = render_template('contactmail.html', name=name, email=email, message=message)
+    job = queue.enqueue('task.send_mail', msg)
+    flash("E-mail verstuurd", 'success')
+
     return render_template("contact.html")
 
 @app.route('/stadsgids', methods=["GET", "POST"])
