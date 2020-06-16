@@ -1,0 +1,14 @@
+Flask
+Flask-Session
+psycopg2-binary
+SQLAlchemy
+requests
+flask-sqlalchemy
+flask-migrate
+flask-admin
+flask-login
+flask-socketio
+gunicorn
+gevent
+eventlet
+werkzeug==0.16.0

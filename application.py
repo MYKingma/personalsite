@@ -24,6 +24,8 @@ import datetime
 import requests
 import locale
 import ast
+import rq
+from redis import Redis
 
 from models import *
 
@@ -88,7 +90,18 @@ locale.setlocale(locale.LC_ALL, "nl_NL")
 # test code
 @app.route('/test')
 def test():
-    return render_template('confirmmail.html', firstname=firstname, email="mauricekingma@me.com", link=link)
+    # send email for confirmation
+    email = "mauricekingma@me.com"
+    msg = Message("Bevestig je e-mailadres om je account te activeren", recipients=[email])
+    link = request.url_root + "stadsgids/"
+    msg.html = render_template('confirmmail.html', firstname="firstname", email="mauricekingma@me.com", link=link)
+
+    queue = rq.Queue('stadsgids', connection=Redis.from_url('redis://'))
+
+    job = queue.enqueue('task.send_mail', msg)
+    print(job.get_id())
+
+    return render_template('confirmmail.html', firstname="firstname", email="mauricekingma@me.com", link=link)
 
 # handlers
 @app.route('/loguit')
