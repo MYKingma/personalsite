@@ -7,7 +7,7 @@ Contact page layout
 -->
 <!DOCTYPE html>
 <html lang="nl">
-	
+
 	<!-- page head properties -->
 	<head>
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -15,14 +15,29 @@ Contact page layout
 		<link href="{{ url_for('static', filename='styles/stylesindex.css') }}" rel="stylesheet">
 		<link href="https://fonts.googleapis.com/css2?family=Oswald&display=swap" rel="stylesheet">
 		<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap" rel="stylesheet">
+		<link rel="apple-touch-icon" sizes="57x57" href="/static/favicon/personal/apple-icon-57x57.png">
+		<link rel="apple-touch-icon" sizes="60x60" href="/static/favicon/personal/apple-icon-60x60.png">
+		<link rel="apple-touch-icon" sizes="72x72" href="/static/favicon/personal/apple-icon-72x72.png">
+		<link rel="apple-touch-icon" sizes="76x76" href="/static/favicon/personal/apple-icon-76x76.png">
+		<link rel="apple-touch-icon" sizes="114x114" href="/static/favicon/personal/apple-icon-114x114.png">
+		<link rel="apple-touch-icon" sizes="120x120" href="/static/favicon/personal/apple-icon-120x120.png">
+		<link rel="apple-touch-icon" sizes="144x144" href="/static/favicon/personal/apple-icon-144x144.png">
+		<link rel="apple-touch-icon" sizes="152x152" href="/static/favicon/personal/apple-icon-152x152.png">
+		<link rel="apple-touch-icon" sizes="180x180" href="/static/favicon/personal/apple-icon-180x180.png">
+		<link rel="icon" type="image/png" sizes="192x192"  href="/static/favicon/personal/android-icon-192x192.png">
+		<link rel="icon" type="image/png" sizes="32x32" href="/static/favicon/personal/favicon-32x32.png">
+		<link rel="icon" type="image/png" sizes="96x96" href="/static/favicon/personal/favicon-96x96.png">
+		<link rel="icon" type="image/png" sizes="16x16" href="/static/favicon/personal/favicon-16x16.png">
+		<link rel="manifest" href="/static/favicon/personal/manifest.json">
+		<meta name="msapplication-TileColor" content="#ffffff">
+		<meta name="msapplication-TileImage" content="/static/favicon/guide/ms-icon-144x144.png">
+		<meta name="theme-color" content="#ffffff">
 	</head>
-	
+
 	<!-- page body -->
 	<body>
-		<div class="conatiner" id="knock">
-			<p id="title">MAURICE</p>
-		</div>
-		<div class="page">
+		<div class="container" id="knock">
+			<p id="title">MK</p>
 			<nav class="menu">
 				<ul class="menu__list">
 					<li class="menu__group"><a href="{{ url_for('index')}}" class="menu__link">About me</a></li>
@@ -31,11 +46,12 @@ Contact page layout
 				</ul>
 			</nav>
 		</div>
+		<br>
 		<p>Use this form and I will be in touch</p>
 		<div class="form">
 			<form action="{{ url_for('contact') }}" method="post">
 				<label for="name">Name</label>
-				<input id="name" type="text" name="name">			
+				<input id="name" type="text" name="name">
 				<div class="invalidname"></div>
 				<label for="email">Email</label>
 				<input id="email" type="email" name="email">
@@ -46,13 +62,13 @@ Contact page layout
 				<input class="button" type="submit">
 			</form>
 		</div>
-		
+
 		<script>
 			var path = "url('/static/img/"
 		    imgs = ['index1.jpeg','index2.jpeg'],
 		    i = Math.floor(Math.random()*imgs.length);
 			document.getElementById("knock").style.backgroundImage = path + imgs[i] + "')";
-			
+
 			// bootstrap validation javascript
 			document.addEventListener('DOMContentLoaded', () => {
 				var forms = document.getElementsByClassName('needs-validation');
@@ -65,7 +81,7 @@ Contact page layout
 						form.classList.add('was-validated');
 					}, false);
 			    });
-			}, false);	
+			}, false);
 		</script>
 	</body>
 </html>
