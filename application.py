@@ -95,8 +95,8 @@ def test():
     msg = Message("Bevestig je e-mailadres om je account te activeren", recipients=[email])
     link = request.url_root + "stadsgids/"
     msg.html = render_template('confirmmail.html', firstname="firstname", email="mauricekingma@me.com", link=link)
-
-    queue = rq.Queue('stadsgids', connection=Redis.from_url('redis://'))
+    connection = Redis()
+    queue = rq.Queue('stadsgids', connection=connection)
 
     job = queue.enqueue('task.send_mail', msg)
     print(job.get_id())
