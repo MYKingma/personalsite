@@ -329,7 +329,6 @@ def contact():
 
     # send email to author
     msg = Message(f"{name} heeft je een bericht gestuurd via mauricekingma.nl", recipients=["mauricekingma@me.com"])
-    link = request.url_root + "stadsgids/emailbevestigen/" + token
     msg.html = render_template('contactmail.html', name=name, email=email, message=message)
     job = queue.enqueue('task.send_mail', msg)
     flash("E-mail verstuurd", 'success')
