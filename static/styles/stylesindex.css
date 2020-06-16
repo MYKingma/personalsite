@@ -37,6 +37,11 @@
     font-size: 25px;
   }
 }
+@media (max-width: 600px) {
+  #knock {
+    margin-top: 20vw;
+  }
+}
 @media (max-width: 400px) {
   .menu__link {
     font-size: 10px;
@@ -213,6 +218,10 @@ March 5, 2018
 .menu__link:hover::after {
   width: 100%;
   transition-duration: 0.2s;
+}
+
+.homelink {
+  text-decoration: none;
 }
 
 /*# sourceMappingURL=stylesindex.css.map */

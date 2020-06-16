@@ -1,9 +1,9 @@
-<!-- contact.html for implementing a city guide webapp
+<!-- index.html for implementing a city guide webapp
 
 Maurice Kingma
 Minor Programmeren - Web App Studio
 
-Contact page layout
+Index layout
 -->
 <!DOCTYPE html>
 <html lang="nl">
@@ -11,7 +11,7 @@ Contact page layout
 	<!-- page head properties -->
 	<head>
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
-		<title>Contact met Maurice</title>
+		<title>Maurice</title>
 		<link href="{{ url_for('static', filename='styles/stylesindex.css') }}" rel="stylesheet">
 		<link href="https://fonts.googleapis.com/css2?family=Oswald&display=swap" rel="stylesheet">
 		<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap" rel="stylesheet">
@@ -36,7 +36,7 @@ Contact page layout
 
 	<!-- page body -->
 	<body>
-		<a href="{{ url_for('index')}}" class="homelink">
+        <a href="{{ url_for('index')}}" class="homelink">
 			<div class="container" id="knock">
 				<p id="title">MK</p>
 				<nav class="menu">
@@ -48,42 +48,25 @@ Contact page layout
 				</nav>
 			</div>
 		</a>
-		<br>
-		<p>Use this form and I will be in touch</p>
-		<div class="form">
-			<form action="{{ url_for('contact') }}" method="post">
-				<label for="name">Name</label>
-				<input id="name" type="text" name="name">
-				<div class="invalidname"></div>
-				<label for="email">Email</label>
-				<input id="email" type="email" name="email">
-				<div class="invalidemail"></div>
-				<label for="message">Message</label>
-				<textarea id="message" type="text" name="message"></textarea>
-				<div class="invalidmessage"></div>
-				<input class="button" type="submit">
-			</form>
-		</div>
+        <br>
+		<p style="margin-top: 15px;">Student based in Amsterdam with intrests in healthcare, hospitality and programming</p>
+		<h1>Vrije Universiteit</h1>
+		<p>Bachelor Medical Natural Sciences</p>
+		<p>Minor Health Care Management</p>
+		<h1>Universiteit van Amsterdam</h1>
+		<p>Minor Programming</p>
+		<h1>Languages</h1>
+		<p>C, Python, HTML, CSS, Javascript</p>
+		<a href="https://github.com/MYKingma"><img src="{{ url_for('static', filename='picto/GitHub.png') }}" alt="GitHub logo" style="width: 15vw; margin-top: 30px;"></a>
+
+
+
 
 		<script>
 			var path = "url('/static/img/"
 		    imgs = ['index1.jpeg','index2.jpeg'],
 		    i = Math.floor(Math.random()*imgs.length);
 			document.getElementById("knock").style.backgroundImage = path + imgs[i] + "')";
-
-			// bootstrap validation javascript
-			document.addEventListener('DOMContentLoaded', () => {
-				var forms = document.getElementsByClassName('needs-validation');
-				var validation = Array.prototype.filter.call(forms, function(form) {
-					form.addEventListener('submit', function(event) {
-						if (form.checkValidity() === false) {
-							event.preventDefault();
-							event.stopPropagation();
-						};
-						form.classList.add('was-validated');
-					}, false);
-			    });
-			}, false);
 		</script>
 	</body>
 </html>

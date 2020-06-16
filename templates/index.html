@@ -36,33 +36,18 @@ Index layout
 
 	<!-- page body -->
 	<body>
-		<div class="container" id="knock">
-			<p id="title">MK</p>
-			<nav class="menu">
-				<ul class="menu__list">
-					<li class="menu__group"><a href="{{ url_for('index')}}" class="menu__link">About me</a></li>
-					<li class="menu__group"><a href="{{ url_for('guide')}}" class="menu__link">Stadsgids</a></li>
-					<li class="menu__group"><a href="{{ url_for('contact')}}" class="menu__link">Contact</a></li>
-				</ul>
-			</nav>
-		</div>
-
-
-
-
-		<p style="margin-top: 15px;">Student based in Amsterdam with intrests in healthcare, hospitality and programming</p>
-		<h1>Vrije Universiteit</h1>
-		<p>Bachelor Medical Natural Sciences</p>
-		<p>Minor Health Care Management</p>
-		<h1>Universiteit van Amsterdam</h1>
-		<p>Minor Programming</p>
-		<h1>Languages</h1>
-		<p>C, Python, HTML, CSS, Javascript</p>
-		<a href="https://github.com/MYKingma"><img src="{{ url_for('static', filename='picto/GitHub.png') }}" alt="GitHub logo" style="width: 15vw; margin-top: 30px;"></a>
-
-
-
-
+		<a href="{{ url_for('index')}}" class="homelink">
+			<div class="container" id="knock">
+				<p id="title">MK</p>
+				<nav class="menu">
+					<ul class="menu__list">
+						<li class="menu__group"><a href="{{ url_for('about')}}" class="menu__link">About me</a></li>
+						<li class="menu__group"><a href="{{ url_for('guide')}}" class="menu__link">Stadsgids</a></li>
+						<li class="menu__group"><a href="{{ url_for('contact')}}" class="menu__link">Contact</a></li>
+					</ul>
+				</nav>
+			</div>
+		</a>
 		<script>
 			var path = "url('/static/img/"
 		    imgs = ['index1.jpeg','index2.jpeg'],
