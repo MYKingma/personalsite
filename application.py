@@ -95,7 +95,7 @@ def test():
     msg = Message("Bevestig je e-mailadres om je account te activeren", recipients=[email])
     link = request.url_root + "stadsgids/"
     msg.html = render_template('confirmmail.html', firstname="firstname", email="mauricekingma@me.com", link=link)
-    from run-worker import conn
+    from runworker import conn
     queue = rq.Queue('stadsgids', connection=conn)
 
     job = queue.enqueue('task.send_mail', msg)
