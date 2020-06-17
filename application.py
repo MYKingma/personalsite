@@ -802,6 +802,7 @@ def search():
 
             result["icon"] = data["result"]["icon"]
             result["rating"] = data["result"]["rating"]
+            result["place_id"] = data["result"]["place_id"]
 
             result["formatted_address"] = data["result"]["formatted_address"].split(",")
 
