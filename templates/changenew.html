@@ -31,7 +31,7 @@ Layout page for changing locations
 			{% if not price_level %}
 			<label for="price_level">Prijsklasse (Stadsgids: {{ recommendation.price_level|int * "€" }})</label>
 			{% else %}
-			<label for="price_level">Prijsklasse (Stadsgids: {{ recommendation.price_level|int * "€" }}, Google: {{ price_level }})</label>
+			<label for="price_level">Prijsklasse (Stadsgids: {{ recommendation.price_level|int * "€" if recommendation.price_level|int > 0 else "Onbekend" }}, Google: {{ price_level if not price_level == "False" else "Onbekend" }})</label>
 			{% endif %}
 			<select id="price_level" name="price_level" class="custom-select">
 				<option value="0" selected>Onbekend</option>
@@ -53,7 +53,7 @@ Layout page for changing locations
 			</li>
 		</ul>
 		<div class="tab-content" id="myTabContent">
-			{% if not opening %}
+			{% if opening %}
 			<div class="tab-pane fade show active" id="opening" role="tabpanel" aria-labelledby="opening-tab">
 				<p>Openingstijden al gespecificeerd door Google API</p>
 			</div>
@@ -168,6 +168,7 @@ Layout page for changing locations
 			<label class="form-check-label">Zichtbaar</label>
 		</div>
 		<input type="hidden" name="place_id" value="{{ recommendation.place_id }}">
+		<input type="hidden" name="name" value="{{ recommendation.name }}">
 		<input type="hidden" name="action" value="change">
 		<input id="visible" type="submit" class="btn btn-outline-secondary">
 	</form>

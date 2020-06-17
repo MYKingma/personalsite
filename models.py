@@ -58,22 +58,24 @@ class UserRoles(db.Model):
 class Recommendation(db.Model):
     __tablename__ = 'recommendations'
     id = db.Column(db.Integer(), primary_key=True)
+    name = db.Column(db.String(128), nullable=False)
     place_id = db.Column(db.String(128), nullable=False)
     type = db.Column(db.String(128), nullable=False)
     date = db.Column(db.DateTime(), nullable=False)
     review = db.Column(db.Text())
     tip = db.Column(db.Text())
     opening = db.Column(db.String())
-    price_level = db.Column(db.String(128))
+    price_level = db.Column(db.Integer())
     visible = db.Column(db.Boolean(), nullable=False)
 
-    def __init__(self, place_id, review, tip, opening, price_level, visible, type):
+    def __init__(self, place_id, name, review, tip, opening, price_level, visible, type):
         self.place_id = place_id
+        self.name = name.lower()
         self.date = datetime.datetime.now()
         self.review = review
         self.tip = tip
         self.opening = opening
-        self.price_level = price_level
+        self.price_level = int(price_level)
         self.visible = visible
         self.type = type
 

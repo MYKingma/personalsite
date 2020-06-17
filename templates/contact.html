@@ -51,7 +51,7 @@ Contact page layout
 		<br>
 		<p>Use this form and I will be in touch</p>
 		<div class="form">
-			<form action="{{ url_for('contact') }}" method="post">
+			<form action="{{ url_for('contact') }}" class="needs-validation" method="post" novalidate>
 				<label for="name">Name</label>
 				<input id="name" type="text" name="name">
 				<div class="invalidname"></div>
@@ -61,29 +61,44 @@ Contact page layout
 				<label for="message">Message</label>
 				<textarea id="message" type="text" name="message"></textarea>
 				<div class="invalidmessage"></div>
-				<input class="button" type="submit">
+				<input id="submit" class="button" type="submit">
 			</form>
 		</div>
-
 		<script>
 			var path = "url('/static/img/"
 		    imgs = ['index1.jpeg','index2.jpeg'],
 		    i = Math.floor(Math.random()*imgs.length);
 			document.getElementById("knock").style.backgroundImage = path + imgs[i] + "')";
 
-			// bootstrap validation javascript
 			document.addEventListener('DOMContentLoaded', () => {
-				var forms = document.getElementsByClassName('needs-validation');
-				var validation = Array.prototype.filter.call(forms, function(form) {
-					form.addEventListener('submit', function(event) {
-						if (form.checkValidity() === false) {
-							event.preventDefault();
-							event.stopPropagation();
+				document.getElementById("submit").onclick = () => {
+					var name = document.getElementById("name").value;
+					var email = document.getElementById("email").value;
+					var message = document.getElementById("message").value;
+					if (name.length === 0) {
+						var valid = false;
+					} else if (email.length === 0) {
+						valid = false;
+					} else if (message.length === 0) {
+						valid = false;
+					} else {
+						valid = true;
+					};
+					if (valid == false) {
+						event.preventDefault();
+						event.stopPropagation();
+						if (name.length === 0) {
+							document.querySelector(".invalidname").innerHTML = "Please provide a name"
 						};
-						form.classList.add('was-validated');
-					}, false);
-			    });
-			}, false);
+						if (email.length === 0) {
+							document.querySelector(".invalidemail").innerHTML = "Please provide a email address"
+						};
+						if (message.length === 0) {
+							document.querySelector(".invalidmessage").innerHTML = "Please provide a message"
+						};
+					};
+				};
+			});
 		</script>
 	</body>
 </html>

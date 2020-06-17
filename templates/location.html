@@ -81,7 +81,7 @@ Location page
 			{% endif %}
 			{% endfor %}
 			{% if recommendation %}
-			<p>{{ recommendation.review }}</p>
+			<p style="white-space: pre-line">{{ recommendation.review }}</p>
 			{% endif %}
 			{% for role in current_user.roles %}
 			{% if "Administrator" == role.name %}
@@ -206,9 +206,11 @@ Location page
 				{% if not recommendation.price_level|int == 0 %}
 				{% set price = recommendation.price_level|int * "€" %}
 				<p>Prijsklasse <span>{{ price }}</span></p>
+				{% else %}
+				<p>Prijsklasse <span>Onbekend</span></p>
+				{% endif %}
 				{% elif location.price_level %}
 				<p>Prijsklasse <span>{{ location.price_level }}</span></p>
-				{% endif %}
 				{% else %}
 				<p>Prijsklasse <span>Onbekend</span></p>
 				{% endif %}

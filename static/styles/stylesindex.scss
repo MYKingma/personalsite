@@ -29,7 +29,10 @@
     text-transform: uppercase;
     font-size: 2.8vw;
     mix-blend-mode: screen;
-    background-color: white;
+    background-color: #ffffff;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100%25' height='100%25' viewBox='0 0 1600 800'%3E%3Cg fill-opacity='0.39'%3E%3Cpolygon fill='%23e6eeea' points='1600 160 0 460 0 350 1600 50'/%3E%3Cpolygon fill='%23cdddd4' points='1600 260 0 560 0 450 1600 150'/%3E%3Cpolygon fill='%23b5ccbf' points='1600 360 0 660 0 550 1600 250'/%3E%3Cpolygon fill='%239cbba9' points='1600 460 0 760 0 650 1600 350'/%3E%3Cpolygon fill='%2383aa94' points='1600 800 0 800 0 750 1600 450'/%3E%3C/g%3E%3C/svg%3E");
+    background-attachment: fixed;
+    background-size: cover;
 }
 @media (min-width: 900px){
     .menu__link {
@@ -62,14 +65,17 @@
                  -2px -2px 4px rgba(100, 100, 100, .7);
   }
   50% {
-    text-shadow: 320px 320px 450px rgba(400, 400, 400, 1),
-                 -220px -220px 350px rgba(400, 400, 400, 1);
+    text-shadow: 120px 120px 150px rgba(400, 400, 400, 1),
+                 -60px -60px 150px rgba(400, 400, 400, 1);
   }
 }
 
 
 body {
-	background: white;
+    background-color: #ffffff;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100%25' height='100%25' viewBox='0 0 1600 800'%3E%3Cg fill-opacity='0.39'%3E%3Cpolygon fill='%23e6eeea' points='1600 160 0 460 0 350 1600 50'/%3E%3Cpolygon fill='%23cdddd4' points='1600 260 0 560 0 450 1600 150'/%3E%3Cpolygon fill='%23b5ccbf' points='1600 360 0 660 0 550 1600 250'/%3E%3Cpolygon fill='%239cbba9' points='1600 460 0 760 0 650 1600 350'/%3E%3Cpolygon fill='%2383aa94' points='1600 800 0 800 0 750 1600 450'/%3E%3C/g%3E%3C/svg%3E");
+    background-attachment: fixed;
+    background-size: cover;
 	font-family: 'Oswald', sans-serif;
 	text-align: center;
 }
@@ -84,7 +90,7 @@ h1 {
 	color: grey;
 	margin: 0px;
 	margin-top: 30px;
-	font-size: 18pt;
+	font-size: 14pt;
 }
 
 label {
@@ -101,25 +107,6 @@ input {
 	box-sizing: border-box;
 	font-family: 'Oswald', sans-serif;
 	font-size: 13pt;
-}
-
-input[type=submit] {
-	width: 100%;
-	background-color: black;
-	color: white;
-	padding: 14px 20px;
-	margin: 8px 0;
-	border: 2px solid white;
-	border-radius: 4px;
-	font-family: 'Bebas Neue', cursive;
-	font-size: 17pt;
-}
-
-input[type=submit]:hover {
-  background-color: white;
-  color: black;
-  border-radius: 4px;
-  border: 2px solid black;
 }
 
 textarea {

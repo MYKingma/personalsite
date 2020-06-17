@@ -26,14 +26,14 @@ import locale
 import ast
 import rq
 from redis import Redis
-from runworker import conn
+#from runworker import conn
 
 from models import *
 
 # define constants
 GOOGLE_API_KEY = "AIzaSyCph_mUz9AYLa0VlsSjsg98b92GRz6HedM"
-API_TYPES = ["art_gallery", "bakery", "bar", "bicycle_store", "book_store", "bowling_alley", "cafe", "casino", "florist", "library", "liquor_store", "meal_delivery", "meal_takeaway", "movie_rental", "movie_theater", "museum", "night_club", "park", "restaurant", "spa", "stadium", "store", "tourist_attraction", "zoo"]
-TYPES_DICT = {"": "Geen voorkeur", "art_gallery": "Kunstgallerij", "bakery": "Bakkerij", "bar": "Bar", "bicycle_store": "Fietsenwinkel", "book_store": "Boekenwinkel", "bowling_alley": "Bowlingbaan", "cafe": "Cafe", "casino": "Casino", "florist": "Bloemenwinkel", "library": "Bibliotheek", "liquor_store": "Slijterij", "meal_delivery": "Bezorgrestaurant", "meal_takeaway": "Afhaalrestaurant", "movie_rental": "Videotheek", "movie_theater": "Bioscoop", "museum": "Museum", "night_club": "Nachtclub", "park": "Park", "restaurant": "Restaurant", "spa": "Spa", "stadium": "Stadion", "store": "Winkel", "tourist_attraction": "Toeristenattractie", "zoo": "Dierentuin"}
+API_TYPES = ["art_gallery", "bakery", "bar", "bicycle_store", "book_store", "bowling_alley", "cafe", "casino", "florist", "library", "liquor_store", "meal_delivery", "meal_takeaway", "movie_rental", "movie_theater", "museum", "night_club", "park", "restaurant", "spa", "stadium", "store", "tourist_attraction", "zoo", "brewery", "distillery", "wineshop", "coffeeroasters", "beerbar"]
+TYPES_DICT = {"": "Geen voorkeur", "art_gallery": "Kunstgallerij", "bakery": "Bakkerij", "bar": "Bar", "bicycle_store": "Fietsenwinkel", "book_store": "Boekenwinkel", "bowling_alley": "Bowlingbaan", "cafe": "Cafe", "casino": "Casino", "florist": "Bloemenwinkel", "library": "Bibliotheek", "liquor_store": "Slijterij", "meal_delivery": "Bezorgrestaurant", "meal_takeaway": "Afhaalrestaurant", "movie_rental": "Videotheek", "movie_theater": "Bioscoop", "museum": "Museum", "night_club": "Nachtclub", "park": "Park", "restaurant": "Restaurant", "spa": "Spa", "stadium": "Stadion", "store": "Winkel", "tourist_attraction": "Toeristenattractie", "zoo": "Dierentuin", "brewery": "Brouwerij", "distillery": "Destileerderij", "wineshop": "Wijnwinkel", "coffeeroasters": "Koffiebranders", "beerbar": "Biercafé"}
 RESULT_FILTER = ["sexshop", "sex", "gay", "2020", "kamerverhuur", "fetish", "erotic", "xxx", "lust"]
 # configure Flask app
 app = Flask(__name__)
@@ -97,12 +97,11 @@ def test():
     # send email for confirmation
     email = "mauricekingma@me.com"
     msg = Message("Bevestig je e-mailadres om je account te activeren", recipients=[email])
-    link = request.url_root + "stadsgids/"
+    link = request.url_root + "stadsgids"
     msg.html = render_template('confirmmail.html', firstname="firstname", email="mauricekingma@me.com", link=link)
 
 
 
-    job = queue.enqueue('task.send_mail', msg)
 
     return render_template('confirmmail.html', firstname="firstname", email="mauricekingma@me.com", link=link)
 
@@ -242,10 +241,7 @@ def new_conformation():
     msg = Message("Bevestig je e-mailadres om je account te activeren", recipients=[email])
     link = request.url_root + "stadsgids/emailbevestigen/" + token
     msg.html = render_template('confirmmail.html')
-    try:
-        mail.send(msg)
-    except:
-        flash(f"E-mail met een nieuwe bevestigingslink versturen mislukt, controleer het e-mailadres ({email}).", "warning")
+    job = queue.enqueue('task.send_mail', msg)
     flash(f"E-mail verstuurd naar {email} met een nieuwe bevestigingslink", "success")
     return redirect(url_for('guide'))
 
@@ -286,7 +282,7 @@ def action_location():
         link = request.url_root + "stadsgids/locatie/" + name + "/" + place_id
         msg = Message(f"{user.firstname} vraagt zich af of {name} een leuke plek is om te bezoeken", recipients=["mauricekingma@me.com"])
         msg.html = render_template("recommendmail.html", name=user.firstname, email=user.email, location=name, website=website, place_id=place_id)
-        mail.send(msg)
+        job = queue.enqueue('task.send_mail', msg)
         newreq = Request(place_id=place_id)
         db.session.add(newreq)
         db.session.commit()
@@ -327,13 +323,16 @@ def contact():
     email = request.form.get("email")
     message = request.form.get("message")
 
+
+
+
     # send email to author
     msg = Message(f"{name} heeft je een bericht gestuurd via mauricekingma.nl", recipients=["mauricekingma@me.com"])
     msg.html = render_template('contactmail.html', name=name, email=email, message=message)
     job = queue.enqueue('task.send_mail', msg)
     flash("E-mail verstuurd", 'success')
 
-    return render_template("contact.html")
+    return render_template('contact.html')
 
 @app.route('/stadsgids', methods=["GET", "POST"])
 def guide():
@@ -426,12 +425,7 @@ def register():
     msg = Message("Bevestig je e-mailadres om je account te activeren", recipients=[email])
     link = request.url_root + "stadsgids/emailbevestigen/" + token
     msg.html = render_template('confirmmail.html', firstname=firstname, email=email, link=link)
-    try:
-        mail.send(msg)
-    except:
-        flash("Registratie mislukt, controleer of je een geldig e-mailadres hebt ingevoerd", "warning")
-        return redirect(url_for('register'), "303")
-
+    job = queue.enqueue('task.send_mail', msg)
 
     # show succes message
     flash("Registratie geslaagd, check je inbox om je account te activeren", 'success')
@@ -493,11 +487,7 @@ def forgot():
     msg = Message("Reset je wachwoord", recipients=[email])
     link = request.url_root + "stadsgids/resetwachtwoord/" + token
     msg.html = render_template('resetpassmail.html', firstname=user.firstname, link=link)
-    try:
-        mail.send(msg)
-    except:
-        flash("Sturen wachtwoord mislukt, problemen met e-mail server", "warning")
-        return redirect(url_for('guide'), "303")
+    job = queue.enqueue('task.send_mail', msg)
 
     flash(f"E-mail met wachtwoordreset link verstuurd naar {email}", 'success')
     return redirect(url_for('forgot'), "303")
@@ -635,7 +625,7 @@ def location(place_id, name):
                 location["price_level"] = False
             if "rating" in data["result"]:
                 location["rating"] = data["result"]["rating"]
-            if "user_ratings_total" in data["result"]:
+            if "§" in data["result"]:
                 location["totalrate"] = data["result"]["user_ratings_total"]
             if "website" in data["result"]:
                 location["website"] = data["result"]["website"]
@@ -784,6 +774,55 @@ def search():
                     result["recommended"] = True
         return render_template("search.html", search=True, results=results, types=TYPES_DICT)
 
+    if type:
+        type = TYPES_DICT[type]
+
+    locations = Recommendation.query.filter(Recommendation.name.like(f"%{keyword}%"),Recommendation.type.like(f"%{type}%"),Recommendation.price_level > minprice,Recommendation.price_level <= maxprice).all()
+
+    for location in locations:
+        result = {}
+        result["price_level"] = location.price_level * "€"
+        result["recommended"] = True
+
+        # google places api request for location
+        res = requests.get("https://maps.googleapis.com/maps/api/place/details/json", params={"key": GOOGLE_API_KEY, "place_id": location.place_id, "fields": "name,icon,formatted_address,photo,opening_hours,price_level,rating,place_id", "locationbias": "circle:10000@52.348460,4.885954", "language": "nl"})
+        if res.status_code == 200:
+            data = res.json()
+            result["name"] = data["result"]["name"]
+            if "open_now" in data["result"]["opening_hours"]:
+                if data["result"]["opening_hours"]["open_now"]:
+                    result["opening_hours"] = "Nu open"
+                else:
+                    result["opening_hours"] = "Gesloten"
+            else:
+                result["opening_hours"] = ""
+
+            result["icon"] = data["result"]["icon"]
+            result["rating"] = data["result"]["rating"]
+
+            result["formatted_address"] = data["result"]["formatted_address"].split(",")
+
+            if "photos" in data["result"]:
+
+                # google places photo api request for thumbnail
+                photo = requests.get("https://maps.googleapis.com/maps/api/place/photo", params={"key": GOOGLE_API_KEY, "maxwidth": "250", "photoreference": data["result"]["photos"][0]["photo_reference"]})
+                if photo.status_code == 200:
+                    result["photos"] = photo.url
+                else:
+                    result["photos"] = None
+        results.append(result)
+        if opennow:
+            for result in results:
+                if not result["opening_hours"] == "Nu open":
+                    results.remove(result)
+
+
+
+
+    return render_template("search.html", search=True, results=results, types=TYPES_DICT)
+
+
+
 @app.route('/stadsgids/weekend')
 @login_required
 def weekend():
@@ -807,6 +846,7 @@ def controlnew():
 
     # get recommendation info
     action = request.form.get('action')
+    name = request.form.get('name')
     place_id = request.form.get('place_id')
     review = request.form.get('review')
     tip = request.form.get('tip')
@@ -836,7 +876,7 @@ def controlnew():
 
     # check if new recommendation or change existing
     if action == "new":
-        newrecommendation = Recommendation(place_id=place_id, review=review, tip=tip, visible=visible, price_level=price_level, opening=opening, type=types)
+        newrecommendation = Recommendation(place_id=place_id, review=review, tip=tip, visible=visible, price_level=price_level, opening=opening, type=types, name=name)
         db.session.add(newrecommendation)
         db.session.commit()
         flash("Aanbeveling toegevoegd", 'success' )
