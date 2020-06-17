@@ -82,7 +82,10 @@ app.config['MAIL_DEFAULT_SENDER'] = "mauricekingma@me.com"
 mail = Mail(app)
 
 # set password for timestamp-emailtoken
-app.config['SECURITY_PASSWORD_SALT'] = os.getenv("SECURITY_PASSWORD_SALT")
+if not os.getenv("SECURITY_PASSWORD_SALT"):
+    raise RuntimeError("SECURITY_PASSWORD_SALT is not set")
+else:
+    "SECURITY_PASSWORD_SALT" = os.getenv("SECURITY_PASSWORD_SALT")
 
 # set locale to dutch
 locale.setlocale(locale.LC_ALL, "nl_NL")
@@ -418,7 +421,7 @@ def register():
 
     # generate token confirmation email
     serializer = URLSafeTimedSerializer(app.config['SECRET_KEY'])
-    token = serializer.dumps(email, salt=app.config['SECURITY_PASSWORD_SALT'])
+    token = serializer.dumps(email, salt='SECURITY_PASSWORD_SALT')
 
         # send email for confirmation
 
