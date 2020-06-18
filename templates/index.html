@@ -39,15 +39,16 @@ Index layout
 		<a href="{{ url_for('index')}}" class="homelink">
 			<div class="container" id="knock">
 				<p id="title">MK</p>
-				<nav class="menu">
-					<ul class="menu__list">
-						<li class="menu__group"><a href="{{ url_for('about')}}" class="menu__link">About me</a></li>
-						<li class="menu__group"><a href="{{ url_for('guide')}}" class="menu__link">Stadsgids</a></li>
-						<li class="menu__group"><a href="{{ url_for('contact')}}" class="menu__link">Contact</a></li>
-					</ul>
-				</nav>
 			</div>
-		</a>
+			</a>
+			<nav class="menu">
+				<ul class="menu__list">
+					<li class="menu__group"><a href="{{ url_for('about')}}" class="menu__link">About me</a></li>
+					<li class="menu__group"><a href="{{ url_for('guide')}}" class="menu__link">Stadsgids</a></li>
+					<li class="menu__group"><a href="{{ url_for('contact')}}" class="menu__link">Contact</a></li>
+				</ul>
+			</nav>
+
 		<script>
 			var path = "url('/static/img/"
 		    imgs = ['index1.jpeg','index2.jpeg'],

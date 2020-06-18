@@ -24,8 +24,7 @@ Layout page for changing locations
 		</div>
 		<div class="form-group">
 			<label for="tip">Tip</label>
-			<textarea id="tip" type="text" class="form-control" name="tip" required>{{ recommendation.tip }}</textarea>
-			<div class="invalid-feedback">Geef een tip</div>
+			<textarea id="tip" type="text" class="form-control" name="tip">{{ recommendation.tip }}</textarea>
 		</div>
 		<div class="form-group">
 			{% if not price_level %}
@@ -34,11 +33,31 @@ Layout page for changing locations
 			<label for="price_level">Prijsklasse (Stadsgids: {{ recommendation.price_level|int * "€" if recommendation.price_level|int > 0 else "Onbekend" }}, Google: {{ price_level if not price_level == "False" else "Onbekend" }})</label>
 			{% endif %}
 			<select id="price_level" name="price_level" class="custom-select">
+				{% if recommendation.price_level|int == 0 %}
 				<option value="0" selected>Onbekend</option>
+				{% else %}
+				<option value="0">Onbekend</option>
+				{% endif %}
+				{% if recommendation.price_level|int == 1 %}
+				<option value="1" selected>€</option>
+				{% else %}
 				<option value="1">€</option>
+				{% endif %}
+				{% if recommendation.price_level|int == 2 %}
+				<option value="2" selected>€€</option>
+				{% else %}
 				<option value="2">€€</option>
+				{% endif %}
+				{% if recommendation.price_level|int == 3 %}
+				<option value="3" selected>€€€</option>
+				{% else %}
 				<option value="3">€€€</option>
+				{% endif %}
+				{% if recommendation.price_level|int == 4 %}
+				<option value="4" selected>€€€€</option>
+				{% else %}
 				<option value="4">€€€€</option>
+				{% endif %}
 			</select>
 		</div>
 		<ul class="nav nav-tabs" id="myTab" role="tablist">

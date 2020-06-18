@@ -14,6 +14,49 @@ Layout page for controlling new locations
 <!-- page content -->
 {% block content %}
 <div class="container">
-	<h1>Nieuwe locaties</h1>
+	<h1>Aanraders</h1>
+	<form action="{{ url_for('controlnew') }}" method="post">
+		<div class="form-row">
+			<div class="form-group">
+				<label class="advancedlabel" for="typeinput">Filter op categorie</label>
+				<select class="form-control form-control-sm" id="typeinput" name="type">
+					{% for key, value in types.items() %}
+					<option value="{{ key }}">{{ value }}</option>
+					{% endfor %}
+				</select>
+			</div>
+			<input type="hidden" name="action" value="filter">
+			<div class="form-group">
+				<input class="btn btn-outline-dark filter" type="submit" value="Filter">
+			</div>
+		</div>
+	</form>
+	<table class="table">
+		<thead class="thead-dark">
+			<th scope="col">id</th>
+	        <th scope="col">Naam</th>
+	        <th scope="col">Categorie</th>
+	        <th scope="col">Prijsklasse</th>
+			<th scope="col">Laatst bewerkt</th>
+			<th scope="col">Zichtbaar</th>
+			<th scope="col"></th>
+		</thead>
+		<tbody>
+			{% for recommendation in recommendations %}
+			<tr>
+				<td>{{ recommendation.id }}</td>
+		        <td>{{ recommendation.name }}</td>
+		        <td>{{ recommendation.type.replace("{", "").replace("}", "").replace(",", ", ") }}</td>
+		        <td>{{ recommendation.price_level * "€" }}</td>
+				<td>{{ recommendation.date.strftime("%-d %B %Y %H:%m") }}</td>
+		        <td>{% if recommendation.visible %}<i class="fas fa-check"></i>{% else %}<i class="fas fa-times"></i>{% endif %}</td>
+				<td><a href="{{ url_for('location', name=recommendation.name, place_id=recommendation.place_id) }}">Wijzigen</a></td>
+			</tr>
+			{% endfor %}
+		</tbody>
+	</table>
 </div>
+{% endblock %}
+{% block script %}
+<script type="text/javascript" src="{{ url_for('static', filename='js/controlnew.js')}}"></script>
 {% endblock %}

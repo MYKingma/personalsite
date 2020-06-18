@@ -457,8 +457,15 @@ p {
 }
 
 .container {
-  min-height: 560px;
+  min-height: 71.8vh;
   margin-top: 10px;
+}
+
+.filter {
+  margin-top: 30px;
+  margin-left: 15px;
+  font-size: 8pt;
+  font-weight: bold;
 }
 
 /*# sourceMappingURL=stylesguide.css.map */

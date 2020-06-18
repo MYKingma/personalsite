@@ -97,16 +97,10 @@ queue = rq.Queue('default', connection=conn)
 # test code
 @app.route('/test')
 def test():
-    # send email for confirmation
-    email = "mauricekingma@me.com"
-    msg = Message("Bevestig je e-mailadres om je account te activeren", recipients=[email])
-    link = request.url_root + "stadsgids"
-    msg.html = render_template('confirmmail.html', firstname="firstname", email="mauricekingma@me.com", link=link)
-
-
-
-
-    return render_template('confirmmail.html', firstname="firstname", email="mauricekingma@me.com", link=link)
+    name = "NAAM"
+    email = "EMAIL"
+    message = "LOREM fadsifjnasjfdnja safjdsfda ajfkb kjdsn lasjdfkasjbf df kahfbaksfd df lajbdfkajsbd d ljs"
+    return render_template('contactmail.html', name=name, email=email, message=message)
 
 # handlers
 @app.route('/loguit')
@@ -846,10 +840,21 @@ def dashboard():
 @role_required('Administrator')
 def controlnew():
     if request.method == "GET":
-        return render_template("controlnew.html")
+        recommendations = Recommendation.query.all()
+        return render_template("controlnew.html", recommendations=recommendations, types=TYPES_DICT)
+
+    action = request.form.get('action')
+    if action == "filter":
+        filter = request.form.get('type')
+        filtered = []
+        recommendations = Recommendation.query.all()
+        for recommendation in recommendations:
+            print(filter)
+            if TYPES_DICT[filter] in recommendation.type.replace("}", "").replace("{", "").split(",") or filter == "":
+                filtered.append(recommendation)
+        return render_template("controlnew.html", recommendations=filtered, types=TYPES_DICT)
 
     # get recommendation info
-    action = request.form.get('action')
     name = request.form.get('name')
     place_id = request.form.get('place_id')
     review = request.form.get('review')
@@ -892,9 +897,10 @@ def controlnew():
         recommendation.price_level = price_level
         recommendation.opening = opening
         recommendation.type = types
+        recommendation.date = datetime.datetime.now()
         db.session.commit()
         flash("Aanbeveling gewijzigd", 'success' )
-    return render_template("controlnew.html")
+    return redirect(url_for('location', place_id=place_id, name=name))
 
 @app.route('/stadsgids/dashboard/nieuw/wijzigen/<name>/<place_id>/<types>/<opening>/<price_level>')
 @role_required('Administrator')
@@ -910,6 +916,7 @@ def changenew(place_id, name, types, opening, price_level):
 @role_required('Administrator')
 def createnew(name, place_id, types, opening, price_level):
     typeslist = ast.literal_eval(types)
+    print(price_level)
     return render_template("createnew.html", name=name, place_id=place_id, types=typeslist, API_TYPES=API_TYPES, TYPES_DICT=TYPES_DICT, opening=opening, price_level=price_level)
 
 @app.route('/stadsgids/dashboard/nieuw/evenement/<name>/<place_id>', methods=["GET", "POST"])
@@ -935,11 +942,15 @@ def create_event(name, place_id):
 def newsletter():
     return render_template("newsletter.html")
 
-@app.route('/stadsgids/dashboard/nieuwsbrief/opstellen')
+@app.route('/stadsgids/dashboard/nieuwsbrief/opstellen', methods=["GET", "POST"])
 @role_required('Administrator')
 def createnewsletter():
-    return render_template("createnewsletter.html")
+    if request.method == "GET":
+        return render_template("createnewsletter.html")
 
+    # get textarea info
+    text = request.form.get("text")
+    return render_template("createnewsletter.html", text=text)
 @app.route('/stadsgids/dashboard/checkreviews')
 @role_required('Administrator')
 def check():

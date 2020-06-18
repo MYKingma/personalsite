@@ -1,52 +1,13 @@
-<style>
-	@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300&display=swap');
-	p, h1, h2, h3, a {
-		font-family: "Roboto", sans-serif;
-	}
-	p {
-		font-weight: normal;
-		font-size: 10pt;
-	}
-	.right {
-		float: right;
-	}
-	.header {
-		background: #9c0315;
-		height: 70px;
-		padding: 20px;
-	}
-	.title {
-		color: white;
-		text-align: center;
-	}
-	img {
-		max-height: 70px;
-	}
-	a {
-		text-decoration: none;
-		color: #9c0315;
-		font-weight: bold;
-	}
-	body {
-		background-color: white;
-	}
-	.container {
-		padding: 15px;
-	}
-	h1 {
-		font-size: 25px;
-	}
-</style>
-<div class="header">
-	<img src="{{ request.url_root }}static/picto/cross.png" alt="logo" class="right">
-	<h1 class="title">Welkom bij Stadsgids!<h1>
+<div class="header" style="background-color:#9c0315;background-image:none;background-repeat:repeat;background-position:top left;background-attachment:scroll;height:70px;padding-top:20px;padding-bottom:20px;padding-right:20px;padding-left:20px;" >
+	<img src="{{ request.url_root }}static/picto/cross.png" alt="logo" class="right" style="max-height:70px;float:right;" >
+	<h1 class="title" style="font-family:'Roboto', sans-serif;font-size:25px;color:white;text-align:center;" >Welkom bij Stadsgids!<h1 style="font-family:'Roboto', sans-serif;font-size:25px;" >
 </div>
-<div class="container">
-	<p>Beste {{ firstname }},</p>
-	<p>Welkom bij Stadsgids, de plek voor iedereen die op zoek is naar de leukste en beste locaties in Amsterdam. Jouw account is bijna klaar voor gebruik, het enige wat nog moet gebeuren is het bevestigen van je e-mailadres doormiddel van het klikken op de onderstaande link.</p>
-	<a href="{{ link }}">Klik hier om je e-mailadres ({{ email }}) te bevestigen</a>
-	<p>Bedankt voor het aanmelden bij Stadsgids, mocht je nog vragen of tips hebben dan kun je die altijd kwijt door deze mail te beantwoorden.</p>
-	<p>Veel plezier met de gids en hartelijke groet,</p>
+<div class="container" style="padding-top:15px;padding-bottom:15px;padding-right:15px;padding-left:15px;" >
+	<p style="font-weight:normal;font-size:10pt;" >Beste {{ firstname }},</p>
+	<p style="font-weight:normal;font-size:10pt;" >Welkom bij Stadsgids, de plek voor iedereen die op zoek is naar de leukste en beste locaties in Amsterdam. Jouw account is bijna klaar voor gebruik, het enige wat nog moet gebeuren is het bevestigen van je e-mailadres doormiddel van het klikken op de onderstaande link.</p>
+	<a href="{{ link }}" style="font-family:'Roboto', sans-serif;text-decoration:none;color:#9c0315;font-weight:bold;" >Klik hier om je e-mailadres ({{ email }}) te bevestigen</a>
+	<p style="font-weight:normal;font-size:10pt;" >Bedankt voor het aanmelden bij Stadsgids, mocht je nog vragen of tips hebben dan kun je die altijd kwijt door deze mail te beantwoorden.</p>
+	<p style="font-weight:normal;font-size:10pt;" >Veel plezier met de gids en hartelijke groet,</p>
 	<br>
-	<p>Maurice</p>
+	<p style="font-weight:normal;font-size:10pt;" >Maurice</p>
 </div>
