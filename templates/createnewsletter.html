@@ -15,15 +15,33 @@ Layout for creating a newsletter
 {% block content %}
 <div class="container">
     <h1>Nieuwsbrief opstellen</h1>
-    <form class="dectext" action="{{ url_for('createnewsletter') }}" method="post">
-        <textarea name="text" id="editor1" rows="10" cols="80"></textarea>
-        <input class="btn btn-outline-dark" type="submit" name="" value="Go">
+    <form style="height: 100%;" class="form-control dectext needs-validation" action="{{ url_for('createnewsletter', newsletter_id=newsletter.id) }}" method="post" novalidate>
+        <div class="form-row">
+            <div class="form-group">
+                <label for="subject">Onderwerp</label>
+                <input class="form-control" id="subject" type="text" name="subject" value="{{ newsletter.subject }}" required>
+                <div class="invalid-feedback">Geef een onderwerp op</div>
+            </div>
+        </div>
+        <div class="form-row">
+            <textarea name="editor1" id="editor1">
+                {{ newsletter.body }}
+            </textarea>
+        </div>
+        <div class="form-check" style="float: right;">
+            <input type="checkbox" class="form-check-input" id="unlock">
+            <label class="form-check-label" for="unlock">Ontgrendel verzendknop</label>
+            <input id="locked" class="btn btn-outline-dark" type="submit" name="action" value="send" disabled>
+        </div>
+        <input class="btn btn-outline-dark" type="submit" name="action" value="save">
+        <input class="btn btn-outline-dark" type="submit" name="action" value="test">
     </form>
-    {{ text|safe }}
 </div>
 {% endblock %}
 {% block script %}
-<script src="{{ url_for('static', filename='js/ckeditor.js')}}"></script>
+<script type="text/javascript" src="{{ url_for('static', filename='js/ckeditor.js')}}"></script>
+<script type="text/javascript" src="{{ url_for('static', filename='js/sendunlock.js')}}"></script>
+
 <script>
     // Replace the <textarea id="editor1"> with a CKEditor 4
     // instance, using default configuration.

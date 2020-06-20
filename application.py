@@ -59,8 +59,10 @@ Migrate(app, db, compare_type=True, render_as_batch=True)
 # configure admin interface
 admin = Admin(app, name='Dashboard', index_view=AdminView(User, db.session, url='/admin', endpoint='admin'))
 admin.add_view(AdminView(Role, db.session))
-admin.add_view(AdminView(UserRoles, db.session))
+admin.add_view(AdminView(Newsletter, db.session))
+admin.add_view(AdminView(Blog, db.session))
 admin.add_view(AdminView(Recommendation, db.session))
+admin.add_view(AdminView(Highlight, db.session))
 admin.add_view(AdminView(Review, db.session))
 admin.add_view(AdminView(Event, db.session))
 admin.add_link(MenuLink(name='Back to site', url='/stadsgids/dashboard'))
@@ -97,10 +99,7 @@ queue = rq.Queue('default', connection=conn)
 # test code
 @app.route('/test')
 def test():
-    name = "NAAM"
-    email = "EMAIL"
-    message = "LOREM fadsifjnasjfdnja safjdsfda ajfkb kjdsn lasjdfkasjbf df kahfbaksfd df lajbdfkajsbd d ljs"
-    return render_template('contactmail.html', name=name, email=email, message=message)
+    return redirect(url_for('guide'))
 
 # handlers
 @app.route('/loguit')
@@ -379,6 +378,7 @@ def register():
     firstname = request.form.get("firstname")
     lastname = request.form.get("lastname")
     email = request.form.get("email").lower()
+    newsletter = request.form.get('newsletter')
     password1 = request.form.get("password1")
     password2 = request.form.get("password2")
 
@@ -407,7 +407,7 @@ def register():
     password = blake2b(password1.encode()).hexdigest()
 
     # create new user
-    new_user = User(username=username, firstname=firstname, lastname=lastname, email=email, password=password)
+    new_user = User(username=username, firstname=firstname, lastname=lastname, email=email, password=password, newsletter=newsletter)
 
     # add user role
     role = Role.query.filter_by(name='User').first()
@@ -916,7 +916,6 @@ def changenew(place_id, name, types, opening, price_level):
 @role_required('Administrator')
 def createnew(name, place_id, types, opening, price_level):
     typeslist = ast.literal_eval(types)
-    print(price_level)
     return render_template("createnew.html", name=name, place_id=place_id, types=typeslist, API_TYPES=API_TYPES, TYPES_DICT=TYPES_DICT, opening=opening, price_level=price_level)
 
 @app.route('/stadsgids/dashboard/nieuw/evenement/<name>/<place_id>', methods=["GET", "POST"])
@@ -937,21 +936,155 @@ def create_event(name, place_id):
     db.session.commit()
     return redirect(url_for("location", name=request.form.get("name"), place_id=request.form.get("place_id")))
 
-@app.route('/stadsgids/dashboard/nieuwsbrief')
+@app.route('/stadsgids/dashboard/nieuwsbrief', methods=['GET', 'POST'])
 @role_required('Administrator')
 def newsletter():
-    return render_template("newsletter.html")
-
-@app.route('/stadsgids/dashboard/nieuwsbrief/opstellen', methods=["GET", "POST"])
-@role_required('Administrator')
-def createnewsletter():
     if request.method == "GET":
-        return render_template("createnewsletter.html")
+        newsletters = Newsletter.query.all()
+        return render_template("newsletter.html", newsletters=newsletters)
+    newsletter = Newsletter(date=datetime.datetime.now(), subject="", body="", send=False)
+    db.session.add(newsletter)
+    db.session.commit()
+    return redirect(url_for('createnewsletter', newsletter_id=newsletter.id))
+
+
+@app.route('/stadsgids/dashboard/nieuwsbrief/opstellen/<newsletter_id>', methods=["GET", "POST"])
+@role_required('Administrator')
+def createnewsletter(newsletter_id):
+    newsletter = Newsletter.query.filter_by(id=newsletter_id).first()
+    if request.method == "GET":
+        return render_template("createnewsletter.html", newsletter=newsletter)
 
     # get textarea info
-    text = request.form.get("text")
-    return render_template("createnewsletter.html", text=text)
-@app.route('/stadsgids/dashboard/checkreviews')
+    action = request.form.get("action")
+    body = request.form.get("editor1")
+    subject=request.form.get("subject")
+
+
+    newsletter.subject = subject
+    newsletter.body = body
+    db.session.commit()
+    if action == "save":
+        flash("Wijzigingen opgeslagen", 'success' )
+    if action == "test":
+        return render_template("newsletterbase.html", body=body, name="Naam")
+    if action == "send":
+        recipients = User.query.filter_by(newsletter=True).all()
+        for recipient in recipients:
+            msg = Message(newsletter.subject, recipients=recipient)
+            msg.html = render_template("newsletterbase.html", name=recipient.firstname, body=newsletter.body)
+            job = queue.enqueue('task.send_mail', msg)
+
+
+
+    return render_template("createnewsletter.html", newsletter=newsletter)
+
+@app.route('/stadsgids/dashboard/blog', methods=['GET', 'POST'])
+@role_required('Administrator')
+def blog():
+    if request.method == 'GET':
+        blogposts = Blog.query.all()
+        return render_template("blog.html", blogposts=blogposts)
+
+    blogpost = Blog(date=datetime.datetime.now(), title="", short="", body="", visible=False)
+    db.session.add(blogpost)
+    db.session.commit()
+    return redirect(url_for('createblog', blog_id=blogpost.id))
+
+
+@app.route('/stadsgids/dashboard/blog/opstellen/<blog_id>', methods=['GET', 'POST'])
+@role_required('Administrator')
+def createblog(blog_id):
+    blogpost = Blog.query.filter_by(id=blog_id).first()
+    if request.method == "GET":
+        return render_template("createblog.html", blogpost=blogpost)
+
+    action = request.form.get('action')
+    title = request.form.get('title')
+    short = request.form.get('short')
+    print(short)
+    body = request.form.get('editor1')
+
+    blogpost.title = title
+    blogpost.short = short
+    blogpost.body = body
+    db.session.commit()
+
+    if action == "save":
+        flash("Wijzigingen opgeslagen", 'success')
+    if action == "publish":
+        blog.visible = True
+        blog.date = datetime.datetime.now()
+        db.session.commit()
+        flash("Post gepubliceerd", 'success')
+    if action == "delete":
+        db.session.delete(blogpost)
+        db.session.commit()
+        flash("Post verwijderd", 'success')
+        return redirect(url_for('blog'))
+    return render_template("createblog.html", blogpost=blogpost)
+
+
+@app.route('/stadsgids/dashboard/checkreviews', methods=["GET", "POST"])
 @role_required('Administrator')
 def check():
-    return render_template("check.html")
+    reviews = Review.query.all()
+
+    if request.method == "GET":
+        return render_template("check.html", reviews=reviews)
+
+    # get action and review_id
+    action = request.form.get('action')
+    review_id = request.form.get('review_id')
+
+    review = Review.query.filter_by(id=review_id).first()
+
+    if action == "accept":
+        review.checked = True
+        db.session.commit()
+        flash("Review geaccepteerd", 'success')
+
+    if action == "block":
+        review.checked = True
+        review.review = "De inhoud van deze recensie is aanstootgevend en dus verwijderd."
+        db.session.commit()
+        flash("Review geblokkeerd", 'danger')
+
+    return render_template("check.html", reviews=reviews)
+
+@app.route('/stadsgids/dashboard/uitgelicht', methods=["GET", "POST"])
+@role_required('Administrator')
+def highlight():
+    if request.method == "GET":
+        highlights = Highlight.query.all()
+        return render_template('highlight.html', highlights=highlights)
+    place_id = request.form.get('place_id')
+    name = request.form.get('name')
+    previous = Highlight.query.order_by(Highlight.id.desc()).first()
+    date = previous.week + datetime.timedelta(days=7)
+    highlight = Highlight(place_id=place_id, name=name, week=date, description="")
+    db.session.add(highlight)
+    db.session.commit()
+    return redirect(url_for('createhighlight', highlight_id=highlight.id))
+
+
+@app.route('/stadsgids/dashboard/uitgelicht/wijzigen/<highlight_id>', methods=["GET", "POST"])
+@role_required('Administrator')
+def createhighlight(highlight_id):
+    highlight = Highlight.query.filter_by(id=highlight_id).first()
+    if request.method == "GET":
+        return render_template('createhighlight.html', highlight=highlight)
+
+    action = request.form.get('action')
+    description = request.form.get('editor1')
+
+    highlight.description = description
+    db.session.commit()
+    if action == "save":
+        flash("Wijzigingen opgeslagen", 'success')
+        return redirect(url_for('createhighlight', highlight_id=highlight.id))
+    if action == "delete":
+        db.session.delete(highlight)
+        db.session.commit()
+        flash("Uitgelicht verwijderd")
+        return redirect(url_for('highlight'))

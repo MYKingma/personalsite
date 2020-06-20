@@ -1,0 +1,42 @@
+<!-- highlight.html for implementing a city guide webapp
+
+Maurice Kingma
+Minor Programmeren - Web App Studio
+
+Layout highlight page
+-->
+
+{% extends "base.html" %}
+
+<!-- page title -->
+{% block title %}Stadsgids - Dashboard{% endblock %}
+
+<!-- page content -->
+{% block content %}
+<div class="container">
+	<h1>Uitgelichte locaties</h1>
+	<table class="table">
+		<thead class="thead-dark">
+			<th scope="col">id</th>
+	        <th scope="col">Weeknummer</th>
+	        <th scope="col">Locatie</th>
+	        <th scope="col">Beschrijving</th>
+			<th scope="col"></th>
+		</thead>
+		<tbody>
+			{% for highlight in highlights %}
+			<tr>
+				<td>{{ highlight.id }}</td>
+		        <td>{{ highlight.week.isocalendar()[1] }}</td>
+                <td>{{ highlight.name }}</td>
+		        <td>{{ highlight.description }}</td>
+				<td><a href="{{ url_for('createhighlight', highlight_id=highlight.id) }}">Wijzigen</a></td>
+			</tr>
+			{% endfor %}
+		</tbody>
+	</table>
+</div>
+{% endblock %}
+{% block script %}
+<script type="text/javascript" src="{{ url_for('static', filename='js/tablesort.js')}}"></script>
+{% endblock %}

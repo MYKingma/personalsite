@@ -1,0 +1,57 @@
+<!-- createnewsletter.html for implementing a city guide webapp
+
+Maurice Kingma
+Minor Programmeren - Web App Studio
+
+Layout for creating a newsletter
+-->
+
+{% extends "base.html" %}
+
+<!-- page title -->
+{% block title %}Stadsgids - Dashboard{% endblock %}
+
+<!-- page content -->
+{% block content %}
+<div class="container">
+    <h1>Blogpost opstellen</h1>
+    <form style="height: 100%;" class="form-control dectext needs-validation" action="{{ url_for('createblog', blog_id=blogpost.id) }}" method="post" novalidate>
+        <div class="form-row">
+            <div class="form-group">
+                <label for="subject">Titel</label>
+                <input class="form-control" id="title" type="text" name="title" value="{{ blogpost.title }}" required>
+                <div class="invalid-feedback">Geef een titel op</div>
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="form-group">
+                <label for="short">Inleiding</label>
+                <textarea name="short" class="form-control" id="short" cols="40" rows="3" required>{{ blogpost.short }}</textarea>
+                <div class="invalid-feedback">Geef een inleiding op</div>
+            </div>
+        </div>
+        <div class="form-row">
+            <textarea name="editor1" id="editor1">
+                {{ blogpost.body }}
+            </textarea>
+        </div>
+        <div class="form-check" style="float: right;">
+            <input type="checkbox" class="form-check-input" id="unlock">
+            <label class="form-check-label" for="unlock">Ontgrendel knoppen</label>
+            <button id="locked" class="btn btn-outline-dark" type="submit" name="action" value="delete" disabled>Verwijder</button>
+            <button id="locked" class="btn btn-outline-dark" type="submit" name="action" value="publish" disabled>Publiceer</button>
+        </div>
+        <button class="btn btn-outline-dark" type="submit" name="action" value="save">Opslaan</button>
+    </form>
+</div>
+{% endblock %}
+{% block script %}
+<script type="text/javascript" src="{{ url_for('static', filename='js/ckeditor.js')}}"></script>
+<script type="text/javascript" src="{{ url_for('static', filename='js/sendunlock.js')}}"></script>
+
+<script>
+    // Replace the <textarea id="editor1"> with a CKEditor 4
+    // instance, using default configuration.
+    CKEDITOR.replace( 'editor1' );
+</script>
+{% endblock %}

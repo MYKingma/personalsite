@@ -17,7 +17,7 @@ Layout registration page
 	<h1>Registreren</h1>
 
 	<form id="form" action="{{ url_for('register') }}" method="post" class="needs-validation" style="max-width: 700px;" novalidate>
-	
+
 		<div class="form-row">
 			<div class="form-group col-sm-6">
 				<label>Gebruikersnaam</label>
@@ -58,7 +58,7 @@ Layout registration page
 				</small>
 			</div>
 		</div>
-	
+
 		<div class="form-row">
 			<div class="form-group col-sm-6">
 				<label>Voornaam</label>
@@ -77,14 +77,14 @@ Layout registration page
 				<input class="form-control" type="password" id="password1" name="password1" required>
 				<div class="invalid-feedback" id="invalidpassword1">Geef een wachtwoord op</div>
 			</div>
-		
+
 			<div class="form-group col-sm-6">
 				<label>Herhaal wachtwoord</label>
 				<input class="form-control" type="password" id="password2" name="password2" aria-describedby="passwordhelp" required>
-			
+
 				<!-- password client side message -->
 				<div id="passworderrormessage" class="invalid-feedback">Herhaal het wachtwoord</div>
-	
+
 				<!-- password server side messages -->
 				<small id="passwordhelp" class="form-text text-muted">
 				{% with messages = get_flashed_messages(category_filter=["password"]) %}
@@ -97,7 +97,11 @@ Layout registration page
 				</small>
 			</div>
 		</div>
-		<input id="button" class="btn btn-dark" type="submit">
+		<div class="form-check" style="float: right;">
+			<input type="checkbox" class="form-check-input" id="newsletter" name="newsletter" checked>
+			<label class="form-check-label" for="newletter">Schrijf me in voor de nieuwsbrief</label>
+			<input id="button" class="btn btn-dark" type="submit">
+		</div>
 	</form>
 </div>
 {% endblock %}

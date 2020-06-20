@@ -1,4 +1,8 @@
 @charset "UTF-8";
+iframe {
+  min-height: 100%;
+}
+
 a, a:hover, a:visited {
   text-decoration: none;
 }

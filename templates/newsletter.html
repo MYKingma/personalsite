@@ -9,15 +9,38 @@ Layout newsletter page
 {% extends "base.html" %}
 
 <!-- page title -->
-{% block title %}Stadsgids - Nieuwsbrieven{% endblock %}
+{% block title %}Stadsgids - Dashboard{% endblock %}
 
 <!-- page content -->
 {% block content %}
 <div class="container">
-    <h1>Nieuwsbrieven</h1>
-
-    <h3>extra menulinks</h3>
-    <a href="{{ url_for('createnewsletter') }}">Nieuwsbrief opstellen</a>
-    <a href="{{ url_for('dashboard') }}">Terug</a>
+	<h1>Nieuwsbrieven</h1>
+	<table class="table">
+		<thead class="thead-dark">
+			<th scope="col">id</th>
+	        <th scope="col">Aanmaakdatum</th>
+	        <th scope="col">Onderwerp</th>
+	        <th scope="col">Verstuurd</th>
+			<th scope="col"></th>
+			<th scope="col"></th>
+		</thead>
+		<tbody>
+			{% for newsletter in newsletters %}
+			<tr>
+				<td>{{ newsletter.id }}</td>
+		        <td>{{ newsletter.date.strftime("%-d %B %Y %R") }}</td>
+		        <td>{{ newsletter.subject }}</td>
+                <td>{% if newsletter.send %}<i class="fas fa-check"></i>{% else %}<i class="fas fa-times"></i>{% endif %}</td>
+				<td><a href="{{ url_for('createnewsletter', newsletter_id=newsletter.id) }}">Wijzigen</a></td>
+			</tr>
+			{% endfor %}
+		</tbody>
+	</table>
+	<form action="{{ url_for('newsletter') }}" method="post">
+		<input type="submit" class="btn btn-outline-dark" value="Nieuwe nieuwsbrief">
+	</form>
 </div>
+{% endblock %}
+{% block script %}
+<script type="text/javascript" src="{{ url_for('static', filename='js/tablesort.js')}}"></script>
 {% endblock %}

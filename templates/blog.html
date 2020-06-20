@@ -1,0 +1,47 @@
+<!-- blog.html for implementing a city guide webapp
+
+Maurice Kingma
+Minor Programmeren - Web App Studio
+
+Layout page for controlling  blogs
+-->
+
+{% extends "base.html" %}
+
+<!-- page title -->
+{% block title %}Stadsgids - Dashboard{% endblock %}
+
+<!-- page content -->
+{% block content %}
+<div class="container">
+	<h1>Blogposts</h1>
+	<table class="table">
+		<thead class="thead-dark">
+			<th scope="col">id</th>
+	        <th scope="col">Publicatie-/Aanmaakdatum</th>
+			<th scope="col">Titel</th>
+	        <th scope="col">Inleiding</th>
+	        <th scope="col">Gepubliceerd</th>
+			<th scope="col"></th>
+		</thead>
+		<tbody>
+			{% for blogpost in blogposts %}
+			<tr>
+				<td>{{ blogpost.id }}</td>
+		        <td>{{ blogpost.date.strftime("%-d %B %Y %R") }}</td>
+				<td>{{ blogpost.title }}</td>
+		        <td>{{ blogpost.short }}</td>
+		        <td>{% if blogpost.visible %}<i class="fas fa-check"></i>{% else %}<i class="fas fa-times"></i>{% endif %}</td>
+				<td><a href="{{ url_for('createblog', blog_id=blogpost.id) }}">Wijzigen</a></td>
+			</tr>
+			{% endfor %}
+		</tbody>
+	</table>
+	<form action="{{ url_for('blog') }}" method="post">
+		<input type="submit" class="btn btn-outline-dark" value="Nieuwe blogpost">
+	</form>
+</div>
+{% endblock %}
+{% block script %}
+<script type="text/javascript" src="{{ url_for('static', filename='js/tablesort.js')}}"></script>
+{% endblock %}

@@ -85,7 +85,18 @@ Location page
 			{% endif %}
 			{% for role in current_user.roles %}
 			{% if "Administrator" == role.name %}
-			<a href="{{ url_for('create_event', place_id=location.place_id, name=location.name) }}"><button id="changelocation" class="btn btn-outline-secondary btn-block">Voeg evenement voor {{ location.name }} toe</button></a>
+			<div class="row">
+				<div class="col-6">
+					<a href="{{ url_for('create_event', place_id=location.place_id, name=location.name) }}"><button class="btn btn-outline-secondary btn-block">Voeg evenement toe</button></a>
+				</div>
+				<div class="col-6">
+					<form action="{{ url_for('highlight')  }}" method="post">
+						<input type="hidden" name="name" value="{{ location.name }}">
+						<input type="hidden" name="place_id" value="{{ location.place_id }}">
+						<input class="btn btn-outline-secondary btn-block" type="submit" value="Maak uitgelicht aan">
+					</form>
+				</div>
+			</div>
 			{% endif %}
 			{% endfor %}
 			{% if events and current_user.is_authenticated %}
@@ -106,7 +117,7 @@ Location page
 			{% if location.ownreview != None %}
 			<h2 id="reviewform">Eigen review</h2>
 			<div class="reviewbox">
-				<h3>{{ location.ownreview.user.username }}<span>{{ location.ownreview.date.strftime("%-d %B %Y") }}</span></h3>
+				<h3>{{ location.ownreview.user.username }}<span>{{ location.ownreview.date.strftime("%-d %B %Y %R") }}</span></h3>
 				<p>{{ location.ownreview.review if location.ownreview.review else "Geen toelichting" }}<span id="stars">{{ location.ownreview.stars }}</span></p>
 				<button class="btn btn-outline-danger btn-sm">Nuttig ({{ location.ownreview.get_upvote_count() }})</button><span><p><a href="{{ url_for('deletereview', name=location.name, place_id=location.place_id) }}">Verwijder</a></p></span>
 			</div>

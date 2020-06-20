@@ -20,18 +20,20 @@ class User(db.Model, UserMixin):
     email = db.Column(db.String(128), nullable=False)
     confirmed = db.Column(db.Boolean, nullable=False)
     email_confirmed_at = db.Column(db.DateTime(), nullable=True)
+    newsletter = db.Column(db.Boolean, nullable=False)
     favourites = db.relationship('Favourite', cascade="all, delete-orphan")
     requests = db.relationship('Request', cascade="all, delete-orphan")
     reviews = db.relationship('Review', cascade="all, delete-orphan")
     roles = db.relationship('Role', secondary='user_roles')
 
-    def __init__(self, username, firstname, lastname, password, email):
+    def __init__(self, username, firstname, lastname, password, email, newsletter):
         self.username = username
         self.firstname = firstname
         self.lastname = lastname
         self.password = password
         self.email = email
         self.register_date = datetime.datetime.now()
+        self.newsletter = True if newsletter else False
         self.confirmed = False
         self.active = False
         self.favourites = []
@@ -106,7 +108,8 @@ class Review(db.Model):
     user_id = db.Column(db.Integer(), db.ForeignKey('users.id'), nullable=False)
     date = db.Column(db.DateTime(), nullable=False)
     stars = db.Column(db.Integer(), nullable=False)
-    review = db.Column(db.String(128))
+    review = db.Column(db.Text())
+    checked = db.Column(db.Boolean, nullable=False)
     upvotes = db.relationship('Upvote', cascade="all, delete-orphan")
     user = db.relationship('User')
 
@@ -116,6 +119,7 @@ class Review(db.Model):
         self.date = datetime.datetime.now()
         self.stars = stars
         self.review = review
+        self.checked = False
 
     def get_upvote_count(self):
         count = 0
@@ -141,19 +145,30 @@ class Event(db.Model):
     title = db.Column(db.String(128), nullable=False)
     description = db.Column(db.Text(), nullable=False)
 
-class Friday(db.Model):
-    __tablename__ = 'friday_tips'
+class Highlight(db.Model):
+    __tablename__ = 'highlights'
     id = db.Column(db.Integer(), primary_key=True)
     place_id = db.Column(db.String(128), nullable=False)
-    date = db.Column(db.DateTime(), nullable=False)
-    description = db.Column(db.String(128), nullable=False)
+    name = db.Column(db.String(128), nullable=False)
+    week = db.Column(db.DateTime(), nullable=False)
+    description = db.Column(db.Text(), nullable=False)
 
 class Blog(db.Model):
     __tablename__ = 'blog'
     id = db.Column(db.Integer(), primary_key=True)
     date = db.Column(db.DateTime(), nullable=False)
-    body = db.Column(db.String(128), nullable=False)
-    img = db.Column(db.String(128))
+    title = db.Column(db.String(128), nullable=False)
+    short = db.Column(db.Text(), nullable=False)
+    body = db.Column(db.Text(), nullable=False)
+    visible = db.Column(db.Boolean, nullable=False)
+
+class Newsletter(db.Model):
+    __tablename__ = 'newsletters'
+    id = db.Column(db.Integer(), primary_key=True)
+    date = db.Column(db.DateTime(), nullable=False)
+    subject = db.Column(db.Text(), nullable=False)
+    body = db.Column(db.Text(), nullable=False)
+    send = db.Column(db.Boolean, nullable=False)
 
 class AdminView(ModelView):
     def __init__(self, *args, **kwargs):

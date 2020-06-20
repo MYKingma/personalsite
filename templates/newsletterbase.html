@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="nl">
+	<head>
+		<meta charset="utf-8">
+		<style media="screen">
+			@import url("https://fonts.googleapis.com/css2?family=Oswald&display=swap");
+			@import url("https://fonts.googleapis.com/css2?family=Roboto:wght@300&display=swap");
+			p, h2, h3 {
+				font-family: "Roboto", sans-serif;
+			}
+			h1 {
+				font-family: "Oswald", sans-serif;
+			}
+			.header {
+				color: white;
+				background-color: #9c0315;
+				padding: 5px 10px 5px 10px;
+				font-family: "Oswald", sans-serif;
+			}
+			.body {
+				padding: 15px;
+			}
+			.footer {
+				height: 150px:
+				with: 100%;
+				background-color: #9c0315;
+				padding: 10px 30px 10px 5px;
+				margin: 0;
+			}
+			.bottom {
+				color: white;
+				right: 0;
+			}
+			body {
+				min-height: 100vw;
+				margin: 0;
+			}
+			.logo {
+				float: right;
+				height: 50px;
+				margin-top: 20px;
+			}
+			.title {
+				margin-left: 8px;
+			}
+		</style>
+	</head>
+	<body>
+		<div class="header">
+			<img class="logo" src="{{ request.url_root }}static/picto/cross.png" alt="logo">
+			<h1 class="title">Stadsgids nieuwsbrief</h1>
+			<p class="header">stadsgids.mauricekingma.nl</p>
+		</div>
+		<div class="body">
+			<p>Beste {{ name }},</p>
+			{{ body|safe }}
+		</div>
+		<div class="footer">
+			<p class="bottom">stadsgids.mauricekingma.nl</p>
+		</div>
+	</body>
+</html>

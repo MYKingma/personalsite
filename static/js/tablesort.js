@@ -1,4 +1,4 @@
-/* controlnew.js for controlnew.html
+/* tablesort.js for controlnew.html
 
 Maurice Kingma
 Minor Programmeren - Web App Studio
