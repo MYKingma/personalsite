@@ -109,18 +109,18 @@ else:
 locale.setlocale(locale.LC_ALL, "nl_NL")
 
 # set worker Queue
-#queue = rq.Queue('default', connection=conn)
+queue = rq.Queue('default', connection=conn)
 
 # set Flask WTF CSRFProtect
 csrf = CSRFProtect(app)
 
 
-#@app.before_request
-#def before_request():
-#    if request.url.startswith('http://'):
-#        url = request.url.replace('http://', 'https://', 1)
-#        code = 301
-#        return redirect(url, code=code)
+@app.before_request
+def before_request():
+    if request.url.startswith('http://'):
+        url = request.url.replace('http://', 'https://', 1)
+        code = 301
+        return redirect(url, code=code)
 
 # test code
 @app.route('/test')
@@ -302,7 +302,6 @@ def action_location():
 
         # send email for request /stadsgids/locatie/<name>/<place_id>
         link = request.url_root + "stadsgids/locatie/" + name + "/" + place_id
-        # TODO: socket stuur nieuwe aanvraag naar beheerder
         msg = Message(f"Ontvangstbevestiging informatieaanvraag voor {location}", recipients=["mauricekingma@me.com"])
         msg.html = render_template("recommendmail.html", name=user.firstname, location=name, website=website, place_id=place_id)
         job = queue.enqueue('task.send_mail', msg)
@@ -1263,8 +1262,6 @@ def processrequests(request_id):
     if request.method == "GET":
         return render_template('processrequests.html', request=inforequest)
 
-    # send email for request /stadsgids/locatie/<name>/<place_id>
-    # TODO: socket stuur nieuwe aanvraag naar beheerder
     msg = Message(f"Meer informatie over {location}", recipients=[inforequest.user.email])
     msg.html = render_template("newsletterbase.html", name=inforequest.user.firstname, body=request.form.get('editor1'))
     job = queue.enqueue('task.send_mail', msg)
