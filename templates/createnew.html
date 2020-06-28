@@ -14,23 +14,24 @@ Layout page for adding new locations
 <!-- page content -->
 {% block content %}
 <div class="container">
-	<h1>Locaties toevoegen</h1>
-	<a href="{{ url_for('location', name=name, place_id=place_id)}}" target="_blank"><h2>{{ name }}</h2></a>
-	<form class="needs-validation" action="{{ url_for('controlnew') }}" method="post" novalidate>
+	<form class="needs-validation formbox" action="{{ url_for('controlnew') }}" method="post" novalidate>
+		<input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+		<a class="float_right mt" href="{{ url_for('location', name=name, place_id=place_id)}}" target="_blank"><h2>{{ name }}</h2></a>
+		<h1>Locatie toevoegen</h1>
 		<div class="form-group">
-			<label for="review">Beoordeling</label>
+			<label for="review"><i class="far fa-comment-dots"></i> Beoordeling</label>
 			<textarea id="review" type="text" class="form-control" name="review" required></textarea>
 			<div class="invalid-feedback">Geef een tekstbeoordeling</div>
 		</div>
 		<div class="form-group">
-			<label for="tip">Tip</label>
+			<label for="tip"><i class="far fa-comment-alt"></i> Tip</label>
 			<textarea id="tip" type="text" class="form-control" name="tip"></textarea>
 		</div>
 		<div class="form-group">
 			{% if not price_level %}
 			<label for="price_level">Prijsklasse</label>
 			{% else %}
-			<label for="price_level">Overschrijf prijsklasse van Google ({{ price_level if not price_level == "False" else "Onbekend" }})</label>
+			<label for="price_level">Overschrijf prijsklasse  (<i class="fab fa-google"></i>: {{ price_level if not price_level == "False" else "Onbekend" }})</label>
 			{% endif %}
 			<select id="price_level" name="price_level" class="custom-select">
 				{% if price_level|length == 0 %}
@@ -62,13 +63,13 @@ Layout page for adding new locations
 		</div>
 		<ul class="nav nav-tabs" id="myTab" role="tablist">
 			<li class="nav-item">
-				<a class="nav-link active" id="opening-tab" data-toggle="tab" href="#opening" role="tab" aria-controls="opening" aria-selected="true">Openingstijden</a>
+				<a class="nav-link active" id="opening-tab" data-toggle="tab" href="#opening" role="tab" aria-controls="opening" aria-selected="true"><i class="far fa-clock"></i><span class="mobile"> Openingstijden</span></a>
 			</li>
 			<li class="nav-item">
-				<a class="nav-link" id="events-tab" data-toggle="tab" href="#events" role="tab" aria-controls="events" aria-selected="false">Evenementen</a>
+				<a class="nav-link" id="events-tab" data-toggle="tab" href="#events" role="tab" aria-controls="events" aria-selected="false"><i class="far fa-calendar-alt"></i><span class="mobile"> Evenementen</span></a>
 			</li>
 			<li class="nav-item">
-				<a class="nav-link" id="types-tab" data-toggle="tab" href="#types" role="tab" aria-controls="events" aria-selected="false">Categorieën</a>
+				<a class="nav-link" id="types-tab" data-toggle="tab" href="#types" role="tab" aria-controls="events" aria-selected="false"><i class="fas fa-tags"></i><span class="mobile"> Categorieën</span></a>
 			</li>
 		</ul>
 		<div class="tab-content" id="myTabContent">

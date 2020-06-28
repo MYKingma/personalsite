@@ -8,10 +8,10 @@ Javascript for checking login input
 
 // wait for page to load
 document.addEventListener('DOMContentLoaded', () => {
-	
+
 	// select register button and activate function on click
 	document.querySelector('#login').onclick = () => {
-		
+
 		// check if input and get username
 		if (document.querySelector('#usernameinput').value.length == 0) {
 			event.preventDefault();
@@ -26,7 +26,7 @@ document.addEventListener('DOMContentLoaded', () => {
 			document.querySelector('#invalidpassword').innerHTML = "Geef een wachtwoord op";
 		} else {
 			document.querySelector('#invalidpassword').innerHTML = "";
-			
+
 		};
 	};
 });

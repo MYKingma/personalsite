@@ -14,6 +14,421 @@ Layout profile page
 <!-- page content -->
 {% block content %}
 <div class="container">
-	<h1>Profiel</h1>
+	<h1 class="ml"><i class="far fa-user"></i> Profiel</h1>
+	<div class="row mobile">
+		<div class="col-4">
+			<div class="nav flex-column nav-pills" id="v-pills-tab" role="tablist" aria-orientation="vertical">
+				<a class="nav-link active sidetab" id="v-pills-favourites-tab" data-toggle="pill" href="#v-pills-favourites" role="tab" aria-controls="v-pills-favourites" aria-selected="false"><i class="fas fa-heart"></i>Favorieten</a>
+				<a class="nav-link sidetab" id="v-pills-requests-tab" data-toggle="pill" href="#v-pills-requests" role="tab" aria-controls="v-pills-requests" aria-selected="false"><i class="far fa-hand-point-up"></i>Aanvragen</a>
+				<a class="nav-link sidetab" id="v-pills-reviews-tab" data-toggle="pill" href="#v-pills-reviews" role="tab" aria-controls="v-pills-reviews" aria-selected="false"><i class="fas fa-star"></i>Reviews</a>
+				<a class="nav-link sidetab" id="v-pills-newsletter-tab" data-toggle="pill" href="#v-pills-newsletter" role="tab" aria-controls="v-pills-newsletter" aria-selected="false"><i class="far fa-newspaper"></i>Nieuwsbrief</a>
+				<a class="nav-link sidetab" id="v-pills-account-tab" data-toggle="pill" href="#v-pills-account" role="tab" aria-controls="v-pills-account" aria-selected="true"><i class="fas fa-user-edit"></i>Account</a>
+			</div>
+		</div>
+		<div class="col-8">
+			<div class="tab-content" id="v-pills-tabContent">
+				<div class="tab-pane active show fade formbox" id="v-pills-favourites" role="tabpanel" aria-labelledby="v-pills-favourites-tab">
+					<h2><i class="fas fa-heart"></i> Favorieten</h2>
+					{% if user.favourites %}
+					<form action="{{ url_for('profile') }}" method="post">
+						<input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+						<div class="form-row">
+							<div class="form-group ml">
+								<label class="advancedlabel" for="typeinput">Filter op categorie</label>
+								<select class="form-control form-control-sm" id="typeinput" name="filter">
+									{% for key, value in TYPES_DICT.items() %}
+									<option value="{{ key }}">{{ value }}</option>
+									{% endfor %}
+								</select>
+							</div>
+							<input type="hidden" name="action" value="filter">
+							<div class="form-group">
+								<input class="btn btn-outline-dark filter" type="submit" value="Filter">
+							</div>
+						</div>
+					</form>
+					{% if favourites|length > 0 %}
+					{% for favourite in favourites %}
+					<a class="list" href="{{ url_for('location', place_id=favourite.place_id, name=favourite.name) }}">
+						<li class="media">
+							<div class="center-cropped" style="background-image: url('{{ favourite.photos }}');"></div>
+							<div class="media-body">
+								<h5 class="mt-0 mb-1">
+									<span class="toright">
+										{% if favourite.recommended %}
+										<p><button class="btn btn-danger btn-sm">AANRADER<i class="fas fa-medal"></i></button></p>
+										{% endif %}
+										<p class="nomt">
+											{% if favourite.price_level %}
+											{{ favourite.price_level }} -
+											{% endif %}
+											{% if favourite.recommended %}
+											{% for type in favourite.types %}
+											{% for key, value in TYPES_DICT.items() %}
+												{% if type == value %}
+												{% if key in ICON_DICT %}
+												<i class="fas fa-{{ ICON_DICT[key] }}"></i>
+												{% endif %}
+												{% endif %}
+											{% endfor %}
+											{% endfor %}
+											{% else %}
+											{% for type in favourite.types %}
+												{% if type in ICON_DICT %}
+												<i class="fas fa-{{ ICON_DICT[type] }}"></i>
+												{% endif %}
+											{% endfor %}
+											{% endif %}
+										</p>
+										<p>{{ favourite.opening_hours }}</p>
+									</span>
+									{{ favourite.name }}
+								</h5>
+								<p class="searchadress"><span id="stars">{{ favourite.rating }}</span></p>
+								<p class="searchadress">{{ favourite["formatted_address"][0] }}</p>
+							</div>
+						</li>
+					</a>
+					{% endfor %}
+					{% else %}
+					<p>Nog geen favoriete locaties met categorie {{ TYPES_DICT[filter] }}</p>
+					{% endif %}
+					{% else %}
+					<p>Nog geen opgeslagen favoriete locaties</p>
+					{% endif %}
+				</div>
+				<div class="tab-pane fade formbox" id="v-pills-requests" role="tabpanel" aria-labelledby="v-pills-requests-tab">
+					<h2><i class="far fa-hand-point-up"></i> Aanvragen</h2>
+					{% if user.requests %}
+					<p>Hieronder zijn lopende informatieaanvragen te vinden. Per locatie zie je of de informatie al is verstuurd Heb je geen mail ontvangen? Controleer dan je spamfolder</p>
+					{% for request in user.requests %}
+					<div class="requestbox">
+						<p><i class="fas fa-map-marker-alt"></i> <span>{{ request.name }}</span></p>
+						<p><i class="fas fa-info-circle"></i> <span>{{ 'Verwerkt, check je e-mail of spam-folder' if request.processed else 'In behandeling' }}</span></p>
+					</div>
+					{% endfor %}
+					{% else %}
+					<p>Geen lopende informatieaanvragen</p>
+					{% endif %}
+				</div>
+				<div class="tab-pane fade formbox" id="v-pills-reviews" role="tabpanel" aria-labelledby="v-pills-reviews-tab">
+					<h2><i class="fas fa-star"></i> Reviews</h2>
+					{% if user.reviews %}
+					<p>Overzicht van geplaatste reviews</p>
+					{% for review in user.reviews %}
+					<div id="reviewform" class="reviewbox">
+						<h2>{{ review.name }}<span><a id="redlink" href="{{ url_for('location', place_id=review.place_id, name=review.name )}}">Stadgids-pagina</a></span></h2>
+						<h3>{{ user.username }}<span>{{ review.date.strftime("%-d %B %Y %R") }}</span><span id="stars">{{ review.stars }}</span></h3>
+						<p>{{ review.review if review.review else "Geen toelichting" }}</p>
+						<span class="delete"><a href="{{ url_for('deletereview', name=review.name, place_id=review.place_id) }}"><i class="fas fa-trash-alt"></i> Verwijderen</a></span>
+						<p id="usefull"><i class="fas fa-thumbs-up"></i> {{ review.get_upvote_count() }} {{ "gebruiker vindt" if review.get_upvote_count() == 1 else "gebruikers vinden" }} dit nuttig </p>
+					</div>
+					{% endfor %}
+					{% else %}
+					<p>Nog geen eigen reviews</p>
+					{% endif %}
+				</div>
+				<div class="tab-pane fade formbox" id="v-pills-newsletter" role="tabpanel" aria-labelledby="v-pills-newsletter-tab">
+					<h2><i class="far fa-newspaper"></i> Nieuwsbrief</h2>
+					<p>Onze nieuwsbrief is een echte nieuwsbrief. Géén nieuws betekend dus ook géén nieuwsbrief. Wat je wel kan verwachten is een (bijna) wekelijkse e-mail met de nieuwe aanraders, interessante artikelen of recensies van Stadsgids zelf of vanuit de krant of van het internet.</p>
+					<p> Wat je niet hoeft te verwachten zijn schreeuwende koppen en ellendige reclame.</p>
+					<form class="formbox" action="{{ url_for('profile')}}" method="post">
+						<div class="form-group">
+							<div class="form-check">
+								{% if user.newsletter %}
+								<input type="checkbox" class="form-check-input" id="newsletter" name="newsletter" checked>
+								{% else %}
+								<input type="checkbox" class="form-check-input" id="newsletter" name="newsletter">
+								{% endif %}
+								<label class="form-check-label" for="newletter">Ik wil de nieuwsbrief ontvangen</label>
+							</div>
+						</div>
+						<button id="button" class="btn btn-dark" type="submit" name="action" value="newsletter">Bewerken</button>
+						<input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+						<input type="hidden" name="anchor" value="v-pills-newsletter"/>
+					</form>
+				</div>
+				<div class="tab-pane fade formbox" id="v-pills-account" role="tabpanel" aria-labelledby="v-pills-account-tab">
+					<h2><i class="fas fa-user-edit"></i> Account</h2>
+					<p>Wijzig hier de accountgegevens</p>
+					<div class="profilegroupbox">
+						<h4>E-mailadres wijzigen</h4>
+						<p>Na het invoeren van het nieuwe e-mailadres ontvang je een e-mail met een bevestigingslink. Pas na het bevestigen van het nieuwe e-mailadres is de wijziging definitief.</p>
+						<form id="form" action="{{ url_for('profile') }}" method="post" class="needs-validation" style="max-width: 700px;" novalidate>
+							<div class="form-row">
+								<div class="form-group ml">
+									<label>E-mail</label>
+									<input class="form-control" type="email" id="emailinput" name="email" aria-describedby="emailhelp" required>
+
+									<!-- email client side message -->
+									<div class="invalid-feedback" id="emailerrormessage">Geef een geldig e-mailadres op</div>
+
+									<!-- email server side message -->
+									<small id="emailhelp" class="form-text text-muted">
+									{% with messages = get_flashed_messages(category_filter=["email"]) %}
+										{% if messages %}
+											{% for message in messages %}
+												{{ message }}
+											{% endfor %}
+										{% endif %}
+									{% endwith %}
+									</small>
+								</div>
+							</div>
+							<button id="emailbutton" class="btn btn-dark" name="action" value="changemail" type="submit">Wijzig e-mailadres</button>
+							<input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+						</form>
+					</div>
+					<div class="profilegroupbox">
+						<h4>Wachtwoord wijzigen</h4>
+						<p>De wachtwoordswijziging is per direct van kracht.</p>
+						<form id="form" action="{{ url_for('profile') }}" method="post" class="needs-validation" style="max-width: 700px;" novalidate>
+							<div class="form-row">
+								<div class="form-group col-sm-6">
+									<label>Wachtwoord</label>
+									<input class="form-control" type="password" id="password1" name="password1" required>
+									<div class="invalid-feedback" id="invalidpassword1">Geef een wachtwoord op</div>
+								</div>
+
+								<div class="form-group col-sm-6">
+									<label>Herhaal wachtwoord</label>
+									<input class="form-control" type="password" id="password2" name="password2" aria-describedby="passwordhelp" required>
+
+									<!-- password client side message -->
+									<div id="passworderrormessage" class="invalid-feedback">Herhaal het wachtwoord</div>
+
+									<!-- password server side messages -->
+									<small id="passwordhelp" class="form-text text-muted">
+									{% with messages = get_flashed_messages(category_filter=["password"]) %}
+									   {% if messages %}
+										   {% for message in messages %}
+									         {{ message }}
+											{% endfor %}
+									   {% endif %}
+									{% endwith %}
+									</small>
+								</div>
+							</div>
+							<button id="passwordbutton" class="btn btn-dark" name="action" value="changepass" type="submit">Wijzig wachtwoord</button>
+							<input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+						</form>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="bigscreen">
+		<ul class="nav nav-tabs" id="myTab" role="tablist">
+			<li class="nav-item">
+				<a class="nav-link active" id="favourites-tab" data-toggle="tab" href="#favourites" role="tab" aria-controls="favourites" aria-selected="true"><i class="fas fa-heart"></i></a>
+			</li>
+			<li class="nav-item">
+				<a class="nav-link" id="requests-tab" data-toggle="tab" href="#requests" role="tab" aria-controls="requests" aria-selected="false"><i class="far fa-hand-point-up"></i></a>
+			</li>
+			<li class="nav-item">
+				<a class="nav-link" id="reviews-tab" data-toggle="tab" href="#reviews" role="tab" aria-controls="reviews" aria-selected="false"><i class="fas fa-star"></i></a>
+			</li>
+			<li class="nav-item">
+				<a class="nav-link" id="newsletters-tab" data-toggle="tab" href="#newsletters" role="tab" aria-controls="newsletters" aria-selected="false"><i class="far fa-newspaper"></i></a>
+			</li>
+			<li class="nav-item">
+				<a class="nav-link" id="account-tab" data-toggle="tab" href="#account" role="tab" aria-controls="account" aria-selected="false"><i class="fas fa-user-edit"></i></a>
+			</li>
+		</ul>
+		<div class="tab-content" id="myTabContent">
+			<div class="tab-pane fade show active" id="favourites" role="tabpanel" aria-labelledby="favourites-tab">
+				{% if user.favourites %}
+				<h2><i class="fas fa-heart"></i> Favorieten</h2>
+				<form action="{{ url_for('profile') }}" method="post">
+					<input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+					<div class="form-row">
+						<div class="form-group ml">
+							<label class="advancedlabel" for="typeinput">Filter op categorie</label>
+							<select class="form-control form-control-sm" id="typeinput" name="filter">
+								{% for key, value in TYPES_DICT.items() %}
+								<option value="{{ key }}">{{ value }}</option>
+								{% endfor %}
+							</select>
+						</div>
+						<input type="hidden" name="action" value="filter">
+						<div class="form-group">
+							<input class="btn btn-outline-dark filter" type="submit" value="Filter">
+						</div>
+					</div>
+				</form>
+				{% if favourites|length > 0 %}
+				{% for favourite in favourites %}
+				<a class="list" href="{{ url_for('location', place_id=favourite.place_id, name=favourite.name) }}">
+					<li class="media">
+						<div class="center-cropped" style="background-image: url('{{ favourite.photos }}');"></div>
+						<div class="media-body">
+							<h5 class="mt-0 mb-1">
+								<span class="toright">
+									{% if favourite.recommended %}
+									<p><button class="btn btn-danger btn-sm">AANRADER<i class="fas fa-medal"></i></button></p>
+									{% endif %}
+									<p class="nomt">
+										{% if favourite.price_level %}
+										{{ favourite.price_level }} -
+										{% endif %}
+										{% if favourite.recommended %}
+										{% for type in favourite.types %}
+										{% for key, value in TYPES_DICT.items() %}
+											{% if type == value %}
+											{% if key in ICON_DICT %}
+											<i class="fas fa-{{ ICON_DICT[key] }}"></i>
+											{% endif %}
+											{% endif %}
+										{% endfor %}
+										{% endfor %}
+										{% else %}
+										{% for type in favourite.types %}
+											{% if type in ICON_DICT %}
+											<i class="fas fa-{{ ICON_DICT[type] }}"></i>
+											{% endif %}
+										{% endfor %}
+										{% endif %}
+									</p>
+									<p>{{ favourite.opening_hours }}</p>
+								</span>
+								{{ favourite.name }}
+							</h5>
+							<p class="searchadress"><span id="stars">{{ favourite.rating }}</span></p>
+							<p class="searchadress">{{ favourite["formatted_address"][0] }}</p>
+						</div>
+					</li>
+				</a>
+				{% endfor %}
+				{% else %}
+				<p>Nog geen favoriete locaties met categorie {{ TYPES_DICT[filter] }}</p>
+				{% endif %}
+				{% else %}
+				<p>Nog geen opgeslagen favoriete locaties</p>
+				{% endif %}
+			</div>
+			<div class="tab-pane fade" id="requests" role="tabpanel" aria-labelledby="requests-tab">
+				{% if user.requests %}
+				<h2><i class="far fa-hand-point-up"></i> Aanvragen</h2>
+				<p>Hieronder zijn lopende informatieaanvragen te vinden. Per locatie zie je of de informatie al is verstuurd, heb je geen mail ontvangen? Controleer dan je spamfolder</p>
+				{% for request in user.requests %}
+				<div class="requestbox">
+					<p><i class="fas fa-map-marker-alt"></i> <span>{{ request.name }}</span></p>
+					<p><i class="fas fa-info-circle"></i> <span>{{ 'Verwerkt, check je email of spam-folder' if request.processed else 'In behandeling' }}</span></p>
+				</div>
+				{% endfor %}
+				{% else %}
+				<p>Geen lopende informatieaanvragen</p>
+				{% endif %}
+			</div>
+			<div class="tab-pane fade" id="reviews" role="tabpanel" aria-labelledby="reviews-tab">
+				<h2><i class="fas fa-star"></i> Reviews</h2>
+				{% if user.reviews %}
+				<p>Overzicht van geplaatste reviews</p>
+				{% for review in user.reviews %}
+				<div id="reviewform" class="reviewbox">
+					<h2>{{ review.name }}<span><a id="redlink" href="{{ url_for('location', place_id=review.place_id, name=review.name )}}">Stadgids-pagina</a></span></h2>
+					<h3>{{ user.username }}<span>{{ review.date.strftime("%-d %B %Y %R") }}</span><span id="stars">{{ review.stars }}</span></h3>
+					<p>{{ review.review if review.review else "Geen toelichting" }}</p>
+					<span class="delete"><a href="{{ url_for('deletereview', name=review.name, place_id=review.place_id) }}"><i class="fas fa-trash-alt"></i> Verwijderen</a></span>
+					<p id="usefull"><i class="fas fa-thumbs-up"></i> {{ review.get_upvote_count() }} {{ "gebruiker vindt" if review.get_upvote_count() == 1 else "gebruikers vinden" }} dit nuttig </p>
+				</div>
+				{% endfor %}
+				{% else %}
+				<p>Nog geen eigen reviews</p>
+				{% endif %}
+			</div>
+			<div class="tab-pane fade" id="newsletters" role="tabpanel" aria-labelledby="newsletters-tab">
+				<h2><i class="far fa-newspaper"></i> Nieuwsbrief</h2>
+				<p>Onze nieuwsbrief is een echte nieuwsbrief. Géén nieuws betekend dus ook géén nieuwsbrief. Wat je wel kan verwachten is een (bijna) wekelijkse email met de nieuwe aanraders, interessante artikelen of recensies van Stadsgids zelf of vanuit de krant of van het internet.</p>
+				<p> Wat je niet hoeft te verwachten zijn schreeuwende koppen en ellendige reclame.</p>
+				<form action="{{ url_for('profile')}}" method="post">
+					<div class="form-group">
+						<div class="form-check">
+							{% if user.newsletter %}
+							<input type="checkbox" class="form-check-input" id="newsletter" name="newsletter" checked>
+							{% else %}
+							<input type="checkbox" class="form-check-input" id="newsletter" name="newsletter">
+							{% endif %}
+							<label class="form-check-label" for="newletter">Ik wil de nieuwsbrief ontvangen</label>
+						</div>
+					</div>
+					<button id="button" class="btn btn-dark" type="submit" name="action" value="newsletter">Bewerken</button>
+					<input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+					<input type="hidden" name="anchor" value="newsletters"/>
+				</form>
+			</div>
+			<div class="tab-pane fade" id="account" role="tabpanel" aria-labelledby="account-tab">
+				<h2><i class="fas fa-user-edit"></i> Account</h2>
+				<p>Wijzig hier de accountgegevens</p>
+				<div class="profilegroupbox">
+					<h4>E-mailadres wijzigen</h4>
+					<p>Na het invoeren van het nieuwe e-mailadres ontvang je een e-mail met een bevestigingslink. Pas na het bevestigen van het nieuwe e-mailadres is de wijziging definitief.</p>
+					<form id="form" action="{{ url_for('profile') }}" method="post" class="needs-validation" novalidate>
+						<div class="form-row">
+							<div class="form-group ml">
+								<label>Nieuw e-mailadres</label>
+								<input class="form-control" type="email" id="emailinputsmall" name="email" aria-describedby="emailhelp" required>
+
+								<!-- email client side message -->
+								<div class="invalid-feedback" id="emailerrormessagesmall">Geef een geldig e-mailadres op</div>
+
+								<!-- email server side message -->
+								<small id="emailhelp" class="form-text text-muted">
+								{% with messages = get_flashed_messages(category_filter=["email"]) %}
+									{% if messages %}
+										{% for message in messages %}
+											{{ message }}
+										{% endfor %}
+									{% endif %}
+								{% endwith %}
+								</small>
+							</div>
+						</div>
+						<button id="emailbuttonsmall" class="btn btn-dark" name="action" value="changemail" type="submit">Wijzig e-mailadres</button>
+						<input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+					</form>
+				</div>
+				<div class="profilegroupbox">
+					<h4>Wachtwoord wijzigen</h4>
+					<p>De wachtwoordswijziging is per direct van kracht.</p>
+					<form id="form" action="{{ url_for('profile') }}" method="post" class="needs-validation" novalidate>
+						<div class="form-row">
+							<div class="form-group col-sm-6">
+								<label>Wachtwoord</label>
+								<input class="form-control" type="password" id="password1small" name="password1" required>
+								<div class="invalid-feedback" id="invalidpassword1small">Geef een wachtwoord op</div>
+							</div>
+
+							<div class="form-group col-sm-6">
+								<label>Herhaal wachtwoord</label>
+								<input class="form-control" type="password" id="password2small" name="password2" aria-describedby="passwordhelp" required>
+
+								<!-- password client side message -->
+								<div id="passworderrormessagesmall" class="invalid-feedback">Herhaal het wachtwoord</div>
+
+								<!-- password server side messages -->
+								<small id="passwordhelp" class="form-text text-muted">
+								{% with messages = get_flashed_messages(category_filter=["password"]) %}
+								   {% if messages %}
+									   {% for message in messages %}
+										 {{ message }}
+										{% endfor %}
+								   {% endif %}
+								{% endwith %}
+								</small>
+							</div>
+						</div>
+						<button id="passwordbuttonsmall" class="btn btn-dark" name="action" value="changepass" type="submit">Wijzig wachtwoord</button>
+						<input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+					</form>
+				</div>
+			</div>
+		</div>
+	</div>
 </div>
+{% endblock %}
+
+{% block script %}
+<script type="text/javascript" src="{{ url_for('static', filename='js/star.js')}}"></script>
+<script type="text/javascript" src="{{ url_for('static', filename='js/profile.js')}}"></script>
 {% endblock %}

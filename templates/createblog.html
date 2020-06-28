@@ -14,34 +14,37 @@ Layout for creating a newsletter
 <!-- page content -->
 {% block content %}
 <div class="container">
-    <h1>Blogpost opstellen</h1>
-    <form style="height: 100%;" class="form-control dectext needs-validation" action="{{ url_for('createblog', blog_id=blogpost.id) }}" method="post" novalidate>
+    <form class="form-control needs-validation fullheight formbox" action="{{ url_for('createblog', blog_id=blogpost.id) }}" method="post" novalidate>
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+        <h1>Blogpost opstellen</h1>
         <div class="form-row">
-            <div class="form-group">
-                <label for="subject">Titel</label>
+            <div class="form-group ml">
+                <label for="subject"><i class="far fa-heading"></i> Titel</label>
                 <input class="form-control" id="title" type="text" name="title" value="{{ blogpost.title }}" required>
                 <div class="invalid-feedback">Geef een titel op</div>
             </div>
         </div>
         <div class="form-row">
-            <div class="form-group">
-                <label for="short">Inleiding</label>
+            <div class="form-group ml">
+                <label for="short"><i class="far fa-file-alt"></i> Inleiding</label>
                 <textarea name="short" class="form-control" id="short" cols="40" rows="3" required>{{ blogpost.short }}</textarea>
                 <div class="invalid-feedback">Geef een inleiding op</div>
             </div>
         </div>
         <div class="form-row">
+            <label class="ml" for="editor1"><i class="far fa-newspaper"></i> Inhoud</label>
             <textarea name="editor1" id="editor1">
                 {{ blogpost.body }}
             </textarea>
         </div>
-        <div class="form-check" style="float: right;">
-            <input type="checkbox" class="form-check-input" id="unlock">
-            <label class="form-check-label" for="unlock">Ontgrendel knoppen</label>
-            <button id="locked" class="btn btn-outline-dark" type="submit" name="action" value="delete" disabled>Verwijder</button>
-            <button id="locked" class="btn btn-outline-dark" type="submit" name="action" value="publish" disabled>Publiceer</button>
+        <div class="form-check float_right">
+            <div class="btn btn-outline-dark mt" id="unlock">
+                <i id="lock" class="fas fa-lock"></i>
+            </div>
+            <button id="locked" class="btn btn-dark mt" type="submit" name="action" value="delete" disabled><i class="fas fa-trash-alt"></i><span class="mobile"> Verwijder</span></button>
+            <button id="locked" class="btn btn-dark mt" type="submit" name="action" value="publish" disabled><i class="fas fa-paper-plane"></i><span class="mobile"> Publiceer</span></button>
         </div>
-        <button class="btn btn-outline-dark" type="submit" name="action" value="save">Opslaan</button>
+        <button class="btn btn-outline-secondary mt" type="submit" name="action" value="save"><i class="far fa-save"></i><span class="mobile"> Opslaan</span></button>
     </form>
 </div>
 {% endblock %}

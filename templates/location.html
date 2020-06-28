@@ -19,7 +19,7 @@ Location page
 			<div id="carouselbox">
 				<h1>{{ location.name }}
 					{% if recommendation %}
-					<span><button class="btn btn-danger">AANRADER</button></span>
+					<span><button class="btn btn-danger">AANRADER<i class="fas fa-medal"></i></button></span>
 					{% endif %}
 				</h1>
 				<div id="demo" class="carousel slide" data-ride="carousel">
@@ -61,46 +61,67 @@ Location page
 			</div>
 			{% if current_user.is_authenticated %}
 			<div id="buttonbox">
-				<button id="jsbutton" class="btn btn-dark" data-location="{{ location.place_id }}" data-button="favourite"><span class="mobile">Favoriet </span><i id="heart" class="{{ location.favourite }} fa-heart" aria-hidden="true"></i></button>
-				<button id="jsbutton" class="btn btn-dark" data-location="{{ location.place_id }}" data-button="recommend" data-locationname="{{ location.name }}" data-website="{{ location.website if location.website != None }}"><span class="mobile">Is dit wat?  </span><i id="finger" class="{{ location.req }} fa-hand-point-up"></i></button>
-				<a href="#reviewform"><button class="btn btn-dark"><span class="mobile">Review </span><i class="far fa-edit"></i></button></a>
-				<a href="#reviewrow"><button class="btn btn-dark"><i class="fa fa-star" aria-hidden="true"></i> {{ location.guiderating }} <span class="mobile" style="font-size: 7px;">{{ location.count|string + " reviews" if location.count }}</span></button></a>
+				<div class="row center">
+					<a id="jsbutton" class="boxlink col-3" data-location="{{ location.place_id }}" data-button="favourite" data-locationname="{{ location.name }}">
+						<p><i id="heart" class="{{ location.favourite }} fa-heart" aria-hidden="true"></i><span class="mobile">Favoriet</span></p>
+					</a>
+					<a id="jsbutton" class="boxlink col-3" data-location="{{ location.place_id }}" data-button="recommend" data-locationname="{{ location.name }}" data-website="{{ location.website if location.website != None }}">
+						<p><i id="finger" class="{{ location.req }} fa-hand-point-up"></i><span class="mobile">Is dit wat?</span></p>
+					</a>
+					<a class="boxlink col-3" href="#reviewform">
+						<p><i class="far fa-edit"></i><span class="mobile">Review</span></p>
+					</a>
+					{% if location.guiderating %}
+					<a class="boxlink col-3" href="#ratingbox">
+						<p><i class="fa fa-star" aria-hidden="true"></i><span class="mobile">{{ location.guiderating }} <span class="small">{{ location.count|string + " reviews" if location.count }}</span></span></p>
+					</a>
+					{% else %}
+					<a class="boxlink col-3" href="#ratingbox">
+						<div class="">
+							<i class="fa fa-star" aria-hidden="true"></i><span class="mobile">{{ location.rating }} <span class="small">{{ location.count|string + " reviews" if location.count else " Google" }}</span></span>
+						</div>
+					</a>
+					{% endif %}
+				</div>
 			</div>
 			{% else %}
-			<div id="buttonbox">
-				<p>Met een account heb je toegang tot nog meer functies! Zo kun je locties toevoegen aan je favorieten en krijg je updates over nieuwe locaties of speciale evenementen.</p><p><a href="{{ url_for('register') }}">Registreer je hier</a> om hiervan te profiteren. Heb je al een account? Log dan in via het menu!</p>
+			<div id="greybuttonbox" class="greybox">
+				<p><i class="fas fa-heart"></i><i class="far fa-hand-point-up"></i><i class="far fa-edit"></i><i class="fas fa-star"></i></p>
+				<p>Met een account heb je toegang tot nog meer functies zoals: favorieten toevoegen, bekijken en schrijven van recensies maar ook de mogelijkheid om meer informatie over deze locatie aan te vragen.</p>
+				<p><a href="{{ url_for('register') }}">Registreer je hier</a> om hiervan te profiteren. Heb je al een account? Log dan in via het menu!</p>
 			</div>
 			{% endif %}
 			{% for role in current_user.roles %}
 			{% if "Administrator" == role.name %}
 			{% if recommendation or visible == false %}
-			<a href="{{ url_for('changenew', place_id=location.place_id, name=location.name, types=location.types, opening=location.opening, price_level=location.price_level) }}"><button id="changelocation" class="btn btn-outline-secondary btn-block">Wijzig {{ location.name }}</button></a>
+			<a href="{{ url_for('changenew', place_id=location.place_id, name=location.name, types=location.types, opening=location.opening, price_level=location.price_level) }}"><button id="changelocation" class="btn btn-outline-secondary btn-block"><i class="far fa-edit"></i> Wijzig {{ location.name }}</button></a>
 			{% else %}
-			<a href="{{ url_for('createnew', place_id=location.place_id, name=location.name, types=location.types, opening=location.opening, price_level=location.price_level) }}"><button id="changelocation" class="btn btn-outline-secondary btn-block">Raad {{ location.name }} aan</button></a>
+			<a href="{{ url_for('createnew', place_id=location.place_id, name=location.name, types=location.types, opening=location.opening, price_level=location.price_level) }}"><button id="changelocation" class="btn btn-outline-secondary btn-block"><i class="far fa-hand-point-up"></i> Raad {{ location.name }} aan</button></a>
 			{% endif %}
 			{% endif %}
 			{% endfor %}
 			{% if recommendation %}
-			<p style="white-space: pre-line">{{ recommendation.review }}</p>
+			<p class="recommendation">{{ recommendation.review }}</p>
 			{% endif %}
 			{% for role in current_user.roles %}
 			{% if "Administrator" == role.name %}
-			<div class="row">
+			<div id="adminbuttons" class="row">
 				<div class="col-6">
-					<a href="{{ url_for('create_event', place_id=location.place_id, name=location.name) }}"><button class="btn btn-outline-secondary btn-block">Voeg evenement toe</button></a>
+					<a href="{{ url_for('create_event', place_id=location.place_id, name=location.name) }}"><button class="btn btn-outline-secondary btn-block"><i class="far fa-calendar-plus"></i><span class="mobile"> Voeg evenement toe</span></button></a>
 				</div>
 				<div class="col-6">
 					<form action="{{ url_for('highlight')  }}" method="post">
+						<input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
 						<input type="hidden" name="name" value="{{ location.name }}">
 						<input type="hidden" name="place_id" value="{{ location.place_id }}">
-						<input class="btn btn-outline-secondary btn-block" type="submit" value="Maak uitgelicht aan">
+						<button class="btn btn-outline-secondary btn-block" type="submit"><i class="fas fa-award"></i><span class="mobile"> Maak uitgelicht aan</span></button>
 					</form>
 				</div>
 			</div>
 			{% endif %}
 			{% endfor %}
 			{% if events and current_user.is_authenticated %}
-			<h2>Evenementen</h2>
+			<h2><i class="far fa-calendar-alt"></i> Evenementen</h2>
 			<div class="scrollbox">
 				{% for event in events %}
 				<div class="card">
@@ -114,57 +135,102 @@ Location page
 			</div>
 			{% endif %}
 			{% if current_user.is_authenticated %}
-			{% if location.ownreview != None %}
-			<h2 id="reviewform">Eigen review</h2>
-			<div class="reviewbox">
-				<h3>{{ location.ownreview.user.username }}<span>{{ location.ownreview.date.strftime("%-d %B %Y %R") }}</span></h3>
-				<p>{{ location.ownreview.review if location.ownreview.review else "Geen toelichting" }}<span id="stars">{{ location.ownreview.stars }}</span></p>
-				<button class="btn btn-outline-danger btn-sm">Nuttig ({{ location.ownreview.get_upvote_count() }})</button><span><p><a href="{{ url_for('deletereview', name=location.name, place_id=location.place_id) }}">Verwijder</a></p></span>
+			{% if location.reviews|length == 0 and location.ownreview == None %}
+			<div class="ratingbox">
+				<div id="starbox" class="float_right">
+					<h2 id="ratingnum"><i id="rating" class="fas fa-star"></i> {{ location.rating }}</h2>
+					<p id="ratingcount">Uit {{ location.totalrate }} Google reviews</p>
+				</div>
+				<h2 id="ratingbox">Beoordeling</h2>
+				<p id="norating">Er zijn nog geen Stadsgids-reviews voor deze locatie</p>
+				<div id="reviewform" class="reviewform">
+					<h2>Schrijf een review</h2>
+					<form action="{{ url_for('location', name=location.name, place_id=location.place_id) }}" method="post">
+						<input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+						<p>Geef een beoordeling</p>
+						<fieldset class="rate">
+							<input data-input="" type="radio" id="rating10" name="rating" value="5" /><label for="rating10" title="5 stars"></label>
+							<input data-input="" type="radio" id="rating8" name="rating" value="4" /><label for="rating8" title="4 stars"></label>
+							<input data-input="" type="radio" id="rating6" name="rating" value="3" /><label for="rating6" title="3 stars"></label>
+							<input data-input="" type="radio" id="rating4" name="rating" value="2" /><label for="rating4" title="2 stars"></label>
+							<input data-input="" type="radio" id="rating2" name="rating" value="1" /><label for="rating2" title="1 star"></label>
+						</fieldset>
+						<p for="reviewinput">Schrijf iets over {{ location.name }}</p>
+						<textarea class="form-control" type="text" id="reviewinput" name=review></textarea>
+						<input class="btn btn-secondary" type="submit" id="review">
+						<p class="errorrev"></p>
+					</form>
+				</div>
+			</div>
+			{% else %}
+			<div class="ratingbox">
+				<div id="starbox" class="float_right">
+					<h2 id="ratingnum"><i id="rating" class="fas fa-star"></i> {{ location.guiderating }}</h2>
+					{% if location.count == "1" %}
+					<p id="ratingcount">Uit {{ location.count }} Stadsgids reviews</p>
+					{% else %}
+					<p id="ratingcount">Uit {{ location.count }} Stadsgids review</p>
+					{% endif %}
+				</div>
+				<h2 id="ratingbox">Beoordeling</h2>
+				<p id="googlerating">Google rating <i class="fas fa-star"></i> {{ location.rating }}</p>
+				<div class="scrollreview">
+					{% if location.ownreview != None %}
+					<div id="reviewform" class="reviewbox">
+						<h3>{{ location.ownreview.user.username }}<span>{{ location.ownreview.date.strftime("%-d %B %Y %R") }}</span><span id="stars">{{ location.ownreview.stars }}</span></h3>
+						<p>{{ location.ownreview.review if location.ownreview.review else "Geen toelichting" }}</p>
+						<span class="delete"><a href="{{ url_for('deletereview', name=location.name, place_id=location.place_id) }}"><i class="fas fa-trash-alt"></i> Verwijderen</a></span>
+						<p id="usefull"><i class="fas fa-thumbs-up"></i> {{ location.ownreview.get_upvote_count() }} {{ "gebruiker vindt" if location.ownreview.get_upvote_count() == 1 else "gebruikers vinden" }} dit nuttig </p>
+					</div>
+					{% endif %}
+					{% if  location.reviews|length > 0 %}
+					{% for review in location.reviews %}
+					<div class="reviewbox">
+						<h3>{{ review.user.username }}<span>{{ review.date.strftime("%-d %B %Y") }}</span><span id="stars">{{ review.stars }}</span></h3>
+						<p>{{ review.review if review.review else "Geen toelichting" }}</p>
+						<a id="upvote" data-review_id="{{ review.id }}"><i class="
+							{% set idlist = [] %}
+							{% for upvote in review.upvotes %}
+							{{ idlist.append(upvote.user_id) }}
+							{% endfor %}
+							{{ 'fas fa-thumbs-up' if current_user.id in idlist else 'far fa-thumbs-up'}}
+						" data-thumb="{{ review_id }}"></i> <span class="noright" data-inner="{{ review.id }}">Nuttig ({{ review.get_upvote_count() }})</span></a>
+					</div>
+					{% endfor %}
+					{% endif %}
+				</div>
+				{% if location.ownreview == None %}
+				<div id="reviewform" class="reviewform">
+					<h2>Schrijf een review</h2>
+					<form action="{{ url_for('location', name=location.name, place_id=location.place_id) }}" method="post">
+						<p>Geef een beoordeling</p>
+						<fieldset class="rate">
+							<input data-input="" type="radio" id="rating10" name="rating" value="5" /><label for="rating10" title="5 stars"></label>
+							<input data-input="" type="radio" id="rating8" name="rating" value="4" /><label for="rating8" title="4 stars"></label>
+							<input data-input="" type="radio" id="rating6" name="rating" value="3" /><label for="rating6" title="3 stars"></label>
+							<input data-input="" type="radio" id="rating4" name="rating" value="2" /><label for="rating4" title="2 stars"></label>
+							<input data-input="" type="radio" id="rating2" name="rating" value="1" /><label for="rating2" title="1 star"></label>
+						</fieldset>
+						<p for="reviewinput">Schrijf iets over {{ location.name }}</p>
+						<textarea class="form-control" type="text" id="reviewinput" name=review></textarea>
+						<input class="btn btn-secondary" type="submit" id="review">
+						<p class="errorrev"></p>
+					</form>
+				</div>
+				{% endif %}
 			</div>
 			{% endif %}
-			{% endif %}
-			{% if  location.reviews|length > 0 %}
-			<h2 id="reviewrow">Reviews van andere gebruikers</h2>
-			{% for review in location.reviews %}
-			<div class="reviewbox">
-				<h3>{{ review.user.username }}<span>{{ review.date.strftime("%-d %B %Y") }}</span></h3>
-				<p>{{ review.review if review.review else "Geen toelichting" }}<span id="stars">{{ review.stars }}</span></p>
-				<button id="upvote" data-review_id="{{ review.id }}" class="{% set idlist = [] %}{% for upvote in review.upvotes %}
-				{{ idlist.append(upvote.user_id) }}
-				{% endfor %}
-				{{ 'btn btn-danger btn-sm' if current_user.id in idlist else 'btn btn-outline-danger btn-sm'}}">Nuttig ({{ review.get_upvote_count() }})</button>
-			</div>
-			{% endfor %}
-			{% endif %}
-			{% if location.ownreview == None %}
-			<div id="reviewform" class="reviewform">
-				<h2>Schrijf een review</h2>
-				<form action="{{ url_for('location', name=location.name, place_id=location.place_id) }}" method="post">
-					<p>Geef een beoordeling</p>
-					<fieldset class="rate">
-					    <input data-input="" type="radio" id="rating10" name="rating" value="5" /><label for="rating10" title="5 stars"></label>
-					    <input data-input="" type="radio" id="rating8" name="rating" value="4" /><label for="rating8" title="4 stars"></label>
-					    <input data-input="" type="radio" id="rating6" name="rating" value="3" /><label for="rating6" title="3 stars"></label>
-					    <input data-input="" type="radio" id="rating4" name="rating" value="2" /><label for="rating4" title="2 stars"></label>
-					    <input data-input="" type="radio" id="rating2" name="rating" value="1" /><label for="rating2" title="1 star"></label>
-					</fieldset>
-					<p for="reviewinput">Schrijf iets over {{ location.name }}</p>
-					<textarea class="form-control" type="text" id="reviewinput" name=review></textarea>
-					<input class="btn btn-secondary" type="submit" id="review">
-					<p class="errorrev"></p>
-				</form>
-			</div>
 			{% endif %}
 		</div>
 		<div class="col-lg-4">
 			<div class="detailbox">
-				<h2>Kaart</h2>
+				<h2><i class="far fa-map"></i> Kaart</h2>
 				<iframe width="700" height="450" frameborder="0" style="border:0"
 				src="{{ location.map }}" allowfullscreen></iframe>
 				{% for details in location.address %}
 				<p>{{ details.strip() }}</p>{% if loop.index0 ==0 %}<span><a href="http://maps.apple.com/?address={{ location.applemapslink }}"> maps</a></span>{% endif %}
 				{% endfor %}
-				<h2 class="newdetail">Openingstijden</h2>
+				<h2 class="newdetail"><i class="far fa-clock"></i> Openingstijden</h2>
 				{% if location.opening_hours %}
 				{% if location.opening_hours[0] == "24" %}
 				<p class="opening_hours" >24 uur per dag geopend</p>
@@ -196,10 +262,10 @@ Location page
 				<p>Onbekend</p>
 				{% endif %}
 				{% if recommendation.tip %}
-				<h2 class="newdetail">Tip</h2>
+				<h2 class="newdetail"><i class="far fa-comment-alt"></i> Tip</h2>
 				<p>{{ recommendation.tip }}</p>
 				{% endif %}
-				<h2 class="newdetail">Details</h2>
+				<h2 class="newdetail"><i class="far fa-file-alt"></i> Details</h2>
 				{% if recommendation.type %}
 				<p>Soort
 					<span>
@@ -231,8 +297,6 @@ Location page
 				{% if location.website %}
 				<p>Website<span><a href="{{ location.website }}">{{ location.name }}</a></span></p>
 				{% endif %}
-				<h2 class="newdetail">Google beooordeling</h2>
-				<p>Gemiddelde<span id="stars">{{ location.rating }}</span></p>
 			</div>
 		</div>
 	</div>

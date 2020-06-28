@@ -8,6 +8,7 @@
 
 # import packages
 import os
+import requests
 from flask import Flask, render_template, request, redirect, url_for, flash, jsonify, session
 from flask_session import Session
 from flask_migrate import Migrate
@@ -17,24 +18,33 @@ from flask_admin.contrib.sqla import ModelView
 from flask_login import LoginManager, login_required, current_user, login_user, logout_user
 from flask_mail import Mail, Message
 from flask_socketio import SocketIO, emit
+from flask_wtf.csrf import CSRFProtect
+from flask_talisman import Talisman
 from hashlib import blake2b
 from itsdangerous import URLSafeTimedSerializer
 from sqlalchemy.sql import func
 import datetime
-import requests
 import locale
 import ast
 import rq
 from redis import Redis
-from runworker import conn
+#from runworker import conn
 
 from models import *
 
 # define constants
 GOOGLE_API_KEY = "AIzaSyCph_mUz9AYLa0VlsSjsg98b92GRz6HedM"
 API_TYPES = ["art_gallery", "bakery", "bar", "bicycle_store", "book_store", "bowling_alley", "cafe", "casino", "florist", "library", "liquor_store", "meal_delivery", "meal_takeaway", "movie_rental", "movie_theater", "museum", "night_club", "park", "restaurant", "spa", "stadium", "store", "tourist_attraction", "zoo", "brewery", "distillery", "wineshop", "coffeeroasters", "beerbar"]
-TYPES_DICT = {"": "Geen voorkeur", "art_gallery": "Kunstgallerij", "bakery": "Bakkerij", "bar": "Bar", "bicycle_store": "Fietsenwinkel", "book_store": "Boekenwinkel", "bowling_alley": "Bowlingbaan", "cafe": "Cafe", "casino": "Casino", "florist": "Bloemenwinkel", "library": "Bibliotheek", "liquor_store": "Slijterij", "meal_delivery": "Bezorgrestaurant", "meal_takeaway": "Afhaalrestaurant", "movie_rental": "Videotheek", "movie_theater": "Bioscoop", "museum": "Museum", "night_club": "Nachtclub", "park": "Park", "restaurant": "Restaurant", "spa": "Spa", "stadium": "Stadion", "store": "Winkel", "tourist_attraction": "Toeristenattractie", "zoo": "Dierentuin", "brewery": "Brouwerij", "distillery": "Destileerderij", "wineshop": "Wijnwinkel", "coffeeroasters": "Koffiebranders", "beerbar": "Biercafé"}
+TYPES_DICT = {"": "Geen voorkeur", "art_gallery": "Kunstgallerij", "bakery": "Bakkerij", "bar": "Bar", "bicycle_store": "Fietsenwinkel", "book_store": "Boekenwinkel", "bowling_alley": "Bowlingbaan", "cafe": "Cafe", "casino": "Casino", "florist": "Bloemenwinkel", "library": "Bibliotheek", "liquor_store": "Slijterij", "meal_delivery": "Bezorgrestaurant", "meal_takeaway": "Afhaalrestaurant", "movie_rental": "Videotheek", "movie_theater": "Bioscoop", "museum": "Museum", "night_club": "Nachtclub", "park": "Park", "restaurant": "Restaurant", "spa": "Spa", "stadium": "Stadion", "store": "Winkel", "tourist_attraction": "Toeristenattractie", "zoo": "Dierentuin", "brewery": "Brouwerij", "distillery": "Destileerderij", "wineshop": "Wijnwinkel", "coffeeroasters": "Koffiebranders", "beerbar": "Biercafé", "cocktailbar": "Cocktailbar"}
 RESULT_FILTER = ["sexshop", "sex", "gay", "2020", "kamerverhuur", "fetish", "erotic", "xxx", "lust"]
+
+# search categories
+SEARCH_TYPES = ["", "bakery", "bar", "book_store", "cafe", "casino", "library", "liquor_store", "movie_theater", "museum", "night_club", "restaurant", "spa", "store"]
+REC_SEARCH_TYPES = ["", "bakery", "bar", "cafe", "museum", "night_club", "restaurant", "store", "brewery", "distillery", "wineshop", "coffeeroasters", "beerbar"]
+
+# icon dict
+ICON_DICT = {"bakery": "bread-slice", "book_store": "book", "casino": "dice", "library": "book-reader", "liqour_store": "wine-bottle", "cinema": "film", "museum": "palette", "night_club": "compact-disc", "spa": "hot-tub", "store": "shopping-basket", "restaurant": "utensils", "brewery": "beer", "beerbar": "beer", "coacktailbar": "cocktail", "cofferoasters": "coffee", "wineshop": "wine-glass-alt", "distillery": "whiskey", "bar": "glass-cheers", "cafe": "mug-hot"}
+
 # configure Flask app
 app = Flask(__name__)
 
@@ -46,11 +56,15 @@ if not os.getenv("DATABASE_URL"):
     raise RuntimeError("DATABASE_URL is not set")
 app.config["SQLALCHEMY_DATABASE_URI"] = os.getenv("DATABASE_URL")
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
+app.config["SESSION_COOKIE_HTTPONLY"] = True
+app.config["SESSION_COOKIE_SECURE"] = True
+app.config["SESSION_COOKIE_SAMESITE"] = 'Lax'
 db.init_app(app)
 
 # configure session, use filesystem
 app.config["SESSION_PERMANENT"] = False
 app.config["SESSION_TYPE"] = "filesystem"
+
 Session(app)
 
 # configure migrations
@@ -65,6 +79,8 @@ admin.add_view(AdminView(Recommendation, db.session))
 admin.add_view(AdminView(Highlight, db.session))
 admin.add_view(AdminView(Review, db.session))
 admin.add_view(AdminView(Event, db.session))
+admin.add_view(AdminView(Request, db.session))
+
 admin.add_link(MenuLink(name='Back to site', url='/stadsgids/dashboard'))
 
 
@@ -93,8 +109,18 @@ else:
 locale.setlocale(locale.LC_ALL, "nl_NL")
 
 # set worker Queue
-queue = rq.Queue('default', connection=conn)
+#queue = rq.Queue('default', connection=conn)
 
+# set Flask WTF CSRFProtect
+csrf = CSRFProtect(app)
+
+
+#@app.before_request
+#def before_request():
+#    if request.url.startswith('http://'):
+#        url = request.url.replace('http://', 'https://', 1)
+#        code = 301
+#        return redirect(url, code=code)
 
 # test code
 @app.route('/test')
@@ -116,7 +142,7 @@ def deletereview(place_id, name):
     db.session.delete(review)
     db.session.commit()
     flash(f"Review verwijderd", "success")
-    return redirect(url_for('location', place_id=place_id, name=name))
+    return redirect(request.referrer)
 
 @app.route('/deleteevent/<event_id>/<name>')
 def delete_event(event_id, name):
@@ -125,7 +151,7 @@ def delete_event(event_id, name):
     db.session.delete(event)
     db.session.commit()
     flash(f"Evenement verwijderd", "success")
-    return redirect(url_for('changenew', place_id=event.place_id, name=name))
+    return redirect(request.referrer)
 
 @app.route('/stadsgids/resetwachtwoord', methods=["POST"])
 def reset():
@@ -262,7 +288,7 @@ def action_location():
                 return jsonify({"success": True})
 
         # add new favourite if relation does not exist
-        newfavourite = Favourite(place_id=place_id)
+        newfavourite = Favourite(place_id=place_id, name=name)
         db.session.add(newfavourite)
         db.session.commit()
         return jsonify({"success": True})
@@ -276,10 +302,11 @@ def action_location():
 
         # send email for request /stadsgids/locatie/<name>/<place_id>
         link = request.url_root + "stadsgids/locatie/" + name + "/" + place_id
-        msg = Message(f"{user.firstname} vraagt zich af of {name} een leuke plek is om te bezoeken", recipients=["mauricekingma@me.com"])
-        msg.html = render_template("recommendmail.html", name=user.firstname, email=user.email, location=name, website=website, place_id=place_id)
+        # TODO: socket stuur nieuwe aanvraag naar beheerder
+        msg = Message(f"Ontvangstbevestiging informatieaanvraag voor {location}", recipients=["mauricekingma@me.com"])
+        msg.html = render_template("recommendmail.html", name=user.firstname, location=name, website=website, place_id=place_id)
         job = queue.enqueue('task.send_mail', msg)
-        newreq = Request(place_id=place_id)
+        newreq = Request(place_id=place_id, name=name)
         db.session.add(newreq)
         db.session.commit()
         return jsonify({"success": True})
@@ -417,8 +444,7 @@ def register():
     serializer = URLSafeTimedSerializer(app.config['SECRET_KEY'])
     token = serializer.dumps(email, salt=app.config['SECURITY_PASSWORD_SALT'])
 
-        # send email for confirmation
-
+    # send email for confirmation
     msg = Message("Bevestig je e-mailadres om je account te activeren", recipients=[email])
     link = request.url_root + "stadsgids/emailbevestigen/" + token
     msg.html = render_template('confirmmail.html', firstname=firstname, email=email, link=link)
@@ -459,6 +485,32 @@ def confirm_email(token):
     user.email_confirmed_at = datetime.datetime.now()
     db.session.commit()
     flash("E-mailadres bevestigd", 'success')
+    login_user(user)
+    return redirect(url_for('guide'))
+
+@app.route('/stadsgids/emailwijzigen/<token>')
+def change_email(token):
+    # configure serializer and check token (3600s is 1h)
+    serializer = URLSafeTimedSerializer(app.config['SECRET_KEY'])
+    expiration = 3600
+    try:
+        email = serializer.loads(token, salt=app.config['SECURITY_PASSWORD_SALT'], max_age=expiration)
+
+    # return not_confirmed route if expired
+    except: return redirect(url_for('not_confirmed'))
+    user = User.query.filter_by(newemail=email).first()
+
+    # check if already confirmed
+    if user.newemail == None:
+        flash("E-mailadres al gewijzigd", "success")
+        return redirect(url_for('guide'))
+
+    # set to confirmed in database
+    user.email_confirmed_at = datetime.datetime.now()
+    user.email = user.newemail
+    user.newemail = None
+    db.session.commit()
+    flash("E-mailadres gewijzigd", 'success')
     login_user(user)
     return redirect(url_for('guide'))
 
@@ -570,7 +622,7 @@ def location(place_id, name):
     if request.method == "GET":
 
         # google places api request for location
-        res = requests.get("https://maps.googleapis.com/maps/api/place/details/json", params={"key": GOOGLE_API_KEY, "place_id": place_id, "fields": "name,formatted_address,formatted_phone_number,icon,type,photo,website,opening_hours,price_level,rating,business_status,place_id", "locationbias": "circle:10000@52.348460,4.885954", "language": "nl"})
+        res = requests.get("https://maps.googleapis.com/maps/api/place/details/json", params={"key": GOOGLE_API_KEY, "place_id": place_id, "fields": "name,formatted_address,formatted_phone_number,icon,type,photo,website,opening_hours,price_level,rating,business_status,place_id,review", "locationbias": "circle:10000@52.348460,4.885954", "language": "nl"})
 
         # set location variables
         if res.status_code == 200:
@@ -622,8 +674,8 @@ def location(place_id, name):
                 location["price_level"] = False
             if "rating" in data["result"]:
                 location["rating"] = data["result"]["rating"]
-            if "§" in data["result"]:
-                location["totalrate"] = data["result"]["user_ratings_total"]
+            if "reviews" in data["result"]:
+                location["totalrate"] = len(data["result"]["reviews"])
             if "website" in data["result"]:
                 location["website"] = data["result"]["website"]
             if "types" in data["result"]:
@@ -646,7 +698,7 @@ def location(place_id, name):
     review = request.form.get('review')
 
     # add review to database
-    newreview = Review(place_id=place_id, stars=stars, review=review)
+    newreview = Review(place_id=place_id, stars=stars, review=review, name=name)
     db.session.add(newreview)
     db.session.commit()
     flash(f"Review geplaatst", "success")
@@ -659,7 +711,7 @@ def new():
 @app.route('/stadsgids/zoeken', methods=["GET", "POST"])
 def search():
     if request.method == "GET":
-        return render_template("search.html", search=False, types=TYPES_DICT)
+        return render_template("search.html", search=False, TYPES_DICT=TYPES_DICT, REC_SEARCH_TYPES=REC_SEARCH_TYPES, SEARCH_TYPES=SEARCH_TYPES, ICON_DICT=ICON_DICT)
 
     # declare result list
     results = []
@@ -708,7 +760,8 @@ def search():
             if recommendation:
                 if recommendation.visible:
                     result["recommended"] = True
-        return render_template("search.html", search=True, results=results, types=TYPES_DICT)
+                    result["guidetype"] = recommendation.type.replace("{", "").replace("}", "").split(",")
+        return render_template("search.html", search=True, results=results, TYPES_DICT=TYPES_DICT, REC_SEARCH_TYPES=REC_SEARCH_TYPES, SEARCH_TYPES=SEARCH_TYPES, ICON_DICT=ICON_DICT)
 
     # get filters if advanced search
     minprice = int(request.form.get('minprice'))
@@ -769,7 +822,8 @@ def search():
             if recommendation:
                 if recommendation.visible:
                     result["recommended"] = True
-        return render_template("search.html", search=True, results=results, types=TYPES_DICT)
+                    result["guidetype"] = recommendation.type.replace("{", "").replace("}", "").split(",")
+        return render_template("search.html", search=True, results=results, TYPES_DICT=TYPES_DICT, REC_SEARCH_TYPES=REC_SEARCH_TYPES, SEARCH_TYPES=SEARCH_TYPES, ICON_DICT=ICON_DICT)
 
     if type:
         type = TYPES_DICT[type]
@@ -780,6 +834,8 @@ def search():
         result = {}
         result["price_level"] = location.price_level * "€"
         result["recommended"] = True
+        result["guidetype"] = location.type.replace("{", "").replace("}", "").split(",")
+
 
         # google places api request for location
         res = requests.get("https://maps.googleapis.com/maps/api/place/details/json", params={"key": GOOGLE_API_KEY, "place_id": location.place_id, "fields": "name,icon,formatted_address,photo,opening_hours,price_level,rating,place_id", "locationbias": "circle:10000@52.348460,4.885954", "language": "nl"})
@@ -817,7 +873,8 @@ def search():
 
 
 
-    return render_template("search.html", search=True, results=results, types=TYPES_DICT)
+
+    return render_template("search.html", search=True, results=results, TYPES_DICT=TYPES_DICT, REC_SEARCH_TYPES=REC_SEARCH_TYPES, SEARCH_TYPES=SEARCH_TYPES, ICON_DICT=ICON_DICT)
 
 
 
@@ -826,10 +883,103 @@ def search():
 def weekend():
     return render_template("weekend.html")
 
-@app.route('/stadsgids/profiel')
+@app.route('/stadsgids/profiel', methods=["GET", "POST"])
 @login_required
 def profile():
-    return render_template("profile.html")
+    user = User.query.filter_by(id=current_user.id).first()
+    favourites = []
+    for favourite in user.favourites:
+        result = {}
+        # google places api request for location
+        res = requests.get("https://maps.googleapis.com/maps/api/place/details/json", params={"key": GOOGLE_API_KEY, "place_id": favourite.place_id, "fields": "name,formatted_address,photo,opening_hours,price_level,rating,place_id,types", "locationbias": "circle:10000@52.348460,4.885954", "language": "nl"})
+        if res.status_code == 200:
+            data = res.json()
+            result["name"] = data["result"]["name"]
+            result["rating"] = data["result"]["rating"]
+            result["place_id"] = data["result"]["place_id"]
+            result["price_level"] = data["result"]["price_level"] * "€"
+            result["formatted_address"] = data["result"]["formatted_address"].split(",")
+
+            if "photos" in data["result"]:
+
+                # google places photo api request for thumbnail
+                photo = requests.get("https://maps.googleapis.com/maps/api/place/photo", params={"key": GOOGLE_API_KEY, "maxwidth": "250", "photoreference": data["result"]["photos"][0]["photo_reference"]})
+                if photo.status_code == 200:
+                    result["photos"] = photo.url
+                else:
+                    result["photos"] = None
+            result["types"] = data["result"]["types"]
+        recommendation = Recommendation.query.filter_by(place_id=favourite.place_id).first()
+        if recommendation:
+            result["recommended"] = True
+            result["types"] = recommendation.type.replace("}", "").replace("{", "").split(",")
+            result["price_level"] = recommendation.price_level * "€"
+        else:
+            result["recommended"] = False
+        favourites.append(result)
+
+
+    if request.method == "GET":
+        return render_template("profile.html", user=user, TYPES_DICT=TYPES_DICT, favourites=favourites, ICON_DICT=ICON_DICT)
+
+    action = request.form.get('action')
+
+    if action == "newsletter":
+        if request.form.get('newsletter'):
+            user.newsletter = True
+            flash("Je bent nu ingeschreven voor de nieuwsbrief", "success")
+        else:
+            user.newsletter = False
+            flash("Je bent nu uitgeschreven voor de nieuwsbrief", "success")
+
+    if action == "filter":
+        filter = request.form.get('filter')
+        if filter != "":
+            filtered = []
+            for favourite in favourites:
+                if filter in favourite["types"]:
+                    filtered.append(favourite)
+            favourites = filtered
+        return render_template("profile.html", user=user, TYPES_DICT=TYPES_DICT, favourites=favourites, ICON_DICT=ICON_DICT, filter=filter)
+
+
+    if action == "changemail":
+        print("change")
+        email = request.form.get('email')
+        other_user = User.query.filter_by(email=email).first()
+        if other_user:
+            flash(f"E-mailadres {email} al in gebruik", "email")
+            return redirect(url_for('profile'))
+        user.newemail = email
+
+        # generate token confirmation email
+        serializer = URLSafeTimedSerializer(app.config['SECRET_KEY'])
+        token = serializer.dumps(email, salt=app.config['SECURITY_PASSWORD_SALT'])
+
+        # send email for confirmation
+        msg = Message("Bevestig je nieuwe e-mailadres", recipients=[email])
+        link = request.url_root + "stadsgids/emailwijzigen/" + token
+        db.session.commit()
+        msg.html = render_template('changeemail.html', firstname=user.firstname, email=email, link=link)
+        job = queue.enqueue('task.send_mail', msg)
+        flash(f"Link naar e-mailadres {email} gestuurd ter bevestiging wijzigen email", "succes")
+        return render_template("profile.html", user=user, TYPES_DICT=TYPES_DICT, favourites=favourites, ICON_DICT=ICON_DICT)
+
+    if action == "changepass":
+        password1 = request.form.get("password1")
+        password2 = request.form.get("password2")
+
+        # check if passswords match
+        if password1 != password2:
+            flash("Wachtwoorden komen niet overeen", 'password')
+            return redirect(url_for('profile'), "303")
+
+        # hash and set password
+        password = blake2b(password1.encode()).hexdigest()
+        user.password = password
+        flash("Wachtwoord gewijzigd", "success")
+        db.session.commit()
+        return redirect(url_for('profile'))
 
 @app.route('/stadsgids/dashboard')
 @role_required('Administrator')
@@ -849,7 +999,6 @@ def controlnew():
         filtered = []
         recommendations = Recommendation.query.all()
         for recommendation in recommendations:
-            print(filter)
             if TYPES_DICT[filter] in recommendation.type.replace("}", "").replace("{", "").split(",") or filter == "":
                 filtered.append(recommendation)
         return render_template("controlnew.html", recommendations=filtered, types=TYPES_DICT)
@@ -929,11 +1078,16 @@ def create_event(name, place_id):
     time = request.form.get("time")
     description = request.form.get("description")
     date_string = date + "/" + time
-    datetime_object = datetime.datetime.strptime(date_string, '%d-%m-%Y/%H:%M')
+    try:
+        datetime_object = datetime.datetime.strptime(date_string, '%d%m%Y/%H%M')
+    except:
+        flash("Datumvelden niet goed ingevoerd", 'warning' )
+        return redirect(url_for("location", name=request.form.get("name"), place_id=request.form.get("place_id")))
 
     event = Event(title=title, date=datetime_object, description=description, place_id=place_id)
     db.session.add(event)
     db.session.commit()
+    flash("Evenement geplaatst", 'success' )
     return redirect(url_for("location", name=request.form.get("name"), place_id=request.form.get("place_id")))
 
 @app.route('/stadsgids/dashboard/nieuwsbrief', methods=['GET', 'POST'])
@@ -965,9 +1119,14 @@ def createnewsletter(newsletter_id):
     newsletter.body = body
     db.session.commit()
     if action == "save":
-        flash("Wijzigingen opgeslagen", 'success' )
+        flash("Wijzigingen opgeslagen", 'success')
     if action == "test":
         return render_template("newsletterbase.html", body=body, name="Naam")
+    if action == "delete":
+        db.session.delete(newsletter)
+        db.session.commit()
+        flash("Nieuwsbrief verwijderd", 'success')
+        return redirect(url_for('newsletter'))
     if action == "send":
         recipients = User.query.filter_by(newsletter=True).all()
         for recipient in recipients:
@@ -1002,7 +1161,6 @@ def createblog(blog_id):
     action = request.form.get('action')
     title = request.form.get('title')
     short = request.form.get('short')
-    print(short)
     body = request.form.get('editor1')
 
     blogpost.title = title
@@ -1086,5 +1244,31 @@ def createhighlight(highlight_id):
     if action == "delete":
         db.session.delete(highlight)
         db.session.commit()
-        flash("Uitgelicht verwijderd")
+        flash("Uitgelicht verwijderd", "success")
         return redirect(url_for('highlight'))
+
+
+@app.route('/stadsgids/dashboard/aanvragen')
+@role_required('Administrator')
+def inforequest():
+    inforequests = Request.query.all()
+    return render_template('requests.html', requests=inforequests)
+
+
+@app.route('/stadsgids/dashboard/aanvragen/verwerken/<request_id>', methods=["GET", "POST"])
+@role_required('Administrator')
+def processrequests(request_id):
+    inforequest = Request.query.filter_by(id=request_id).first()
+
+    if request.method == "GET":
+        return render_template('processrequests.html', request=inforequest)
+
+    # send email for request /stadsgids/locatie/<name>/<place_id>
+    # TODO: socket stuur nieuwe aanvraag naar beheerder
+    msg = Message(f"Meer informatie over {location}", recipients=[inforequest.user.email])
+    msg.html = render_template("newsletterbase.html", name=inforequest.user.firstname, body=request.form.get('editor1'))
+    job = queue.enqueue('task.send_mail', msg)
+    inforequest.processed = True
+    db.session.commit()
+    flash("Informatieaanvraag verwerkt", "success")
+    return redirect(url_for('inforequest'))

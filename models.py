@@ -18,6 +18,7 @@ class User(db.Model, UserMixin):
     password = db.Column(db.String(128), nullable=False)
     register_date = db.Column(db.DateTime, nullable=False)
     email = db.Column(db.String(128), nullable=False)
+    newemail = db.Column(db.String(128))
     confirmed = db.Column(db.Boolean, nullable=False)
     email_confirmed_at = db.Column(db.DateTime(), nullable=True)
     newsletter = db.Column(db.Boolean, nullable=False)
@@ -32,6 +33,7 @@ class User(db.Model, UserMixin):
         self.lastname = lastname
         self.password = password
         self.email = email
+        self.newemail = None
         self.register_date = datetime.datetime.now()
         self.newsletter = True if newsletter else False
         self.confirmed = False
@@ -85,27 +87,38 @@ class Favourite(db.Model):
     __tablename__ = 'favourites'
     id = db.Column(db.Integer(), primary_key=True)
     place_id = db.Column(db.String(128), nullable=False)
+    name = db.Column(db.String(128), nullable=False)
     user_id = db.Column(db.Integer(), db.ForeignKey('users.id'), nullable=False)
 
-    def __init__(self, place_id):
+    def __init__(self, place_id, name):
         self.place_id = place_id
+        self.name = name
         self.user_id = current_user.id
 
 class Request(db.Model):
     __tablename__ = 'requests'
     id = db.Column(db.Integer(), primary_key=True)
+    user_id = db.Column(db.Integer(), db.ForeignKey('users.id', ondelete='CASCADE'), nullable=False)
     place_id = db.Column(db.String(128), nullable=False)
-    user_id = db.Column(db.Integer(), db.ForeignKey('users.id'), nullable=False)
+    name = db.Column(db.String(128), nullable=False)
+    processed = db.Column(db.Boolean, nullable=False)
+    date = db.Column(db.DateTime(), nullable=False)
+    user = db.relationship('User')
 
-    def __init__(self, place_id):
+    def __init__(self, place_id, name):
         self.place_id = place_id
-        self.user_id = current_user.id
+        self.user = current_user.id
+        self.name = name
+        self.processed = False
+        self.date = datetime.datetime.now()
+        self.user = current_user
 
 class Review(db.Model):
     __tablename__ = 'reviews'
     id = db.Column(db.Integer(), primary_key=True)
+    user_id = db.Column(db.Integer(), db.ForeignKey('users.id', ondelete='CASCADE'), nullable=False)
     place_id = db.Column(db.String(128), nullable=False)
-    user_id = db.Column(db.Integer(), db.ForeignKey('users.id'), nullable=False)
+    name = db.Column(db.String(128), nullable=False)
     date = db.Column(db.DateTime(), nullable=False)
     stars = db.Column(db.Integer(), nullable=False)
     review = db.Column(db.Text())
@@ -113,9 +126,10 @@ class Review(db.Model):
     upvotes = db.relationship('Upvote', cascade="all, delete-orphan")
     user = db.relationship('User')
 
-    def __init__(self, place_id, stars, review):
+    def __init__(self, place_id, name, stars, review):
         self.place_id = place_id
-        self.user_id = current_user.id
+        self.name = name
+        self.user = current_user
         self.date = datetime.datetime.now()
         self.stars = stars
         self.review = review

@@ -14,26 +14,31 @@ Layout page for adding new locations
 <!-- page content -->
 {% block content %}
 <div class="container">
-	<h1>Evenement toevoegen</h1>
-	<a href="{{ url_for('location', name=name, place_id=place_id)}}" target="_blank"><h2>{{ name }}</h2></a>
-	<form class="needs-validation" action="{{ url_for('create_event', name=name, place_id=place_id) }}" method="post" novalidate>
+	<form class="needs-validation formbox" action="{{ url_for('create_event', name=name, place_id=place_id) }}" method="post" novalidate>
+		<input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+		<a class="float_right mt" href="{{ url_for('location', name=name, place_id=place_id)}}" target="_blank"><h2>{{ name }}</h2></a>
+		<h1>Evenement toevoegen</h1>
 		<div class="form-group">
-			<label for="title">Titel</label>
-			<input class="form-control" type="text" name="title"></input>
+			<label for="title"><i class="fas fa-heading"></i> Titel</label>
+			<input class="form-control" type="text" name="title" required></input>
+			<div class="invalid-feedback">Voer een titel in</div>
 		</div>
 		<div class="form-row">
 			<div class="form-group col-6">
-				<label for="date">Datum</label>
-				<input class="form-control" type="date" name="date" placeholder="DD-MM-JJJJ">
+				<label for="date"><i class="fas fa-calendar-day"></i> Datum</label>
+				<input class="form-control" type="text" name="date" placeholder="DDMMJJJJ" required>
+				<div class="invalid-feedback">Voer een datum in</div>
 			</div>
 			<div class="form-group col-6">
-				<label for="time">Tijd</label>
-				<input class="form-control" type="time" name="time" placeholder="00:00">
+				<label for="time"><i class="fas fa-clock"></i> Tijd</label>
+				<input class="form-control" type="text" name="time" placeholder="0000" required>
+				<div class="invalid-feedback">Voer een tijd in</div>
 			</div>
 		</div>
 		<div class="form-group">
-			<label for="description">Omschrijving</label>
-			<textarea class="form-control" type="text" name="description"></textarea>
+			<label for="description"><i class="fas fa-file-alt"></i> Omschrijving</label>
+			<textarea class="form-control" type="text" name="description" required></textarea>
+			<div class="invalid-feedback">Voer een omschrijving in</div>
 		</div>
         <input type="hidden" name="place_id" value="{{ place_id }}">
         <input type="hidden" name="name" value="{{ name }}">

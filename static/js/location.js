@@ -83,14 +83,16 @@ document.addEventListener('DOMContentLoaded', () => {
 			request.onload = () => {
 				const data = JSON.parse(request.responseText);
 				if (data.success) {
+					const thumb = document.querySelectorAll('[data-thumb]', review);
+					const inner = document.querySelectorAll('[data-inner]', review);
 					if (data.status == "added") {
-						button.className = "btn btn-danger btn-sm"
-						button.innerHTML = `Nuttig (${data.count})`
-					}
+						thumb[0].className = "fas fa-thumbs-up";
+						inner[0].innerHTML = `Nuttig (${data.count})`;
+					};
 					if (data.status == "deleted") {
-						button.className = "btn btn-outline-danger btn-sm"
-						button.innerHTML = `Nuttig (${data.count})`
-					}
+						thumb[0].className = "far fa-thumbs-up";
+						inner[0].innerHTML = `Nuttig (${data.count})`;
+					};
 				};
 			};
 			// add review_id to request

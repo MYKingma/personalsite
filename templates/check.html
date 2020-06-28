@@ -14,18 +14,18 @@ Layout page for controlling new locations
 <!-- page content -->
 {% block content %}
 <div class="container">
-	<h1>Controleer Reviews</h1>
-	<table class="table">
+	<h1><i class="far fa-clipboard-check"></i> Controleer Reviews</h1>
+	<table class="table table-responsive-xs">
 		<thead class="thead-dark">
-			<th scope="col">id</th>
-	        <th scope="col">Gebruiker</th>
-	        <th scope="col">Recensie</th>
-	        <th scope="col">Sterren</th>
-            <th scope="col">Nuttig</th>
-			<th scope="col">Datum</th>
-			<th scope="col">Gecontroleerd</th>
-			<th scope="col"></th>
-            <th scope="col"></th>
+			<th scope="col"><i class="fas fa-fingerprint"></i></th>
+	        <th scope="col"><i class="fas fa-user"></i></th>
+	        <th scope="col"><i class="fas fa-file-alt columnwidth"></i></th>
+	        <th scope="col"><i class="fas fa-star nonecolor"></i></th>
+            <th scope="col"><i class="fas fa-thumbs-up"></i></th>
+			<th scope="col"><i class="fas fa-calendar-alt"></i></th>
+			<th scope="col"><i class="fas fa-clipboard-check"></i></th>
+			<th class="nosidepadding" scope="col"></th>
+            <th class="nosidepadding" scope="col"></th>
 		</thead>
 		<tbody>
 			{% for review in reviews %}
@@ -35,23 +35,23 @@ Layout page for controlling new locations
 		        <td>{{ review.review }}</td>
 		        <td>{{ review.stars }}</td>
                 <td>{{ review.get_upvote_count() }}</td>
-				<td>{{ review.date.strftime("%-d %B %Y %R") }}</td>
+				<td>{{ review.date.strftime("%-d/%m") }}</td>
 		        <td>{% if review.checked %}<i class="fas fa-check"></i>{% else %}<i class="fas fa-times"></i>{% endif %}</td>
-				<td>
+				<td class="nosidepadding">
                     {% if not review.checked %}
                     <form action="{{ url_for('check') }}" method="post">
+						<input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
                         <input type="hidden" name="review_id" value="{{ review.id }}">
-                        <input type="hidden" name="action" value="accept">
-                        <input class="btn btn-outline-dark" type="submit" value="Accepteer">
+                        <button class="btn btn-dark setwidth" type="submit" name="action" value="accept"><i class="fas fa-check"></i></button>
                     </form>
                     {% endif %}
                 </td>
-                <td>
+                <td class="nosidepadding">
                     {% if not review.checked %}
                     <form action="{{ url_for('check') }}" method="post">
-                        <input type="hidden" name="review_id" value="{{ review.id }}">
-                        <input type="hidden" name="action" value="block">
-                        <input class="btn btn-outline-dark" type="submit" value="Weiger">
+						<input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+						<input type="hidden" name="review_id" value="{{ review.id }}">
+                        <button class="btn btn-dark setwidth" type="submit" name="action" value="block"><i class="fas fa-times"></i></button>
                     </form>
                     {% endif %}
                 </td>

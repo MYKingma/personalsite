@@ -1,0 +1,44 @@
+<!-- requests.html for implementing a city guide webapp
+
+Maurice Kingma
+Minor Programmeren - Web App Studio
+
+Layout page for controlling new requests
+-->
+
+{% extends "base.html" %}
+
+<!-- page title -->
+{% block title %}Stadsgids - Dashboard{% endblock %}
+
+<!-- page content -->
+{% block content %}
+<div class="container">
+	<h1><i class="far fa-hand-point-up"></i> Informatieaanvragen</h1>
+	<table class="table table-responsive-xs">
+		<thead class="thead-dark">
+			<th scope="col"><i class="fas fa-fingerprint"></i></th>
+	        <th scope="col"><i class="fas fa-user"></i></th>
+	        <th scope="col"><i class="fas fa-map-marker-alt"></i></th>
+			<th scope="col"><i class="fas fa-calendar-alt"></i></th>
+			<th scope="col"><i class="fas fa-clipboard-check"></i></th>
+			<th scope="col"></th>
+		</thead>
+		<tbody>
+			{% for request in requests %}
+			<tr>
+				<td>{{ request.id }}</td>
+		        <td>{{ request.user.firstname }}</td>
+		        <td>{{ request.name }}</td>
+				<td>{{ request.date.strftime("%-d/%m") }}</td>
+		        <td>{% if request.processed %}<i class="fas fa-check"></i>{% else %}<i class="fas fa-times"></i>{% endif %}</td>
+	            <td>{% if not request.processed %}<a href="{{ url_for('processrequests', request_id=request.id) }}">Verwerken</a>{% endif %}</td>
+			</tr>
+			{% endfor %}
+		</tbody>
+	</table>
+</div>
+{% endblock %}
+{% block script %}
+<script type="text/javascript" src="{{ url_for('static', filename='js/tablesort.js')}}"></script>
+{% endblock %}

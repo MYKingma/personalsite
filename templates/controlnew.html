@@ -14,10 +14,11 @@ Layout page for controlling new locations
 <!-- page content -->
 {% block content %}
 <div class="container">
-	<h1>Aanraders</h1>
+	<h1><i class="fas fa-medal"></i> Aanraders</h1>
 	<form action="{{ url_for('controlnew') }}" method="post">
+		<input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
 		<div class="form-row">
-			<div class="form-group">
+			<div class="form-group ml">
 				<label class="advancedlabel" for="typeinput">Filter op categorie</label>
 				<select class="form-control form-control-sm" id="typeinput" name="type">
 					{% for key, value in types.items() %}
@@ -31,14 +32,14 @@ Layout page for controlling new locations
 			</div>
 		</div>
 	</form>
-	<table class="table">
+	<table class="table table-responsive-xs">
 		<thead class="thead-dark">
-			<th scope="col">id</th>
-	        <th scope="col">Naam</th>
-	        <th scope="col">Categorie</th>
-	        <th scope="col">Prijsklasse</th>
-			<th scope="col">Laatst bewerkt</th>
-			<th scope="col">Zichtbaar</th>
+			<th scope="col"><i class="fas fa-fingerprint"></i></th>
+	        <th scope="col"><i class="fas fa-map-marker-alt"></i></th>
+	        <th scope="col"><i class="fas fa-tag"></th>
+	        <th scope="col"><i class="fas fa-euro-sign"></i></th>
+			<th scope="col"><i class="fas fa-calendar-alt"></th>
+			<th scope="col"><i class="fas fa-eye"></th>
 			<th scope="col"></th>
 		</thead>
 		<tbody>
@@ -47,10 +48,10 @@ Layout page for controlling new locations
 				<td>{{ recommendation.id }}</td>
 		        <td>{{ recommendation.name }}</td>
 		        <td>{{ recommendation.type.replace("{", "").replace("}", "").replace(",", ", ") }}</td>
-		        <td>{{ recommendation.price_level * "€" }}</td>
-				<td>{{ recommendation.date.strftime("%-d %B %Y %R") }}</td>
-		        <td>{% if recommendation.visible %}<i class="fas fa-check"></i>{% else %}<i class="fas fa-times"></i>{% endif %}</td>
-				<td><a href="{{ url_for('location', name=recommendation.name, place_id=recommendation.place_id) }}">Wijzigen</a></td>
+		        <td>{{ recommendation.price_level }}</td>
+				<td>{{ recommendation.date.strftime("%-d/%m") }}</td>
+		        <td>{% if recommendation.visible %}<i class="far fa-eye"></i>{% else %}<i class="far fa-eye-slash"></i>{% endif %}</td>
+				<td><a href="{{ url_for('location', name=recommendation.name, place_id=recommendation.place_id) }}"><i class="far fa-edit"></i></a></td>
 			</tr>
 			{% endfor %}
 		</tbody>

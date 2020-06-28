@@ -39,8 +39,8 @@ Base layout for other pages
 
 	<!-- page body -->
 	<body id="page">
-		<nav style="background-color: #9c0315;" class="navbar navbar-expand-lg navbar-dark">
-			<a class="navbar-brand" href="#">
+		<nav class="navbar navbar-expand-lg navbar-dark fixed-top">
+			<a class="navbar-brand" href="{{ url_for('guide') }}">
 				<img src="{{ url_for('static', filename='picto/cross.png') }}" width="30" height="30" class="d-inline-block align-top" alt="">
 				Stadsgids
 			</a>
@@ -51,27 +51,24 @@ Base layout for other pages
 
 			<div class="collapse navbar-collapse" id="navbarTogglerDemo02">
 				<ul class="navbar-nav mr-auto mt-2 mt-lg-0">
-					<li class="nav-item">
-						<a class="nav-link" href="{{ url_for('guide') }}">Home</a>
-					</li>
-
 					{% for role in current_user.roles %}
 					{% if role.name == 'Administrator' %}
 					<li class="nav-item">
-						<a class="nav-link" href="{{ url_for('dashboard')}}">Dashboard</a>
+						<a id="navlink" class="nav-link" href="{{ url_for('dashboard')}}"><i class="fas fa-tachometer-alt"></i> Dashboard</a>
 					</li>
 					{% elif role.name == 'User' %}
 					<li class="nav-item">
-						<a class="nav-link" href="{{ url_for('profile')}}">Profiel</a>
+						<a id="navlink" class="nav-link" href="{{ url_for('profile')}}"><i class="fas fa-user-alt"></i> Profiel</a>
 					</li>
 					{% endif %}
 					{% endfor %}
 					{% if not current_user.is_authenticated %}
 				    <li class="nav-item dropdown">
-						<a class="nav-link dropdown-toggle" href="" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Log in</a>
+						<a id="navlink" class="nav-link" href="" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fas fa-sign-in-alt"></i> Log in</a>
 						<div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
 							<form action="{{ url_for('guide') }}" method="post">
 								<div class="form-group">
+									<input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
 									<input class="form-control" type="text" id="usernameinput" name="username" placeholder="Gebruikersnaam">
 									<div class="invalidlogin" id="invalidusername"></div>
 								</div>
@@ -88,19 +85,20 @@ Base layout for other pages
 						</div>
 					</li>
 					<li class="nav-item">
-						<a class="nav-link" href="{{ url_for('register')}}">Registreren</a>
+						<a id="navlink" class="nav-link" href="{{ url_for('register')}}"><i class="fas fa-user-alt"></i> Registreren</a>
 					</li>
 					{% else %}
 					<li class="nav-item">
-						<a class="nav-link" href="{{ url_for('logout')}}">Log uit</a>
+						<a id="navlink" class="nav-link" href="{{ url_for('logout')}}"><i class="fas fa-sign-out-alt"></i> Log uit</a>
 					</li>
 					{% endif %}
 				</ul>
-				<form class="form-inline my-2 my-lg-0" action="{{ url_for('search')}}" method="post">
+				<form id="searchformnavbar" class="form-inline my-2 my-lg-0" action="{{ url_for('search')}}" method="post">
+					<input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
 					<input class="form-control mr-sm-2" type="search" placeholder="Zoeken" name="search">
 					<input type="hidden" name="form" value="regular">
-					<button class="btn btn-outline-light my-2 my-sm-0" type="submit">Zoeken</button>
-					<a class="btn btn-outline-light my-2 my-sm-0" id="advanced" href="{{ url_for('search')}}">Uitgebreid Zoeken</a>
+					<button class="btn btn-outline-light my-2 my-sm-0" type="submit"><i class="fas fa-search"></i> Zoeken</button>
+					<a class="btn btn-outline-light my-2 my-sm-0" id="advanced" href="{{ url_for('search')}}"><i class="fas fa-sliders-h"></i> Uitgebreid Zoeken</a>
 				</form>
 			</div>
 		</nav>
@@ -109,7 +107,7 @@ Base layout for other pages
 				{%- if messages -%}
 					{%- for category, message in messages -%}
 			<div class="alert alert-{{ category }} alert-dismissible">
-			  <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+			  <a href="#" class="close" data-dismiss="alert" aria-label="close"><i class="fas fa-times"></i></a>
 			  {{ message }}
 			</div>
 					{%- endfor -%}
@@ -118,15 +116,23 @@ Base layout for other pages
 		</div>
 		{%- block content -%}{%- endblock -%}
 		<div id="footer">
-			<img id="footerimg" src="{{ url_for('static', filename='picto/crossf.png') }}">
+			<img id="footerimg" src="{{ url_for('static', filename='picto/cross.png') }}">
 			<p>STADSGIDS.MAURICEKINGMA.NL</p>
 			<p id="copyright">©2020 M. Kingma</p>
 		</div>
-		{%- block script -%}{%- endblock -%}
+		<script type="text/javascript">
+			var csrf_token = "{{ csrf_token() }}";
+			XMLHttpRequest.prototype.origOpen = XMLHttpRequest.prototype.open;
+			XMLHttpRequest.prototype.open   = function () {
+				this.origOpen.apply(this, arguments);
+				this.setRequestHeader('X-CSRFToken', csrf_token);
+	        };
+		</script>
+		<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
 		<script type="text/javascript" src="{{ url_for('static', filename='js/base.js')}}"></script>
 		<script type="text/javascript" src="{{ url_for('static', filename='js/validator.js')}}"></script>
-		<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js" integrity="sha384-b/U6ypiBEHpOf/4+1nzFpr53nxSS+GLCkfwBdFNTxtclqqenISfwAzpKaMNFNmj4" crossorigin="anonymous"></script>
 		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/js/bootstrap.min.js" integrity="sha384-h0AbiXch4ZDo7tp9hKZ4TsHbi047NrKGLO3SEJAg45jXxnGIfYzk4Si90RDIqNm1" crossorigin="anonymous"></script>
+		{%- block script -%}{%- endblock -%}
 	</body>
 </html>

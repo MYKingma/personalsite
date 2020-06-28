@@ -14,14 +14,15 @@ Layout registration page
 <!-- page content -->
 {% block content %}
 <div class="container">
-	<h1>Dashboard</h1>
-
-	<h3>extra menulinks</h3>
-	<a href="{{ url_for('controlnew') }}">Nieuwe locaties</a>
-	<a href="{{ url_for('newsletter') }}">Nieuwsbrieven</a>
-	<a href="{{ url_for('blog') }}">Blog</a>
-	<a href="{{ url_for('admin.index_view') }}">Database</a>
-	<a href="{{ url_for('check') }}">Reviews controleren</a>
-	<a href="{{ url_for('highlight') }}">Uitgelicht</a>
+	<div class="formbox">
+		<h1><i class="fas fa-tachometer-alt"></i> Dashboard</h1>
+		<a class="btn btn-danger dashbutton" href="{{ url_for('controlnew') }}">Aanraders <i class="fas fa-medal"></i></a>
+		<a class="btn btn-dark dashbutton" href="{{ url_for('newsletter') }}">Nieuwsbrieven <i class="fas fa-newspaper"></i></a>
+		<a class="btn btn-primary dashbutton" href="{{ url_for('inforequest') }}">Aanvragen <i class="fas fa-hand-point-up"></i></a>
+		<a class="btn btn-info dashbutton" href="{{ url_for('blog') }}">Blog <i class="fas fa-comment-alt"></i></a>
+		<a class="btn btn-success dashbutton" href="{{ url_for('check') }}">Reviews controleren <i class="fas fa-clipboard-check"></i></a>
+		<a class="btn btn-secondary dashbutton" href="{{ url_for('highlight') }}">Uitgelicht <i class="fas fa-award"></i></a>
+		<a class="btn btn-warning dashbutton" href="{{ url_for('admin.index_view') }}">Database <i class="fas fa-server"></i></a>
+	</div>
 </div>
 {% endblock %}

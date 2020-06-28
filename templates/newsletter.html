@@ -14,13 +14,13 @@ Layout newsletter page
 <!-- page content -->
 {% block content %}
 <div class="container">
-	<h1>Nieuwsbrieven</h1>
-	<table class="table">
+	<h1><i class="far fa-newspaper"></i> Nieuwsbrieven</h1>
+	<table class="table table-responsive-xs">
 		<thead class="thead-dark">
-			<th scope="col">id</th>
-	        <th scope="col">Aanmaakdatum</th>
-	        <th scope="col">Onderwerp</th>
-	        <th scope="col">Verstuurd</th>
+			<th scope="col"><i class="fas fa-fingerprint"></i></th>
+	        <th scope="col"><i class="fas fa-calendar-alt"></th>
+	        <th scope="col"><i class="fas fa-heading"></i></th>
+	        <th scope="col"><i class="fas fa-paper-plane"></i></th>
 			<th scope="col"></th>
 			<th scope="col"></th>
 		</thead>
@@ -28,16 +28,17 @@ Layout newsletter page
 			{% for newsletter in newsletters %}
 			<tr>
 				<td>{{ newsletter.id }}</td>
-		        <td>{{ newsletter.date.strftime("%-d %B %Y %R") }}</td>
+		        <td>{{ newsletter.date.strftime("%-d/%m") }}</td>
 		        <td>{{ newsletter.subject }}</td>
                 <td>{% if newsletter.send %}<i class="fas fa-check"></i>{% else %}<i class="fas fa-times"></i>{% endif %}</td>
-				<td><a href="{{ url_for('createnewsletter', newsletter_id=newsletter.id) }}">Wijzigen</a></td>
+				<td><a href="{{ url_for('createnewsletter', newsletter_id=newsletter.id) }}"><i class="far fa-edit"></i></a></td>
 			</tr>
 			{% endfor %}
 		</tbody>
 	</table>
 	<form action="{{ url_for('newsletter') }}" method="post">
-		<input type="submit" class="btn btn-outline-dark" value="Nieuwe nieuwsbrief">
+		<input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+		<button type="submit" class="btn btn-outline-dark"><i class="far fa-file"></i> Nieuw</button>
 	</form>
 </div>
 {% endblock %}

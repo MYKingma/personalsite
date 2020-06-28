@@ -14,13 +14,13 @@ Layout highlight page
 <!-- page content -->
 {% block content %}
 <div class="container">
-	<h1>Uitgelichte locaties</h1>
-	<table class="table">
+	<h1><i class="far fa-award"></i> Uitgelichte locaties</h1>
+	<table class="table table-responsive-xs">
 		<thead class="thead-dark">
-			<th scope="col">id</th>
-	        <th scope="col">Weeknummer</th>
-	        <th scope="col">Locatie</th>
-	        <th scope="col">Beschrijving</th>
+			<th scope="col"><i class="fas fa-fingerprint"></i></th>
+			<th scope="col"><i class="fas fa-hashtag"></i></th>
+			<th scope="col"><i class="fas fa-map-marker-alt"></i></th>
+	        <th scope="col"><i class="fas fa-file-alt"></i></th>
 			<th scope="col"></th>
 		</thead>
 		<tbody>
@@ -30,7 +30,7 @@ Layout highlight page
 		        <td>{{ highlight.week.isocalendar()[1] }}</td>
                 <td>{{ highlight.name }}</td>
 		        <td>{{ highlight.description }}</td>
-				<td><a href="{{ url_for('createhighlight', highlight_id=highlight.id) }}">Wijzigen</a></td>
+				<td><a href="{{ url_for('createhighlight', highlight_id=highlight.id) }}"><i class="far fa-edit"></i></a></td>
 			</tr>
 			{% endfor %}
 		</tbody>
