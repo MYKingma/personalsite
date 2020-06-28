@@ -74,7 +74,7 @@ class Recommendation(db.Model):
 
     def __init__(self, place_id, name, review, tip, opening, price_level, visible, type):
         self.place_id = place_id
-        self.name = name.lower()
+        self.name = name
         self.date = datetime.datetime.now()
         self.review = review
         self.tip = tip
@@ -155,6 +155,7 @@ class Event(db.Model):
     __tablename__ = 'events'
     id = db.Column(db.Integer(), primary_key=True)
     place_id = db.Column(db.String(128), nullable=False)
+    name = db.Column(db.String(128), nullable=False)
     date = db.Column(db.DateTime(), nullable=False)
     title = db.Column(db.String(128), nullable=False)
     description = db.Column(db.Text(), nullable=False)

@@ -52,6 +52,7 @@ Contact page layout
 		<p>Use this form and I will be in touch</p>
 		<div class="form">
 			<form action="{{ url_for('contact') }}" class="needs-validation" method="post" novalidate>
+				<input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
 				<label for="name">Name</label>
 				<input id="name" type="text" name="name">
 				<div class="invalidname"></div>

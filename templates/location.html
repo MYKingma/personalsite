@@ -63,22 +63,22 @@ Location page
 			<div id="buttonbox">
 				<div class="row center">
 					<a id="jsbutton" class="boxlink col-3" data-location="{{ location.place_id }}" data-button="favourite" data-locationname="{{ location.name }}">
-						<p><i id="heart" class="{{ location.favourite }} fa-heart" aria-hidden="true"></i><span class="mobile">Favoriet</span></p>
+						<p><i id="heart" class="{{ location.favourite }} fa-heart" aria-hidden="true"></i><span>Favoriet</span></p>
 					</a>
 					<a id="jsbutton" class="boxlink col-3" data-location="{{ location.place_id }}" data-button="recommend" data-locationname="{{ location.name }}" data-website="{{ location.website if location.website != None }}">
-						<p><i id="finger" class="{{ location.req }} fa-hand-point-up"></i><span class="mobile">Is dit wat?</span></p>
+						<p><i id="finger" class="{{ location.req }} fa-hand-point-up"></i><span>Is dit wat?</span></p>
 					</a>
 					<a class="boxlink col-3" href="#reviewform">
-						<p><i class="far fa-edit"></i><span class="mobile">Review</span></p>
+						<p><i class="far fa-edit"></i><span>Review</span></p>
 					</a>
 					{% if location.guiderating %}
 					<a class="boxlink col-3" href="#ratingbox">
-						<p><i class="fa fa-star" aria-hidden="true"></i><span class="mobile">{{ location.guiderating }} <span class="small">{{ location.count|string + " reviews" if location.count }}</span></span></p>
+						<p><i class="fa fa-star" aria-hidden="true"></i><span>{{ location.guiderating }} <span class="small">{{ location.count|string + " reviews" if location.count }}</span></span></p>
 					</a>
 					{% else %}
 					<a class="boxlink col-3" href="#ratingbox">
 						<div class="">
-							<i class="fa fa-star" aria-hidden="true"></i><span class="mobile">{{ location.rating }} <span class="small">{{ location.count|string + " reviews" if location.count else " Google" }}</span></span>
+							<i class="fa fa-star" aria-hidden="true"></i><span>{{ location.rating }} <span class="small">{{ location.count|string + " reviews" if location.count else " Google" }}</span></span>
 						</div>
 					</a>
 					{% endif %}
@@ -107,14 +107,14 @@ Location page
 			{% if "Administrator" == role.name %}
 			<div id="adminbuttons" class="row">
 				<div class="col-6">
-					<a href="{{ url_for('create_event', place_id=location.place_id, name=location.name) }}"><button class="btn btn-outline-secondary btn-block"><i class="far fa-calendar-plus"></i><span class="mobile"> Voeg evenement toe</span></button></a>
+					<a href="{{ url_for('create_event', place_id=location.place_id, name=location.name) }}"><button class="btn btn-outline-secondary btn-block"><i class="far fa-calendar-plus"></i><span> Voeg evenement toe</span></button></a>
 				</div>
 				<div class="col-6">
 					<form action="{{ url_for('highlight')  }}" method="post">
 						<input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
 						<input type="hidden" name="name" value="{{ location.name }}">
 						<input type="hidden" name="place_id" value="{{ location.place_id }}">
-						<button class="btn btn-outline-secondary btn-block" type="submit"><i class="fas fa-award"></i><span class="mobile"> Maak uitgelicht aan</span></button>
+						<button class="btn btn-outline-secondary btn-block" type="submit"><i class="fas fa-award"></i><span> Maak uitgelicht aan</span></button>
 					</form>
 				</div>
 			</div>
