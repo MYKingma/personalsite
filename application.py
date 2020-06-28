@@ -28,7 +28,7 @@ import locale
 import ast
 import rq
 from redis import Redis
-#from runworker import conn
+from runworker import conn
 
 from models import *
 
