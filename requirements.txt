@@ -8,6 +8,8 @@ flask-migrate
 flask-admin
 flask-login
 flask-socketio
+flask-wtf.csrf
+
 gunicorn
 gevent
 eventlet

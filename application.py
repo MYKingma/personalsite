@@ -19,7 +19,6 @@ from flask_login import LoginManager, login_required, current_user, login_user, 
 from flask_mail import Mail, Message
 from flask_socketio import SocketIO, emit
 from flask_wtf.csrf import CSRFProtect
-from flask_talisman import Talisman
 from hashlib import blake2b
 from itsdangerous import URLSafeTimedSerializer
 from sqlalchemy.sql import func
