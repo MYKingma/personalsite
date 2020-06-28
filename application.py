@@ -26,6 +26,7 @@ import datetime
 import locale
 import ast
 import rq
+import random
 from redis import Redis
 from runworker import conn
 
@@ -344,8 +345,10 @@ def contact():
     email = request.form.get("email")
     message = request.form.get("message")
 
-
-
+    # send email to sender
+    msg = Message("Onvangstbevestiging mauricekingma.nl", recipients=[email])
+    msg.html = render_template('confirmmessagemail.html', name=name, email=email, message=message)
+    job = queue.enqueue('task.send_mail', msg)
 
     # send email to author
     msg = Message(f"{name} heeft je een bericht gestuurd via mauricekingma.nl", recipients=["mauricekingma@me.com"])
@@ -358,7 +361,81 @@ def contact():
 @app.route('/stadsgids', methods=["GET", "POST"])
 def guide():
     if request.method == "GET":
-        return render_template("guide.html")
+        weeknum = datetime.datetime.now().isocalendar()[1]
+        highlights = Highlight.query.all()
+        for location in highlights:
+            if location.week.isocalendar()[1] == weeknum:
+                highlight = location
+                break
+
+        highlightDetails = {}
+        # google places api request for location
+        res = requests.get("https://maps.googleapis.com/maps/api/place/details/json", params={"key": GOOGLE_API_KEY, "place_id": highlight.place_id, "fields": "name,formatted_address,photo,opening_hours,price_level,rating,place_id,types", "locationbias": "circle:10000@52.348460,4.885954", "language": "nl"})
+        if res.status_code == 200:
+            data = res.json()
+            highlightDetails["name"] = data["result"]["name"]
+            highlightDetails["rating"] = data["result"]["rating"]
+            highlightDetails["place_id"] = data["result"]["place_id"]
+            highlightDetails["price_level"] = data["result"]["price_level"] * "€"
+            highlightDetails["formatted_address"] = data["result"]["formatted_address"].split(",")
+
+            if "photos" in data["result"]:
+
+                # google places photo api request for thumbnail
+                photo = requests.get("https://maps.googleapis.com/maps/api/place/photo", params={"key": GOOGLE_API_KEY, "maxwidth": "250", "photoreference": data["result"]["photos"][0]["photo_reference"]})
+                if photo.status_code == 200:
+                    highlightDetails["photos"] = photo.url
+                else:
+                    highlightDetails["photos"] = None
+            highlightDetails["types"] = data["result"]["types"]
+        recommendation = Recommendation.query.filter_by(place_id=highlight.place_id).first()
+        if recommendation:
+            highlightDetails["recommended"] = True
+            highlightDetails["types"] = recommendation.type.replace("}", "").replace("{", "").split(",")
+            highlightDetails["price_level"] = recommendation.price_level * "€"
+        else:
+            highlightDetails["recommended"] = False
+
+        recommendations = Recommendation.query.filter_by(visible=True).order_by(Recommendation.date.desc()).limit(3).all()
+        newRecommendations = []
+        for recommendation in recommendations:
+            result = {}
+
+            # google places api request for location
+            res = requests.get("https://maps.googleapis.com/maps/api/place/details/json", params={"key": GOOGLE_API_KEY, "place_id": recommendation.place_id, "fields": "name,formatted_address,photo,opening_hours,price_level,rating,place_id,types", "locationbias": "circle:10000@52.348460,4.885954", "language": "nl"})
+            if res.status_code == 200:
+                data = res.json()
+                result["name"] = data["result"]["name"]
+                result["rating"] = data["result"]["rating"]
+                result["place_id"] = data["result"]["place_id"]
+                if "price_level" in data["result"]:
+                    result["price_level"] = data["result"]["price_level"] * "€"
+                result["formatted_address"] = data["result"]["formatted_address"].split(",")
+
+                if "photos" in data["result"]:
+
+                    # google places photo api request for thumbnail
+                    photo = requests.get("https://maps.googleapis.com/maps/api/place/photo", params={"key": GOOGLE_API_KEY, "maxwidth": "250", "photoreference": data["result"]["photos"][0]["photo_reference"]})
+                    if photo.status_code == 200:
+                        result["photos"] = photo.url
+                    else:
+                        result["photos"] = None
+                result["types"] = data["result"]["types"]
+            guiderecommendation = Recommendation.query.filter_by(place_id=recommendation.place_id).first()
+            if guiderecommendation:
+                result["recommended"] = True
+                result["types"] = guiderecommendation.type.replace("}", "").replace("{", "").split(",")
+                result["price_level"] = guiderecommendation.price_level * "€"
+            else:
+                result["recommended"] = False
+            newRecommendations.append(result)
+
+
+        blogposts = Blog.query.filter_by(visible=True).order_by(Blog.date.desc()).limit(2).all()
+        randomrec = random.choice(Recommendation.query.all())
+        frontpageevent = Event.query.filter(Event.date > datetime.datetime.now()).order_by(Event.date).all()
+        reviews = Review.query.order_by(Review.date.desc()).limit(3).all()
+        return render_template("guide.html", highlight=highlight, highlightDetails=highlightDetails, TYPES_DICT=TYPES_DICT, ICON_DICT=ICON_DICT, newRecommendations=newRecommendations, blogposts=blogposts, tip=randomrec, events=frontpageevent, reviews=reviews)
 
     # get form information
     username = request.form.get("username")
@@ -768,6 +845,7 @@ def search():
     opennow = request.form.get('opennow')
     keyword = request.form.get('query')
     recommended = request.form.get('recommended')
+    print(recommended)
 
     if not recommended:
         # set params for request
@@ -960,7 +1038,7 @@ def profile():
         db.session.commit()
         msg.html = render_template('changeemail.html', firstname=user.firstname, email=email, link=link)
         job = queue.enqueue('task.send_mail', msg)
-        flash(f"Link naar e-mailadres {email} gestuurd ter bevestiging wijzigen email", "succes")
+        flash(f"Link naar e-mailadres {email} gestuurd ter bevestiging wijzigen email", "success")
         return render_template("profile.html", user=user, TYPES_DICT=TYPES_DICT, favourites=favourites, ICON_DICT=ICON_DICT)
 
     if action == "changepass":
@@ -1082,7 +1160,7 @@ def create_event(name, place_id):
         flash("Datumvelden niet goed ingevoerd", 'warning' )
         return redirect(url_for("location", name=request.form.get("name"), place_id=request.form.get("place_id")))
 
-    event = Event(title=title, date=datetime_object, description=description, place_id=place_id)
+    event = Event(title=title, date=datetime_object, description=description, place_id=place_id, name=name)
     db.session.add(event)
     db.session.commit()
     flash("Evenement geplaatst", 'success' )
@@ -1169,8 +1247,8 @@ def createblog(blog_id):
     if action == "save":
         flash("Wijzigingen opgeslagen", 'success')
     if action == "publish":
-        blog.visible = True
-        blog.date = datetime.datetime.now()
+        blogpost.visible = True
+        blogpost.date = datetime.datetime.now()
         db.session.commit()
         flash("Post gepubliceerd", 'success')
     if action == "delete":
@@ -1268,3 +1346,8 @@ def processrequests(request_id):
     db.session.commit()
     flash("Informatieaanvraag verwerkt", "success")
     return redirect(url_for('inforequest'))
+
+@app.route('/stadsgids/blog/<blog_id>')
+def blogpost(blog_id):
+    blog = Blog.query.filter_by(id=blog_id).first()
+    return render_template('blogpost.html', blog=blog)
