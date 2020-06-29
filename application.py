@@ -109,7 +109,7 @@ else:
 locale.setlocale(locale.LC_ALL, "nl_NL")
 
 # set worker Queue
-queue = rq.Queue('default', connection=conn)
+#queue = rq.Queue('default', connection=conn)
 
 # set Flask WTF CSRFProtect
 csrf = CSRFProtect(app)
@@ -376,7 +376,8 @@ def guide():
             highlightDetails["name"] = data["result"]["name"]
             highlightDetails["rating"] = data["result"]["rating"]
             highlightDetails["place_id"] = data["result"]["place_id"]
-            highlightDetails["price_level"] = data["result"]["price_level"] * "€"
+            if "price_level" in data["result"]:
+                highlightDetails["price_level"] = data["result"]["price_level"] * "€"
             highlightDetails["formatted_address"] = data["result"]["formatted_address"].split(",")
 
             if "photos" in data["result"]:
