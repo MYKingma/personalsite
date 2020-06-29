@@ -575,7 +575,9 @@ def change_email(token):
         email = serializer.loads(token, salt=app.config['SECURITY_PASSWORD_SALT'], max_age=expiration)
 
     # return not_confirmed route if expired
-    except: return redirect(url_for('not_confirmed'))
+    except:
+        flash("Link verlopen, vraag via de profielpagina een nieuwe aan", "warning")
+        return redirect(url_for('guide'))
     user = User.query.filter_by(newemail=email).first()
 
     # check if already confirmed
@@ -1011,6 +1013,7 @@ def profile():
         else:
             user.newsletter = False
             flash("Je bent nu uitgeschreven voor de nieuwsbrief", "success")
+        return render_template("profile.html", user=user, TYPES_DICT=TYPES_DICT, favourites=favourites, ICON_DICT=ICON_DICT)
 
     if action == "filter":
         filter = request.form.get('filter')
@@ -1021,16 +1024,14 @@ def profile():
                     filtered.append(favourite)
             favourites = filtered
         return render_template("profile.html", user=user, TYPES_DICT=TYPES_DICT, favourites=favourites, ICON_DICT=ICON_DICT, filter=filter)
-    return render_template("profile.html", user=user, TYPES_DICT=TYPES_DICT, favourites=favourites, ICON_DICT=ICON_DICT)
 
 
 
     if action == "changemail":
-        print("change")
         email = request.form.get('email')
         other_user = User.query.filter_by(email=email).first()
         if other_user:
-            flash(f"E-mailadres {email} al in gebruik", "email")
+            flash(f"E-mailadres {email} al in gebruik", "warning")
             return redirect(url_for('profile'))
         user.newemail = email
 
