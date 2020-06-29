@@ -1021,6 +1021,8 @@ def profile():
                     filtered.append(favourite)
             favourites = filtered
         return render_template("profile.html", user=user, TYPES_DICT=TYPES_DICT, favourites=favourites, ICON_DICT=ICON_DICT, filter=filter)
+    return render_template("profile.html", user=user, TYPES_DICT=TYPES_DICT, favourites=favourites, ICON_DICT=ICON_DICT)
+
 
 
     if action == "changemail":
