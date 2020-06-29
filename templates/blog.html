@@ -30,7 +30,6 @@ Layout page for controlling  blogs
 				<td>{{ blogpost.id }}</td>
 		        <td>{{ blogpost.date.strftime("%-d/%m") }}</td>
 				<td>{{ blogpost.title }}</td>
-		        <td>{{ blogpost.short }}</td>
 		        <td>{% if blogpost.visible %}<i class="fas fa-check"></i>{% else %}<i class="fas fa-times"></i>{% endif %}</td>
 				<td><a href="{{ url_for('createblog', blog_id=blogpost.id) }}"><i class="far fa-edit"></i></a></td>
 			</tr>
