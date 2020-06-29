@@ -452,6 +452,9 @@ nav .btn {
 .media p {
   white-space: nowrap;
 }
+.media .center-cropped {
+  background-position: center;
+}
 .media .media-body .fa-medal {
   font-size: 22px;
   color: white;
