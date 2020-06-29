@@ -307,5 +307,11 @@ button.close {
     transform: translateY(0);
   }
 }
+.message-container {
+  position: fixed;
+  top: 60px;
+  width: 100%;
+  z-index: 10;
+}
 
 /*# sourceMappingURL=stylesindex.css.map */
