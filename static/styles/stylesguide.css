@@ -454,6 +454,7 @@ nav .btn {
 }
 .media .center-cropped {
   background-position: center;
+  background-attachment: fixed;
 }
 .media .media-body .fa-medal {
   font-size: 22px;
