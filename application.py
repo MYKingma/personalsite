@@ -360,7 +360,6 @@ def contact():
 
     return render_template('contact.html')
 
-@app.route('/')
 @app.route('/stadsgids', methods=["GET", "POST"])
 def guide():
     if request.method == "GET":
