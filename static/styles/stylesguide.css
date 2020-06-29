@@ -878,6 +878,8 @@ nav .btn {
   }
   .highlight .media .center-cropped, .smallist .media .center-cropped {
     margin-right: 8px;
+    width: 60px;
+    height: 60px;
   }
   .highlight .media .media-body button, .smallist .media .media-body button {
     font-size: 10px;
