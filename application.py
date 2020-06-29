@@ -327,7 +327,7 @@ def action_location():
         return jsonify({"success": True, "count": review.get_upvote_count(), "status": "added"})
 
 # page routes
-@app.route('/', subdomain="www")
+@app.route('/')
 def index():
     return render_template("index.html")
 
@@ -358,7 +358,7 @@ def contact():
 
     return render_template('contact.html')
 
-@app.route('/', subdomain="stadsgids")
+@app.route('/')
 @app.route('/stadsgids', methods=["GET", "POST"])
 def guide():
     if request.method == "GET":
