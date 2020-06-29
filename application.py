@@ -434,7 +434,7 @@ def guide():
             newRecommendations.append(result)
 
 
-        blogposts = Blog.query.filter_by(visible=True).order_by(Blog.date.desc()).limit(2).all()
+        blogposts = Blog.query.filter_by(visible=True).filter(Blog.title!="Privacyverklaring").filter(Blog.title!="Over Stadsgids").order_by(Blog.date.desc()).limit(2).all()
         randomrec = random.choice(Recommendation.query.all())
         frontpageevent = Event.query.filter(Event.date > datetime.datetime.now()).order_by(Event.date).all()
         reviews = Review.query.order_by(Review.date.desc()).limit(3).all()
@@ -1351,7 +1351,12 @@ def processrequests(request_id):
     flash("Informatieaanvraag verwerkt", "success")
     return redirect(url_for('inforequest'))
 
-@app.route('/stadsgids/blog/<blog_id>')
-def blogpost(blog_id):
+@app.route('/stadsgids/<blog_id>/<title>')
+def blogpost(blog_id, title):
     blog = Blog.query.filter_by(id=blog_id).first()
+    return render_template('blogpost.html', blog=blog)
+
+@app.route('/stadsgids/over')
+def aboutguide():
+    blog = Blog.query.filter_by(id=9).first()
     return render_template('blogpost.html', blog=blog)
