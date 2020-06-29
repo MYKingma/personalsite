@@ -356,7 +356,7 @@ def contact():
     msg = Message(f"{name} heeft je een bericht gestuurd via mauricekingma.nl", recipients=["mauricekingma@me.com"])
     msg.html = render_template('contactmail.html', name=name, email=email, message=message)
     job = queue.enqueue('task.send_mail', msg)
-    flash("E-mail verstuurd", 'success')
+    flash("E-mail verstuurd", 'info')
 
     return render_template('contact.html')
 
@@ -1286,7 +1286,7 @@ def check():
         review.checked = True
         review.review = "De inhoud van deze recensie is aanstootgevend en dus verwijderd."
         db.session.commit()
-        flash("Review geblokkeerd", 'danger')
+        flash("Review geblokkeerd", 'warning')
 
     return render_template("check.html", reviews=reviews)
 

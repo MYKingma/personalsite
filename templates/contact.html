@@ -36,6 +36,18 @@ Contact page layout
 
 	<!-- page body -->
 	<body>
+		<div class="message-container">
+			{%- with messages = get_flashed_messages(with_categories=true, category_filter=["success", "warning", "info"]) -%}
+				{%- if messages -%}
+					{%- for category, message in messages -%}
+			<div class="alert alert-{{ category }} alert-dismissible fade show">
+			  <a href="#" class="close" data-dismiss="alert" aria-label="close"><i class="fas fa-times"></i></a>
+			  {{ message }}
+			</div>
+					{%- endfor -%}
+				{%- endif -%}
+			{%- endwith -%}
+		</div>
 		<a href="{{ url_for('index')}}" class="homelink">
 			<div class="container" id="knock">
 				<p id="title">MK</p>
@@ -101,5 +113,6 @@ Contact page layout
 				};
 			});
 		</script>
+		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/js/bootstrap.min.js" integrity="sha384-h0AbiXch4ZDo7tp9hKZ4TsHbi047NrKGLO3SEJAg45jXxnGIfYzk4Si90RDIqNm1" crossorigin="anonymous"></script>
 	</body>
 </html>
