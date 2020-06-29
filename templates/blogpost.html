@@ -9,13 +9,13 @@ Layout blogpost page
 {% extends "base.html" %}
 
 <!-- page title -->
-{% block title %}Stadsgids - Blog{% endblock %}
+{% block title %}Stadsgids - {{ blog.title }}{% endblock %}
 
 <!-- page content -->
 {% block content %}
 <div class="container">
 	<h2 class="nodec"><a href="{{ url_for('guide') }}"><i class="fas fa-long-arrow-alt-left"></i> Stadsgids</a></h2>
-	<div class="formbox">
+	<div class="formbox redlink">
 		<h1>{{ blog.title }}<span class="blogdate">{{ blog.date.strftime("%-d %B %Y %R") }}</span></h1>
 		<p>{{ blog.short }}</p>
 		{{ blog.body|safe }}

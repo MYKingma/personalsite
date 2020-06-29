@@ -102,6 +102,7 @@ Layout registration page
 					<label class="form-check-label" for="newletter"><a data-toggle="tooltip" title="Onze nieuwsbrief is een echte nieuwsbrief. Géén nieuws betekend dus ook géén nieuwsbrief. Wat je wel kunt verwachten is een (bijna) wekelijkse e-mail met de nieuwe aanraders, interessante artikelen en recensies van Stadsgids zelf of vanuit de krant of van het internet. Wat je niet hoeft te verwachten zijn schreeuwende koppen en ellendige reclame.">Schrijf me in voor de nieuwsbrief</a></label>
 				</div>
 			</div>
+			<p>Bij het maken van een account bij Stadsgids ga je akkoord met onze <a class="policy" href="{{ url_for('blogpost', blog_id=8, title='Privacyverklaring')}}">Privacyverklaring</a></p>
 			<input id="button" class="btn btn-dark" type="submit">
 			<input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
 		</form>

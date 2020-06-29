@@ -661,6 +661,14 @@ nav .btn {
   animation: 0.2s ease-out 0s 1 slideInFromLeft;
 }
 
+.policy {
+  color: #9c0315;
+}
+
+.policy:hover {
+  color: grey;
+}
+
 #advanced {
   margin-left: 10px;
 }
