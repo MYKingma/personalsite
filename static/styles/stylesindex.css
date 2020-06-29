@@ -309,9 +309,13 @@ button.close {
 }
 .message-container {
   position: fixed;
-  top: 60px;
+  top: 10px;
   width: 100%;
   z-index: 10;
+}
+
+.alert-dismissible {
+  animation: 0.2s ease-out 0s 1 slideInFromLeft;
 }
 
 /*# sourceMappingURL=stylesindex.css.map */
