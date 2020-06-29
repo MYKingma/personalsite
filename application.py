@@ -114,8 +114,6 @@ queue = rq.Queue('default', connection=conn)
 # set Flask WTF CSRFProtect
 csrf = CSRFProtect(app)
 
-app.config['SERVER_NAME'] = "mauricekingma.nl"
-
 
 @app.before_request
 def before_request():
@@ -329,8 +327,10 @@ def action_location():
         return jsonify({"success": True, "count": review.get_upvote_count(), "status": "added"})
 
 # page routes
-@app.route('/', subdomain="www")
+@app.route('/')
 def index():
+    if "stadsgids." in request.url:
+        return guide()
     return render_template("index.html")
 
 @app.route('/about')
@@ -360,7 +360,7 @@ def contact():
 
     return render_template('contact.html')
 
-@app.route('/', subdomain="stadsgids")
+@app.route('/')
 @app.route('/stadsgids', methods=["GET", "POST"])
 def guide():
     if request.method == "GET":
