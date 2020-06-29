@@ -36,46 +36,92 @@ Search page layout
 			{% endif %}
 			{% endif %}
 			{% for result in results %}
-				<a class="list" href="{{ url_for('location', place_id=result.place_id, name=result.name) }}">
-					<li class="media">
-						<div class="center-cropped" style="background-image: url('{{ result.photos }}');"></div>
-						<div class="media-body">
-							<h5 class="mt-0 mb-1">
-								<span class="toright">
-									{% if result.recommended %}
-									<p><button class="btn btn-danger btn-sm">AANRADER<i class="fas fa-medal"></i></button></p>
+			{% if result.recommended %}
+			<a class="list" href="{{ url_for('location', place_id=result.place_id, name=result.name) }}">
+				<li class="media">
+					<div class="center-cropped" style="background-image: url('{{ result.photos }}');"></div>
+					<div class="media-body">
+						<h5 class="mt-0 mb-1">
+							<span class="toright">
+								{% if result.recommended %}
+								<p><button class="btn btn-danger btn-sm">AANRADER<i class="fas fa-medal"></i></button></p>
+								{% endif %}
+								<p class="nomt">
+									{% if result.price_level %}
+									{{ result.price_level }} -
 									{% endif %}
-									<p class="nomt">
-										{% if result.price_level %}
-										{{ result.price_level }} -
+									{% if result.recommended %}
+									{% for type in result.guidetype %}
+									{% for key, value in TYPES_DICT.items() %}
+										{% if type == value %}
+										{% if key in ICON_DICT %}
+										<i class="fas fa-{{ ICON_DICT[key] }}"></i>
 										{% endif %}
-										{% if result.recommended %}
-										{% for type in result.guidetype %}
-										{% for key, value in TYPES_DICT.items() %}
-											{% if type == value %}
-											{% if key in ICON_DICT %}
-											<i class="fas fa-{{ ICON_DICT[key] }}"></i>
-											{% endif %}
-											{% endif %}
-										{% endfor %}
-										{% endfor %}
-										{% else %}
-										{% for type in result.types %}
-											{% if type in ICON_DICT %}
-											<i class="fas fa-{{ ICON_DICT[type] }}"></i>
-											{% endif %}
-										{% endfor %}
 										{% endif %}
-									</p>
-									<p>{{ result.opening_hours }}</p>
-								</span>
-								{{ result.name }}
-							</h5>
-							<p class="searchadress"><span id="stars">{{ result.rating }}</span></p>
-							<p class="searchadress">{{ result["formatted_address"][0] }}</p>
-						</div>
-					</li>
-				</a>
+									{% endfor %}
+									{% endfor %}
+									{% else %}
+									{% for type in result.types %}
+										{% if type in ICON_DICT %}
+										<i class="fas fa-{{ ICON_DICT[type] }}"></i>
+										{% endif %}
+									{% endfor %}
+									{% endif %}
+								</p>
+								<p>{{ result.opening_hours }}</p>
+							</span>
+							{{ result.name }}
+						</h5>
+						<p class="searchadress"><span id="stars">{{ result.rating }}</span></p>
+						<p class="searchadress">{{ result["formatted_address"][0] }}</p>
+					</div>
+				</li>
+			</a>
+			{% endif %}
+			{% endfor %}
+			{% for result in results %}
+			{% if not result.recommended %}
+			<a class="list" href="{{ url_for('location', place_id=result.place_id, name=result.name) }}">
+				<li class="media">
+					<div class="center-cropped" style="background-image: url('{{ result.photos }}');"></div>
+					<div class="media-body">
+						<h5 class="mt-0 mb-1">
+							<span class="toright">
+								{% if result.recommended %}
+								<p><button class="btn btn-danger btn-sm">AANRADER<i class="fas fa-medal"></i></button></p>
+								{% endif %}
+								<p class="nomt">
+									{% if result.price_level %}
+									{{ result.price_level }} -
+									{% endif %}
+									{% if result.recommended %}
+									{% for type in result.guidetype %}
+									{% for key, value in TYPES_DICT.items() %}
+										{% if type == value %}
+										{% if key in ICON_DICT %}
+										<i class="fas fa-{{ ICON_DICT[key] }}"></i>
+										{% endif %}
+										{% endif %}
+									{% endfor %}
+									{% endfor %}
+									{% else %}
+									{% for type in result.types %}
+										{% if type in ICON_DICT %}
+										<i class="fas fa-{{ ICON_DICT[type] }}"></i>
+										{% endif %}
+									{% endfor %}
+									{% endif %}
+								</p>
+								<p>{{ result.opening_hours }}</p>
+							</span>
+							{{ result.name }}
+						</h5>
+						<p class="searchadress"><span id="stars">{{ result.rating }}</span></p>
+						<p class="searchadress">{{ result["formatted_address"][0] }}</p>
+					</div>
+				</li>
+			</a>
+			{% endif %}
 			{% endfor %}
 			</ul>
 		</div>

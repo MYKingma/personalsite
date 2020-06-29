@@ -106,7 +106,7 @@ Base layout for other pages
 			{%- with messages = get_flashed_messages(with_categories=true, category_filter=["success", "warning", "info"]) -%}
 				{%- if messages -%}
 					{%- for category, message in messages -%}
-			<div class="alert alert-{{ category }} alert-dismissible">
+			<div class="alert alert-{{ category }} alert-dismissible fade show">
 			  <a href="#" class="close" data-dismiss="alert" aria-label="close"><i class="fas fa-times"></i></a>
 			  {{ message }}
 			</div>

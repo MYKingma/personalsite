@@ -25,6 +25,7 @@ Page to request new password
 		<div class="form-group">
 			<input type="submit" class="btn btn-outline-success my-2 my-sm-0">
 		</div>
+		<input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
 	</form>
 </div>
 {% endblock %}
