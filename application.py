@@ -973,7 +973,7 @@ def profile():
             data = res.json()
             result["name"] = data["result"]["name"]
             result["rating"] = data["result"]["rating"]
-            result["place_id"] = data["result"]["place_id
+            result["place_id"] = data["result"]["place_id"]
             if "price_level" in data["result"]:
                 result["price_level"] = data["result"]["price_level"] * "€"
             result["formatted_address"] = data["result"]["formatted_address"].split(",")
