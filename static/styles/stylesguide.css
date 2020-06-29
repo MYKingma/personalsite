@@ -691,9 +691,8 @@ nav .btn {
 }
 
 #buttonbox {
-  padding: 5px;
+  padding-top: 10px;
   margin-bottom: 10px;
-  padding-bottom: 8px;
   margin-top: 5px;
   border-bottom: 1.5px solid #DEDEDE;
 }
