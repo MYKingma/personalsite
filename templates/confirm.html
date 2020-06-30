@@ -17,6 +17,7 @@ page for confirming e-mail
 	<h1>E-mail bevestigen</h1>
 	<p>Voer hieronder het e-mailadres in dat is gekoppeld aan het acount. Wij sturen dan een e-mail met een nieuwe bevestigingslink. Let op: deze link is 1 uur geldig.</p>
 	<form class="needs-validation" action="{{ url_for('new_conformation')}}" method="post" novalidate>
+		<input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
 		<div class="form-group">
 			<label for="emailconfirm">E-mailadres</label>
 			<input class="form-control" type="email" name="email" id="emailconfirm" required>
