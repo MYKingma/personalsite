@@ -302,7 +302,7 @@ def action_location():
 
         # send email for request /stadsgids/locatie/<name>/<place_id>
         link = request.url_root + "stadsgids/locatie/" + name + "/" + place_id
-        msg = Message(f"Ontvangstbevestiging informatieaanvraag voor {name}", recipients=["mauricekingma@me.com"])
+        msg = Message(f"Ontvangstbevestiging informatieaanvraag voor {name}", recipients=[current_user.email])
         msg.html = render_template("recommendmail.html", name=user.firstname, location=name, website=website, place_id=place_id)
         job = queue.enqueue('task.send_mail', msg)
         newreq = Request(place_id=place_id, name=name)
