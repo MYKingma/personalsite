@@ -871,9 +871,12 @@ def profile():
     favourites = []
     for favourite in user.favourites:
 <<<<<<< HEAD
+<<<<<<< HEAD
         details = get_location_link_information(favourite.place_id)
         favourites.append(details)
 =======
+=======
+>>>>>>> parent of 6234201... code cleanup
         result = {}
         # google places api request for location
         res = requests.get("https://maps.googleapis.com/maps/api/place/details/json", params={"key": GOOGLE_API_KEY, "place_id": favourite.place_id, "fields": "name,formatted_address,photo,opening_hours,price_level,rating,place_id,types", "locationbias": "circle:10000@52.348460,4.885954", "language": "nl"})
@@ -905,6 +908,9 @@ def profile():
         favourites.append(result)
 
 
+<<<<<<< HEAD
+>>>>>>> parent of 6234201... code cleanup
+=======
 >>>>>>> parent of 6234201... code cleanup
     if request.method == "GET":
         return render_template("profile.html", user=user, TYPES_DICT=TYPES_DICT, favourites=favourites, ICON_DICT=ICON_DICT)
