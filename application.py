@@ -3,11 +3,10 @@
 # Maurice Kingma
 #
 #
-# python program for page routes stadsgids.mauricekingma.nl
+# python program for stadsgids.mauricekingma.nl
 
 import os
 from config import *
-from locationinfo import *
 
 # declare constants
 GOOGLE_API_KEY = os.getenv("GOOGLE_API_KEY")
@@ -15,16 +14,18 @@ API_TYPES = ["art_gallery", "bakery", "bar", "bicycle_store", "book_store", "bow
 TYPES_DICT = {"": "Geen voorkeur", "art_gallery": "Kunstgallerij", "bakery": "Bakkerij", "bar": "Bar", "bicycle_store": "Fietsenwinkel", "book_store": "Boekenwinkel", "bowling_alley": "Bowlingbaan", "cafe": "Cafe", "casino": "Casino", "florist": "Bloemenwinkel", "library": "Bibliotheek", "liquor_store": "Slijterij", "meal_delivery": "Bezorgrestaurant", "meal_takeaway": "Afhaalrestaurant", "movie_rental": "Videotheek", "movie_theater": "Bioscoop", "museum": "Museum", "night_club": "Nachtclub", "park": "Park", "restaurant": "Restaurant", "spa": "Spa", "stadium": "Stadion", "store": "Winkel", "tourist_attraction": "Toeristenattractie", "zoo": "Dierentuin", "brewery": "Brouwerij", "distillery": "Destileerderij", "wineshop": "Wijnwinkel", "coffeeroasters": "Koffiebranders", "beerbar": "Biercafé", "cocktailbar": "Cocktailbar"}
 RESULT_FILTER = ["sexshop", "sex", "gay", "2020", "kamerverhuur", "fetish", "erotic", "xxx", "lust"]
 SEARCH_TYPES = ["", "bakery", "bar", "book_store", "cafe", "casino", "library", "liquor_store", "movie_theater", "museum", "night_club", "restaurant", "spa", "store"]
-REC_SEARCH_TYPES = ["", "bakery", "bar", "cafe", "museum", "night_club", "restaurant", "store", "liquor_store", "brewery", "distillery", "wineshop", "coffeeroasters", "beerbar"]
-ICON_DICT = {"bakery": "bread-slice", "book_store": "book", "casino": "dice", "library": "book-reader", "liquor_store": "wine-bottle", "cinema": "film", "museum": "palette", "night_club": "compact-disc", "spa": "hot-tub", "store": "shopping-basket", "restaurant": "utensils", "brewery": "beer", "beerbar": "beer", "coacktailbar": "cocktail", "cofferoasters": "coffee", "wineshop": "wine-glass-alt", "distillery": "whiskey", "bar": "glass-cheers", "cafe": "mug-hot"}
+REC_SEARCH_TYPES = ["", "bakery", "bar", "cafe", "museum", "night_club", "restaurant", "store", "brewery", "distillery", "wineshop", "coffeeroasters", "beerbar"]
+ICON_DICT = {"bakery": "bread-slice", "book_store": "book", "casino": "dice", "library": "book-reader", "liqour_store": "wine-bottle", "cinema": "film", "museum": "palette", "night_club": "compact-disc", "spa": "hot-tub", "store": "shopping-basket", "restaurant": "utensils", "brewery": "beer", "beerbar": "beer", "coacktailbar": "cocktail", "cofferoasters": "coffee", "wineshop": "wine-glass-alt", "distillery": "whiskey", "bar": "glass-cheers", "cafe": "mug-hot"}
 
 
-# test route
+
+
+# test code
 @app.route('/test')
 def test():
     return redirect(url_for('guide'))
 
-# redirect routes
+# handlers
 @app.route('/loguit')
 def logout():
     # log out user
@@ -50,37 +51,36 @@ def delete_event(event_id, name):
     flash(f"Evenement verwijderd", "success")
     return redirect(request.referrer)
 
-@app.route('/nieuwebevestiging', methods=["POST"])
-def new_conformation():
-    # get form info
-    email = request.form.get('email').lower()
+@app.route('/stadsgids/resetwachtwoord', methods=["POST"])
+def reset():
+    # get email and passwords
+    email = request.form.get("email")
+    password1 = request.form.get("password1")
+    password2 = request.form.get("password2")
 
-    # get user
+    # check if input exists
+    if not password1 or not password2:
+        flash("Niet alle velden waren ingevuld", 'password' )
+        return render_template("resetpass.html", email=email)
+
+    # check if passswords match
+    if password1 != password2:
+        flash("Wachtwoorden komen niet overeen", 'password')
+        return render_template("resetpass.html", email=email)
+
+    # hash password
+    password = blake2b(password1.encode()).hexdigest()
+
+    # get user and set password
     user = User.query.filter_by(email=email).first()
+    user.password = password
+    db.session.commit()
 
-    # check if user exists
-    if not user:
-        flash("E-mail adres niet bekend", 'warning')
-        return redirect(url_for('not_confirmed'), "303")
-
-    # check if email already confirmed
-    if user.confirmed == True:
-        flash("E-mailadres al bevestigd", "success")
-        return redirect(url_for('guide'))
-
-    # generate token confirmation email
-    serializer = URLSafeTimedSerializer(app.config['SECRET_KEY'])
-    token = serializer.dumps(email, salt=app.config['SECURITY_PASSWORD_SALT'])
-
-    # send email for confirmation
-    msg = Message("Bevestig je e-mailadres om je account te activeren", recipients=[email])
-    link = request.url_root + "stadsgids/emailbevestigen/" + token
-    msg.html = render_template('confirmmail.html')
-    job = queue.enqueue('task.send_mail', msg)
-    flash(f"E-mail verstuurd naar {email} met een nieuwe bevestigingslink", "success")
+    # show message
+    flash("Wachtwoord opnieuw ingesteld, je kunt gelijk inloggen", "success")
     return redirect(url_for('guide'))
 
-# decorators
+# custom decorators
 def role_required(role):
     def wrapper(fn):
         @wraps(fn)
@@ -95,6 +95,7 @@ def role_required(role):
         return decorated_view
     return wrapper
 
+# handlers
 @login_manager.user_loader
 def load_user(user_id):
     return User.query.get(user_id)
@@ -134,8 +135,39 @@ def emailcheck():
     else:
         return jsonify({"success": False})
 
+@app.route('/nieuwebevestiging', methods=["POST"])
+def new_conformation():
+    # get form info
+    email = request.form.get('email').lower()
+
+    # get user
+    user = User.query.filter_by(email=email).first()
+
+    # check if user exists
+    if not user:
+        flash("E-mail adres niet bekend", 'warning')
+        return redirect(url_for('not_confirmed'), "303")
+
+    # check if email already confirmed
+    if user.confirmed == True:
+        flash("E-mailadres al bevestigd", "success")
+        return redirect(url_for('guide'))
+
+    # generate token confirmation email
+    serializer = URLSafeTimedSerializer(app.config['SECRET_KEY'])
+    token = serializer.dumps(email, salt=app.config['SECURITY_PASSWORD_SALT'])
+
+    # send email for confirmation
+    msg = Message("Bevestig je e-mailadres om je account te activeren", recipients=[email])
+    link = request.url_root + "stadsgids/emailbevestigen/" + token
+    msg.html = render_template('confirmmail.html')
+    job = queue.enqueue('task.send_mail', msg)
+    flash(f"E-mail verstuurd naar {email} met een nieuwe bevestigingslink", "success")
+    return redirect(url_for('guide'))
+
 @app.route('/location/action', methods=["POST"])
 def action_location():
+
     # get form information
     place_id = request.form.get('place_id')
     button = request.form.get('button')
@@ -160,15 +192,18 @@ def action_location():
         return jsonify({"success": True})
 
     if button == "recommend":
+
         # check if request already made
         for req in user.requests:
             if place_id == req.place_id:
                 return jsonify({"success": False})
 
+        details = get_location_link_information(place_id=place_id)
         # send email for request /stadsgids/locatie/<name>/<place_id>
         link = request.url_root + "stadsgids/locatie/" + name + "/" + place_id
-        msg = Message(f"Ontvangstbevestiging informatieaanvraag voor {name}", recipients=[current_user.email])
-        msg.html = render_template("recommendmail.html", name=user.firstname, location=name, website=website, place_id=place_id)
+        msg = Message(f"Ontvangstbevestiging informatieaanvraag voor {name}", recipients=[email])
+        msg.html = render_template("recommendmail.html", name=user.firstname, location=name, website=website, result=details, TYPES_DICT=TYPES_DICT, ICON_DICT=ICON_DICT)
+        mail.send(msg)
         job = queue.enqueue('task.send_mail', msg)
         newreq = Request(place_id=place_id, name=name)
         db.session.add(newreq)
@@ -235,13 +270,69 @@ def guide():
                 highlight = location
                 break
 
-        highlightDetails = get_location_link_information(place_id=highlight.place_id)
+        highlightDetails = {}
+        # google places api request for location
+        res = requests.get("https://maps.googleapis.com/maps/api/place/details/json", params={"key": GOOGLE_API_KEY, "place_id": highlight.place_id, "fields": "name,formatted_address,photo,opening_hours,price_level,rating,place_id,types", "locationbias": "circle:10000@52.348460,4.885954", "language": "nl"})
+        if res.status_code == 200:
+            data = res.json()
+            highlightDetails["name"] = data["result"]["name"]
+            highlightDetails["rating"] = data["result"]["rating"]
+            highlightDetails["place_id"] = data["result"]["place_id"]
+            if "price_level" in data["result"]:
+                highlightDetails["price_level"] = data["result"]["price_level"] * "€"
+            highlightDetails["formatted_address"] = data["result"]["formatted_address"].split(",")
+
+            if "photos" in data["result"]:
+
+                # google places photo api request for thumbnail
+                photo = requests.get("https://maps.googleapis.com/maps/api/place/photo", params={"key": GOOGLE_API_KEY, "maxwidth": "250", "photoreference": data["result"]["photos"][0]["photo_reference"]})
+                if photo.status_code == 200:
+                    highlightDetails["photos"] = photo.url
+                else:
+                    highlightDetails["photos"] = None
+            highlightDetails["types"] = data["result"]["types"]
+        recommendation = Recommendation.query.filter_by(place_id=highlight.place_id).first()
+        if recommendation:
+            highlightDetails["recommended"] = True
+            highlightDetails["types"] = recommendation.type.replace("}", "").replace("{", "").split(",")
+            highlightDetails["price_level"] = recommendation.price_level * "€"
+        else:
+            highlightDetails["recommended"] = False
 
         recommendations = Recommendation.query.filter_by(visible=True).order_by(Recommendation.date.desc()).limit(3).all()
         newRecommendations = []
         for recommendation in recommendations:
-            linkDetails = get_location_link_information(place_id=recommendation.place_id)
-            newRecommendations.append(linkDetails)
+            result = {}
+
+            # google places api request for location
+            res = requests.get("https://maps.googleapis.com/maps/api/place/details/json", params={"key": GOOGLE_API_KEY, "place_id": recommendation.place_id, "fields": "name,formatted_address,photo,opening_hours,price_level,rating,place_id,types", "locationbias": "circle:10000@52.348460,4.885954", "language": "nl"})
+            if res.status_code == 200:
+                data = res.json()
+                result["name"] = data["result"]["name"]
+                result["rating"] = data["result"]["rating"]
+                result["place_id"] = data["result"]["place_id"]
+                if "price_level" in data["result"]:
+                    result["price_level"] = data["result"]["price_level"] * "€"
+                result["formatted_address"] = data["result"]["formatted_address"].split(",")
+
+                if "photos" in data["result"]:
+
+                    # google places photo api request for thumbnail
+                    photo = requests.get("https://maps.googleapis.com/maps/api/place/photo", params={"key": GOOGLE_API_KEY, "maxwidth": "250", "photoreference": data["result"]["photos"][0]["photo_reference"]})
+                    if photo.status_code == 200:
+                        result["photos"] = photo.url
+                    else:
+                        result["photos"] = None
+                result["types"] = data["result"]["types"]
+            guiderecommendation = Recommendation.query.filter_by(place_id=recommendation.place_id).first()
+            if guiderecommendation:
+                result["recommended"] = True
+                result["types"] = guiderecommendation.type.replace("}", "").replace("{", "").split(",")
+                result["price_level"] = guiderecommendation.price_level * "€"
+            else:
+                result["recommended"] = False
+            newRecommendations.append(result)
+
 
         blogposts = Blog.query.filter_by(visible=True).filter(Blog.title!="Privacyverklaring").filter(Blog.title!="Over Stadsgids").order_by(Blog.date.desc()).limit(2).all()
         randomrec = random.choice(Recommendation.query.all())
@@ -429,35 +520,6 @@ def forgot():
 
     flash(f"E-mail met wachtwoordreset link verstuurd naar {email}", 'success')
     return redirect(url_for('forgot'), "303")
-
-@app.route('/stadsgids/resetwachtwoord', methods=["POST"])
-def reset():
-    # get email and passwords
-    email = request.form.get("email")
-    password1 = request.form.get("password1")
-    password2 = request.form.get("password2")
-
-    # check if input exists
-    if not password1 or not password2:
-        flash("Niet alle velden waren ingevuld", 'password' )
-        return render_template("resetpass.html", email=email)
-
-    # check if passswords match
-    if password1 != password2:
-        flash("Wachtwoorden komen niet overeen", 'password')
-        return render_template("resetpass.html", email=email)
-
-    # hash password
-    password = blake2b(password1.encode()).hexdigest()
-
-    # get user and set password
-    user = User.query.filter_by(email=email).first()
-    user.password = password
-    db.session.commit()
-
-    # show message
-    flash("Wachtwoord opnieuw ingesteld, je kunt gelijk inloggen", "success")
-    return redirect(url_for('guide'))
 
 @app.route('/stadsgids/resetwachtwoord/<token>')
 def resetpass(token):
@@ -649,7 +711,13 @@ def search():
                     # set result variables
                     candidate["formatted_address"] = candidate["formatted_address"].split(", ")
                     if "photos" in candidate:
-                        candidate["photos"] = get_photo_url(candidate["photos"][0]["photo_reference"])
+
+                        # google places photo api request for thumbnail
+                        photo = requests.get("https://maps.googleapis.com/maps/api/place/photo", params={"key": GOOGLE_API_KEY, "maxwidth": "125", "photoreference": candidate["photos"][0]["photo_reference"]})
+                        if photo.status_code == 200:
+                            candidate["photos"] = photo.url
+                        else:
+                            candidate["photos"] = None
 
                     # set result variables
                     if "opening_hours" in candidate:
@@ -672,7 +740,7 @@ def search():
             if recommendation:
                 if recommendation.visible:
                     result["recommended"] = True
-                    result["types"] = recommendation.type.replace("{", "").replace("}", "").split(",")
+                    result["guidetype"] = recommendation.type.replace("{", "").replace("}", "").split(",")
         return render_template("search.html", search=True, results=results, TYPES_DICT=TYPES_DICT, REC_SEARCH_TYPES=REC_SEARCH_TYPES, SEARCH_TYPES=SEARCH_TYPES, ICON_DICT=ICON_DICT)
 
     # get filters if advanced search
@@ -682,6 +750,7 @@ def search():
     opennow = request.form.get('opennow')
     keyword = request.form.get('query')
     recommended = request.form.get('recommended')
+    print(recommended)
 
     if not recommended:
         # set params for request
@@ -707,7 +776,13 @@ def search():
                 # set result variables
                 result["formatted_address"] = result["vicinity"].split(", ")
                 if "photos" in result:
-                    result["photos"] = get_photo_url(result["photos"][0]["photo_reference"])
+
+                    # google places photo api request for thumbnail
+                    photo = requests.get("https://maps.googleapis.com/maps/api/place/photo", params={"key": GOOGLE_API_KEY, "maxwidth": "250", "photoreference": result["photos"][0]["photo_reference"]})
+                    if photo.status_code == 200:
+                        result["photos"] = photo.url
+                    else:
+                        result["photos"] = None
 
                 # set result variables
                 if "opening_hours" in result:
@@ -728,7 +803,7 @@ def search():
             if recommendation:
                 if recommendation.visible:
                     result["recommended"] = True
-                    result["types"] = recommendation.type.replace("{", "").replace("}", "").split(",")
+                    result["guidetype"] = recommendation.type.replace("{", "").replace("}", "").split(",")
         return render_template("search.html", search=True, results=results, TYPES_DICT=TYPES_DICT, REC_SEARCH_TYPES=REC_SEARCH_TYPES, SEARCH_TYPES=SEARCH_TYPES, ICON_DICT=ICON_DICT)
 
     if type:
@@ -737,14 +812,52 @@ def search():
     locations = Recommendation.query.filter(Recommendation.name.like(f"%{keyword}%"),Recommendation.type.like(f"%{type}%"),Recommendation.price_level > minprice,Recommendation.price_level <= maxprice).all()
 
     for location in locations:
-        details = get_location_link_information(place_id=location.place_id)
-        results.append(details)
+        result = {}
+        result["price_level"] = location.price_level * "€"
+        result["recommended"] = True
+        result["guidetype"] = location.type.replace("{", "").replace("}", "").split(",")
+
+
+        # google places api request for location
+        res = requests.get("https://maps.googleapis.com/maps/api/place/details/json", params={"key": GOOGLE_API_KEY, "place_id": location.place_id, "fields": "name,icon,formatted_address,photo,opening_hours,price_level,rating,place_id", "locationbias": "circle:10000@52.348460,4.885954", "language": "nl"})
+        if res.status_code == 200:
+            data = res.json()
+            result["name"] = data["result"]["name"]
+            if "open_now" in data["result"]["opening_hours"]:
+                if data["result"]["opening_hours"]["open_now"]:
+                    result["opening_hours"] = "Nu open"
+                else:
+                    result["opening_hours"] = "Gesloten"
+            else:
+                result["opening_hours"] = ""
+
+            result["icon"] = data["result"]["icon"]
+            result["rating"] = data["result"]["rating"]
+            result["place_id"] = data["result"]["place_id"]
+
+            result["formatted_address"] = data["result"]["formatted_address"].split(",")
+
+            if "photos" in data["result"]:
+
+                # google places photo api request for thumbnail
+                photo = requests.get("https://maps.googleapis.com/maps/api/place/photo", params={"key": GOOGLE_API_KEY, "maxwidth": "250", "photoreference": data["result"]["photos"][0]["photo_reference"]})
+                if photo.status_code == 200:
+                    result["photos"] = photo.url
+                else:
+                    result["photos"] = None
+        results.append(result)
         if opennow:
             for result in results:
                 if not result["opening_hours"] == "Nu open":
                     results.remove(result)
 
+
+
+
+
     return render_template("search.html", search=True, results=results, TYPES_DICT=TYPES_DICT, REC_SEARCH_TYPES=REC_SEARCH_TYPES, SEARCH_TYPES=SEARCH_TYPES, ICON_DICT=ICON_DICT)
+
+
 
 @app.route('/stadsgids/weekend')
 @login_required
@@ -754,12 +867,52 @@ def weekend():
 @app.route('/stadsgids/profiel', methods=["GET", "POST"])
 @login_required
 def profile():
+    user = User.query.filter_by(id=current_user.id).first()
+    favourites = []
+    for favourite in user.favourites:
+<<<<<<< HEAD
+<<<<<<< HEAD
+        details = get_location_link_information(favourite.place_id)
+        favourites.append(details)
+=======
+=======
+>>>>>>> parent of 6234201... code cleanup
+        result = {}
+        # google places api request for location
+        res = requests.get("https://maps.googleapis.com/maps/api/place/details/json", params={"key": GOOGLE_API_KEY, "place_id": favourite.place_id, "fields": "name,formatted_address,photo,opening_hours,price_level,rating,place_id,types", "locationbias": "circle:10000@52.348460,4.885954", "language": "nl"})
+        if res.status_code == 200:
+            data = res.json()
+            result["name"] = data["result"]["name"]
+            result["rating"] = data["result"]["rating"]
+            result["place_id"] = data["result"]["place_id"]
+            if "price_level" in data["result"]:
+                result["price_level"] = data["result"]["price_level"] * "€"
+            result["formatted_address"] = data["result"]["formatted_address"].split(",")
+
+            if "photos" in data["result"]:
+
+                # google places photo api request for thumbnail
+                photo = requests.get("https://maps.googleapis.com/maps/api/place/photo", params={"key": GOOGLE_API_KEY, "maxwidth": "250", "photoreference": data["result"]["photos"][0]["photo_reference"]})
+                if photo.status_code == 200:
+                    result["photos"] = photo.url
+                else:
+                    result["photos"] = None
+            result["types"] = data["result"]["types"]
+        recommendation = Recommendation.query.filter_by(place_id=favourite.place_id).first()
+        if recommendation:
+            result["recommended"] = True
+            result["types"] = recommendation.type.replace("}", "").replace("{", "").split(",")
+            result["price_level"] = recommendation.price_level * "€"
+        else:
+            result["recommended"] = False
+        favourites.append(result)
+
+
+<<<<<<< HEAD
+>>>>>>> parent of 6234201... code cleanup
+=======
+>>>>>>> parent of 6234201... code cleanup
     if request.method == "GET":
-        user = User.query.filter_by(id=current_user.id).first()
-        favourites = []
-        for favourite in user.favourites:
-            details = get_location_link_information(favourite.place_id)
-            favourites.append(details)
         return render_template("profile.html", user=user, TYPES_DICT=TYPES_DICT, favourites=favourites, ICON_DICT=ICON_DICT)
 
     action = request.form.get('action')
@@ -782,6 +935,8 @@ def profile():
                     filtered.append(favourite)
             favourites = filtered
         return render_template("profile.html", user=user, TYPES_DICT=TYPES_DICT, favourites=favourites, ICON_DICT=ICON_DICT, filter=filter)
+
+
 
     if action == "changemail":
         email = request.form.get('email')
@@ -940,6 +1095,7 @@ def newsletter():
     db.session.commit()
     return redirect(url_for('createnewsletter', newsletter_id=newsletter.id))
 
+
 @app.route('/stadsgids/dashboard/nieuwsbrief/opstellen/<newsletter_id>', methods=["GET", "POST"])
 @role_required('Administrator')
 def createnewsletter(newsletter_id):
@@ -988,6 +1144,7 @@ def blog():
     db.session.commit()
     return redirect(url_for('createblog', blog_id=blogpost.id))
 
+
 @app.route('/stadsgids/dashboard/blog/opstellen/<blog_id>', methods=['GET', 'POST'])
 @role_required('Administrator')
 def createblog(blog_id):
@@ -1018,6 +1175,7 @@ def createblog(blog_id):
         flash("Post verwijderd", 'success')
         return redirect(url_for('blog'))
     return render_template("createblog.html", blogpost=blogpost)
+
 
 @app.route('/stadsgids/dashboard/checkreviews', methods=["GET", "POST"])
 @role_required('Administrator')
@@ -1061,6 +1219,7 @@ def highlight():
     db.session.commit()
     return redirect(url_for('createhighlight', highlight_id=highlight.id))
 
+
 @app.route('/stadsgids/dashboard/uitgelicht/wijzigen/<highlight_id>', methods=["GET", "POST"])
 @role_required('Administrator')
 def createhighlight(highlight_id):
@@ -1082,11 +1241,13 @@ def createhighlight(highlight_id):
         flash("Uitgelicht verwijderd", "success")
         return redirect(url_for('highlight'))
 
+
 @app.route('/stadsgids/dashboard/aanvragen')
 @role_required('Administrator')
 def inforequest():
     inforequests = Request.query.all()
     return render_template('requests.html', requests=inforequests)
+
 
 @app.route('/stadsgids/dashboard/aanvragen/verwerken/<request_id>', methods=["GET", "POST"])
 @role_required('Administrator')

@@ -175,7 +175,8 @@ Layout profile page
 									</small>
 								</div>
 							</div>
-							<button id="emailbutton" class="btn btn-dark" name="action" value="changemail" type="submit">Wijzig e-mailadres</button>
+							<input name="action" value="changemail" type="hidden">
+							<input id="emailbutton" class="btn btn-dark" value="Wijzig e-mailadres" type="submit">
 							<input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
 						</form>
 					</div>
@@ -384,7 +385,8 @@ Layout profile page
 								</small>
 							</div>
 						</div>
-						<button id="emailbuttonsmall" class="btn btn-dark" name="action" value="changemail" type="submit">Wijzig e-mailadres</button>
+						<input name="action" value="changemail" type="hidden">
+						<input id="emailbuttonsmall" class="btn btn-dark" value="Wijzig e-mailadres" type="submit">
 						<input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
 					</form>
 				</div>
