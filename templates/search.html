@@ -15,7 +15,7 @@ Search page layout
 {% block content %}
 <div class="container">
 	<div class="row">
-		<div class="col-md-8">
+		<div class="col-lg-8">
 			{% if not search %}
 			<div class="greybox">
 				<p><i class="fas fa-search"></i>Gebruik het zoekveld om locaties te vinden.</p>
@@ -125,7 +125,7 @@ Search page layout
 			{% endfor %}
 			</ul>
 		</div>
-		<div class="col-md-4">
+		<div class="col-lg-4">
 			<form class="advanced formbox" action="{{ url_for('search') }}" method="post">
 				<input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
 				<h2><i class="fas fa-search"></i> Geavanceerd zoeken</h2>
