@@ -51,7 +51,7 @@ Search page layout
 									{{ result.price_level }} -
 									{% endif %}
 									{% if result.recommended %}
-									{% for type in result.types %}
+									{% for type in result.guidetype %}
 									{% for key, value in TYPES_DICT.items() %}
 										{% if type == value %}
 										{% if key in ICON_DICT %}
