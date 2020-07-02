@@ -168,7 +168,7 @@ def action_location():
         details = get_location_link_information(place_id=place_id)
         # send email for request /stadsgids/locatie/<name>/<place_id>
         link = request.url_root + "stadsgids/locatie/" + name + "/" + place_id
-        msg = Message(f"Ontvangstbevestiging informatieaanvraag voor {name}", recipients=["mauricekingma@me.com"])
+        msg = Message(f"Ontvangstbevestiging informatieaanvraag voor {name}", recipients=[email])
         msg.html = render_template("recommendmail.html", name=user.firstname, location=name, website=website, result=details, TYPES_DICT=TYPES_DICT, ICON_DICT=ICON_DICT)
         mail.send(msg)
         job = queue.enqueue('task.send_mail', msg)
@@ -756,8 +756,8 @@ def weekend():
 @app.route('/stadsgids/profiel', methods=["GET", "POST"])
 @login_required
 def profile():
+    user = User.query.filter_by(id=current_user.id).first()
     if request.method == "GET":
-        user = User.query.filter_by(id=current_user.id).first()
         favourites = []
         for favourite in user.favourites:
             details = get_location_link_information(favourite.place_id)
