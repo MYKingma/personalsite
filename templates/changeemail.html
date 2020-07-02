@@ -1,13 +1,67 @@
-<div class="header" style="background-color:#9c0315;background-image:none;background-repeat:repeat;background-position:top left;background-attachment:scroll;height:70px;padding-top:20px;padding-bottom:20px;padding-right:20px;padding-left:20px;" >
-	<img src="{{ request.url_root }}static/picto/cross.png" alt="logo" class="right" style="max-height:70px;float:right;" >
-	<h1 class="title" style="font-family:'Roboto', sans-serif;font-size:25px;color:white;text-align:center;" >Stadsgids<h1 style="font-family:'Roboto', sans-serif;font-size:25px;" >
-</div>
-<div class="container" style="padding-top:15px;padding-bottom:15px;padding-right:15px;padding-left:15px;" >
-	<p style="font-weight:normal;font-size:10pt;" >Beste {{ firstname }},</p>
-	<p style="font-weight:normal;font-size:10pt;" >Zojuist heb je het emailadres van jouw Stadsgids-account gewijzigd, het enige wat nog moet gebeuren is het bevestigen van je e-mailadres doormiddel van het klikken op de onderstaande link.</p>
-	<a href="{{ link }}" style="font-family:'Roboto', sans-serif;text-decoration:none;color:#9c0315;font-weight:bold;" >Klik hier om je e-mailadres ({{ email }}) te bevestigen</a>
-	<p style="font-weight:normal;font-size:10pt;" >Mocht je de emailwijziging niet zelf hebben aangevraagd dan kan je deze email als niet verzonden beschouwen. Wel is het raadzaam om dan zo snel mogelijk het wachtwoord van jouw Stadsgids-account te wijzigen via de profielpagina.</p>
-	<p style="font-weight:normal;font-size:10pt;" >Veel plezier met de gids en hartelijke groet,</p>
-	<br>
-	<p style="font-weight:normal;font-size:10pt;" >Maurice</p>
-</div>
+<!DOCTYPE html>
+<html lang="nl">
+	<head>
+		<style media="screen">
+			html {
+				height: 100vh;
+			}
+			html, body {
+				margin: 0;
+				padding: 0;
+				min-height: 100%;
+				position: relative;
+				width: 100vw;
+			}
+			.container {
+				min-height: 100%;
+				padding: 30px;
+				background-color: white;
+				padding-bottom: 8rem;
+			}
+			.header {
+				background-color: #9c0315;
+				padding: 15px;
+				text-align: center;
+			}
+			.title {
+				color: white;
+				font-family:'Roboto', sans-serif;
+				font-size: 25px;
+			}
+			p {
+				font-family:'Roboto', sans-serif;
+			}
+			img {
+				width: 60px;
+			}
+			.right {
+				float: right;
+			}
+			a {
+				color: #9c0315;
+				font-weight: bold;
+				text-decoration: none;
+			}
+		</style>
+	</head>
+	<body>
+		<div class="header">
+			<img class="right" src="{{ request.url_root }}static/picto/cross.png" alt="logo" >
+			<h1 class="title">Stadsgids<h1>
+		</div>
+		<div class="container">
+			<p>Beste {{ name }},</p>
+			<p>Zojuist heb je het emailadres van jouw Stadsgids-account gewijzigd, het enige wat nog moet gebeuren is het bevestigen van je e-mailadres doormiddel van het klikken op de onderstaande link.</p>
+			<br>
+			<a href="{{ link }}">Klik hier om je e-mailadres ({{ email }}) te bevestigen</a>
+			<br>
+			<br>
+			<p>Mocht je de emailwijziging niet zelf hebben aangevraagd dan kan je deze email als niet verzonden beschouwen. Wel is het raadzaam om dan zo snel mogelijk het wachtwoord van jouw Stadsgids-account te wijzigen via de profielpagina.</p>
+			<p>Ik hoop je hiermee voldoende te hebben geinformeerd.</p>
+			<br>
+			<p>Hartelijke groet,</p>
+			<br>
+			<p>Maurice</p>
+		</div>
+	</body>
+</html>

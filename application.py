@@ -165,10 +165,12 @@ def action_location():
             if place_id == req.place_id:
                 return jsonify({"success": False})
 
+        details = get_location_link_information(place_id=place_id)
         # send email for request /stadsgids/locatie/<name>/<place_id>
         link = request.url_root + "stadsgids/locatie/" + name + "/" + place_id
-        msg = Message(f"Ontvangstbevestiging informatieaanvraag voor {name}", recipients=[current_user.email])
-        msg.html = render_template("recommendmail.html", name=user.firstname, location=name, website=website, place_id=place_id)
+        msg = Message(f"Ontvangstbevestiging informatieaanvraag voor {name}", recipients=["mauricekingma@me.com"])
+        msg.html = render_template("recommendmail.html", name=user.firstname, location=name, website=website, result=details, TYPES_DICT=TYPES_DICT, ICON_DICT=ICON_DICT)
+        mail.send(msg)
         job = queue.enqueue('task.send_mail', msg)
         newreq = Request(place_id=place_id, name=name)
         db.session.add(newreq)
