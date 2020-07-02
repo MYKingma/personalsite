@@ -154,11 +154,11 @@ Layout profile page
 					<div class="profilegroupbox">
 						<h4>E-mailadres wijzigen</h4>
 						<p>Na het invoeren van het nieuwe e-mailadres ontvang je een e-mail met een bevestigingslink. Pas na het bevestigen van het nieuwe e-mailadres is de wijziging definitief.</p>
-						<form id="form" action="{{ url_for('profile') }}" method="post" class="needs-validation" style="max-width: 700px;" novalidate>
+						<form id="form" action="{{ url_for('profile') }}" method="post" class="needs-validation" novalidate>
 							<div class="form-row">
 								<div class="form-group ml">
 									<label>E-mail</label>
-									<input class="form-control" type="email" id="emailinput" name="email" aria-describedby="emailhelp" required>
+									<input class="form-control emailinput" type="email" id="emailinput" name="email" aria-describedby="emailhelp" required>
 
 									<!-- email client side message -->
 									<div class="invalid-feedback" id="emailerrormessage">Geef een geldig e-mailadres op</div>
@@ -183,7 +183,7 @@ Layout profile page
 					<div class="profilegroupbox">
 						<h4>Wachtwoord wijzigen</h4>
 						<p>De wachtwoordswijziging is per direct van kracht.</p>
-						<form id="form" action="{{ url_for('profile') }}" method="post" class="needs-validation" style="max-width: 700px;" novalidate>
+						<form id="form" action="{{ url_for('profile') }}" method="post" class="needs-validation" novalidate>
 							<div class="form-row">
 								<div class="form-group col-sm-6">
 									<label>Wachtwoord</label>
@@ -308,8 +308,8 @@ Layout profile page
 				{% endif %}
 			</div>
 			<div class="tab-pane fade" id="requests" role="tabpanel" aria-labelledby="requests-tab">
-				{% if user.requests %}
 				<h2><i class="far fa-hand-point-up"></i> Aanvragen</h2>
+				{% if user.requests %}
 				<p>Hieronder zijn lopende informatieaanvragen te vinden. Per locatie zie je of de informatie al is verstuurd, heb je geen mail ontvangen? Controleer dan je spamfolder</p>
 				{% for request in user.requests %}
 				<div class="requestbox">
@@ -368,7 +368,7 @@ Layout profile page
 						<div class="form-row">
 							<div class="form-group ml">
 								<label>Nieuw e-mailadres</label>
-								<input class="form-control" type="email" id="emailinputsmall" name="email" aria-describedby="emailhelp" required>
+								<input class="form-control emailinputsmall" type="email" id="emailinputsmall" name="email" aria-describedby="emailhelp" required>
 
 								<!-- email client side message -->
 								<div class="invalid-feedback" id="emailerrormessagesmall">Geef een geldig e-mailadres op</div>
@@ -433,5 +433,4 @@ Layout profile page
 {% block script %}
 <script type="text/javascript" src="{{ url_for('static', filename='js/star.js')}}"></script>
 <script type="text/javascript" src="{{ url_for('static', filename='js/profile.js')}}"></script>
-<script type="text/javascript" src="{{ url_for('static', filename='js/changemail.js')}}"></script>
 {% endblock %}

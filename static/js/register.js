@@ -18,7 +18,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 			// create new http request
 			const request = new XMLHttpRequest();
-			request.open('POST', '/usernamecheck');
+			request.open('POST', window.location.origin + '/usernamecheck', false);
 
 			request.onload = () => {
 				const data = JSON.parse(request.responseText);
@@ -49,7 +49,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 			// create new http request
 			const request = new XMLHttpRequest();
-			request.open('POST', '/emailcheck');
+			request.open('POST', '/emailcheck', false);
 			request.onload = () => {
 				const data = JSON.parse(request.responseText);
 
@@ -97,6 +97,6 @@ document.addEventListener('DOMContentLoaded', () => {
 		};
 	};
 	$(document).ready(function(){
-		$('[data-toggle="tooltip"]').tooltip();   
+		$('[data-toggle="tooltip"]').tooltip();
 	});
 });

@@ -43,7 +43,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         };
     };
-    
+
     // select register button and activate function on click
 	document.querySelector('#emailbuttonsmall').onclick = () => {
 
