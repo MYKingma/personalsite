@@ -97,7 +97,7 @@ locale.setlocale(locale.LC_ALL, "nl_NL")
 csrf = CSRFProtect(app)
 
 
-if os.getenv("PRODUCTION_SERVER") == True:
+if os.getenv("PRODUCTION_SERVER") == "True":
     # import worker
     from runworker import conn
 
