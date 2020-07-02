@@ -773,6 +773,7 @@ def profile():
         else:
             user.newsletter = False
             flash("Je bent nu uitgeschreven voor de nieuwsbrief", "success")
+        db.session.commit()
         return render_template("profile.html", user=user, TYPES_DICT=TYPES_DICT, favourites=favourites, ICON_DICT=ICON_DICT)
 
     if action == "filter":
