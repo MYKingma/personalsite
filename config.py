@@ -41,7 +41,7 @@ if not os.getenv("DATABASE_URL"):
 app.config["SQLALCHEMY_DATABASE_URI"] = os.getenv("DATABASE_URL")
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 app.config["SESSION_COOKIE_HTTPONLY"] = True
-app.config["SESSION_COOKIE_SECURE"] = True
+# app.config["SESSION_COOKIE_SECURE"] = True
 app.config["SESSION_COOKIE_SAMESITE"] = 'Lax'
 db.init_app(app)
 
@@ -95,6 +95,7 @@ locale.setlocale(locale.LC_ALL, "nl_NL")
 
 # set Flask WTF CSRFProtect
 csrf = CSRFProtect(app)
+
 
 
 if os.getenv("PRODUCTION_SERVER") == "True":
