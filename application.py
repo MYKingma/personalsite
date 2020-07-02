@@ -756,12 +756,12 @@ def weekend():
 @app.route('/stadsgids/profiel', methods=["GET", "POST"])
 @login_required
 def profile():
+    favourites = []
+    for favourite in user.favourites:
+        details = get_location_link_information(favourite.place_id)
+        favourites.append(details)
     user = User.query.filter_by(id=current_user.id).first()
     if request.method == "GET":
-        favourites = []
-        for favourite in user.favourites:
-            details = get_location_link_information(favourite.place_id)
-            favourites.append(details)
         return render_template("profile.html", user=user, TYPES_DICT=TYPES_DICT, favourites=favourites, ICON_DICT=ICON_DICT)
 
     action = request.form.get('action')
