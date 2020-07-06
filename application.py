@@ -9,7 +9,7 @@ import os
 from config import *
 from locationinfo import *
 
-# declare constants
+# declare constants and filters
 GOOGLE_API_KEY = os.getenv("GOOGLE_API_KEY")
 API_TYPES = ["art_gallery", "bakery", "bar", "bicycle_store", "book_store", "bowling_alley", "cafe", "casino", "florist", "library", "liquor_store", "meal_delivery", "meal_takeaway", "movie_rental", "movie_theater", "museum", "night_club", "park", "restaurant", "spa", "stadium", "store", "tourist_attraction", "zoo", "brewery", "distillery", "wineshop", "coffeeroasters", "beerbar"]
 TYPES_DICT = {"": "Geen voorkeur", "art_gallery": "Kunstgallerij", "bakery": "Bakkerij", "bar": "Bar", "bicycle_store": "Fietsenwinkel", "book_store": "Boekenwinkel", "bowling_alley": "Bowlingbaan", "cafe": "Cafe", "casino": "Casino", "florist": "Bloemenwinkel", "library": "Bibliotheek", "liquor_store": "Slijterij", "meal_delivery": "Bezorgrestaurant", "meal_takeaway": "Afhaalrestaurant", "movie_rental": "Videotheek", "movie_theater": "Bioscoop", "museum": "Museum", "night_club": "Nachtclub", "park": "Park", "restaurant": "Restaurant", "spa": "Spa", "stadium": "Stadion", "store": "Winkel", "tourist_attraction": "Toeristenattractie", "zoo": "Dierentuin", "brewery": "Brouwerij", "distillery": "Destileerderij", "wineshop": "Wijnwinkel", "coffeeroasters": "Koffiebranders", "beerbar": "Biercafé", "cocktailbar": "Cocktailbar"}
@@ -43,7 +43,7 @@ def deletereview(place_id, name):
 
 @app.route('/deleteevent/<event_id>/<name>')
 def delete_event(event_id, name):
-    # delete own review
+    # delete event
     event = Event.query.filter_by(id=event_id).first()
     db.session.delete(event)
     db.session.commit()
@@ -166,18 +166,21 @@ def action_location():
                 return jsonify({"success": False})
 
         details = get_location_link_information(place_id=place_id)
-        # send email for request /stadsgids/locatie/<name>/<place_id>
+        # send confirmation email for request /stadsgids/locatie/<name>/<place_id>
         link = request.url_root + "stadsgids/locatie/" + name + "/" + place_id
         msg = Message(f"Ontvangstbevestiging informatieaanvraag voor {name}", recipients=[email])
         msg.html = render_template("recommendmail.html", name=user.firstname, location=name, website=website, result=details, TYPES_DICT=TYPES_DICT, ICON_DICT=ICON_DICT)
         mail.send(msg)
         job = queue.enqueue('task.send_mail', msg)
+
+        # add request in database
         newreq = Request(place_id=place_id, name=name)
         db.session.add(newreq)
         db.session.commit()
         return jsonify({"success": True})
 
     if button == "upvote":
+        # get review
         review = Review.query.filter_by(id=request.form.get('review_id')).first()
         for upvote in review.upvotes:
 
@@ -230,6 +233,8 @@ def contact():
 @app.route('/stadsgids', methods=["GET", "POST"])
 def guide():
     if request.method == "GET":
+
+        # get weeknumber and corresponding highlight
         weeknum = datetime.datetime.now().isocalendar()[1]
         highlights = Highlight.query.all()
         for location in highlights:
@@ -237,16 +242,25 @@ def guide():
                 highlight = location
                 break
 
+        # get details for highlight-location link
         highlightDetails = get_location_link_information(place_id=highlight.place_id)
 
+        # get 3 last added recommendations
         recommendations = Recommendation.query.filter_by(visible=True).order_by(Recommendation.date.desc()).limit(3).all()
         newRecommendations = []
+
+        # get details for location-links
         for recommendation in recommendations:
             linkDetails = get_location_link_information(place_id=recommendation.place_id)
             newRecommendations.append(linkDetails)
 
+        # get 3 recent added blogposts
         blogposts = Blog.query.filter_by(visible=True).filter(Blog.title!="Privacyverklaring").filter(Blog.title!="Over Stadsgids").order_by(Blog.date.desc()).limit(2).all()
+
+        # get radom recommendation-tip
         randomrec = random.choice(Recommendation.query.all())
+
+        # get events and reviews for front-page
         frontpageevent = Event.query.filter(Event.date > datetime.datetime.now()).order_by(Event.date).all()
         reviews = Review.query.order_by(Review.date.desc()).limit(3).all()
         return render_template("guide.html", highlight=highlight, highlightDetails=highlightDetails, TYPES_DICT=TYPES_DICT, ICON_DICT=ICON_DICT, newRecommendations=newRecommendations, blogposts=blogposts, tip=randomrec, events=frontpageevent, reviews=reviews)
@@ -345,7 +359,6 @@ def register():
     # add new user
     db.session.add(new_user)
     db.session.commit()
-
     return redirect(url_for('register'))
 
 @app.route('/stadsgids/emailbevestigen')
@@ -385,7 +398,7 @@ def change_email(token):
     try:
         email = serializer.loads(token, salt=app.config['SECURITY_PASSWORD_SALT'], max_age=expiration)
 
-    # return not_confirmed route if expired
+    # return not confirmed error if expired
     except:
         flash("Link verlopen, vraag via de profielpagina een nieuwe aan", "warning")
         return redirect(url_for('guide'))
@@ -733,11 +746,13 @@ def search():
                     result["types"] = recommendation.type.replace("{", "").replace("}", "").split(",")
         return render_template("search.html", search=True, results=results, TYPES_DICT=TYPES_DICT, REC_SEARCH_TYPES=REC_SEARCH_TYPES, SEARCH_TYPES=SEARCH_TYPES, ICON_DICT=ICON_DICT)
 
+    # set filter when needed
     if type:
         type = TYPES_DICT[type]
 
     locations = Recommendation.query.filter(Recommendation.name.like(f"%{keyword}%"),Recommendation.type.like(f"%{type}%"),Recommendation.price_level > minprice,Recommendation.price_level <= maxprice).all()
 
+    # get link details
     for location in locations:
         details = get_location_link_information(place_id=location.place_id)
         results.append(details)
@@ -756,7 +771,10 @@ def weekend():
 @app.route('/stadsgids/profiel', methods=["GET", "POST"])
 @login_required
 def profile():
+    # get current user
     user = User.query.filter_by(id=current_user.id).first()
+
+    # get user favourites and get link details
     favourites = []
     for favourite in user.favourites:
         details = get_location_link_information(favourite.place_id)
@@ -764,8 +782,24 @@ def profile():
     if request.method == "GET":
         return render_template("profile.html", user=user, TYPES_DICT=TYPES_DICT, favourites=favourites, ICON_DICT=ICON_DICT)
 
+    # get type of action
     action = request.form.get('action')
 
+    # change theme
+    if action == "theme":
+        if request.form.get('theme') == "dark":
+            user.theme = "dark"
+            flash("Dark-mode voorkeur opgeslagen", "success")
+        elif request.form.get('theme') == "light":
+            user.theme = "light"
+            flash("Light-mode voorkeur opgeslagen", "success")
+        elif request.form.get('theme') == "auto":
+            user.theme = "auto"
+            flash("Thema past zich nu aan het thema van de computer aan", "success")
+        db.session.commit()
+        return render_template("profile.html", user=user, TYPES_DICT=TYPES_DICT, favourites=favourites, ICON_DICT=ICON_DICT)
+
+    # change newsletter subscription
     if action == "newsletter":
         if request.form.get('newsletter'):
             user.newsletter = True
@@ -776,6 +810,7 @@ def profile():
         db.session.commit()
         return render_template("profile.html", user=user, TYPES_DICT=TYPES_DICT, favourites=favourites, ICON_DICT=ICON_DICT)
 
+    # filter favourites
     if action == "filter":
         filter = request.form.get('filter')
         if filter != "":
@@ -786,6 +821,7 @@ def profile():
             favourites = filtered
         return render_template("profile.html", user=user, TYPES_DICT=TYPES_DICT, favourites=favourites, ICON_DICT=ICON_DICT, filter=filter)
 
+    # change email address
     if action == "changemail":
         email = request.form.get('email')
         other_user = User.query.filter_by(email=email).first()
@@ -807,6 +843,7 @@ def profile():
         flash(f"Link naar e-mailadres {email} gestuurd ter bevestiging wijzigen email", "success")
         return render_template("profile.html", user=user, TYPES_DICT=TYPES_DICT, favourites=favourites, ICON_DICT=ICON_DICT)
 
+    # change password
     if action == "changepass":
         password1 = request.form.get("password1")
         password2 = request.form.get("password2")
@@ -832,10 +869,14 @@ def dashboard():
 @role_required('Administrator')
 def controlnew():
     if request.method == "GET":
+        # get all recommendations
         recommendations = Recommendation.query.all()
         return render_template("controlnew.html", recommendations=recommendations, types=TYPES_DICT)
 
+    # get type of action
     action = request.form.get('action')
+
+    # filter recommendations
     if action == "filter":
         filter = request.form.get('type')
         filtered = []
@@ -915,6 +956,7 @@ def create_event(name, place_id):
     if request.method == "GET":
         return render_template("createevent.html", name=name, place_id=place_id)
 
+    # get event info and check input
     title = request.form.get("title")
     date = request.form.get("date")
     time = request.form.get("time")
@@ -926,6 +968,7 @@ def create_event(name, place_id):
         flash("Datumvelden niet goed ingevoerd", 'warning' )
         return redirect(url_for("location", name=request.form.get("name"), place_id=request.form.get("place_id")))
 
+    # create event
     event = Event(title=title, date=datetime_object, description=description, place_id=place_id, name=name)
     db.session.add(event)
     db.session.commit()
@@ -936,8 +979,11 @@ def create_event(name, place_id):
 @role_required('Administrator')
 def newsletter():
     if request.method == "GET":
+        # get all newsletters
         newsletters = Newsletter.query.all()
         return render_template("newsletter.html", newsletters=newsletters)
+
+    # create new newsletter
     newsletter = Newsletter(date=datetime.datetime.now(), subject="", body="", send=False)
     db.session.add(newsletter)
     db.session.commit()
@@ -946,7 +992,9 @@ def newsletter():
 @app.route('/stadsgids/dashboard/nieuwsbrief/opstellen/<newsletter_id>', methods=["GET", "POST"])
 @role_required('Administrator')
 def createnewsletter(newsletter_id):
+    # get newsletter to change
     newsletter = Newsletter.query.filter_by(id=newsletter_id).first()
+
     if request.method == "GET":
         return render_template("createnewsletter.html", newsletter=newsletter)
 
@@ -955,10 +1003,12 @@ def createnewsletter(newsletter_id):
     body = request.form.get("editor1")
     subject=request.form.get("subject")
 
-
+    # set newsletter variables and save in database
     newsletter.subject = subject
     newsletter.body = body
     db.session.commit()
+
+    # check action and act accordingly
     if action == "save":
         flash("Wijzigingen opgeslagen", 'success')
     if action == "test":
@@ -975,14 +1025,14 @@ def createnewsletter(newsletter_id):
             msg.html = render_template("newsletterbase.html", name=recipient.firstname, body=newsletter.body)
             job = queue.enqueue('task.send_mail', msg)
 
-
-
     return render_template("createnewsletter.html", newsletter=newsletter)
 
 @app.route('/stadsgids/dashboard/blog', methods=['GET', 'POST'])
 @role_required('Administrator')
 def blog():
     if request.method == 'GET':
+
+        # get all blogposts
         blogposts = Blog.query.all()
         return render_template("blog.html", blogposts=blogposts)
 
@@ -994,20 +1044,25 @@ def blog():
 @app.route('/stadsgids/dashboard/blog/opstellen/<blog_id>', methods=['GET', 'POST'])
 @role_required('Administrator')
 def createblog(blog_id):
+
+    # get blogpost to change
     blogpost = Blog.query.filter_by(id=blog_id).first()
     if request.method == "GET":
         return render_template("createblog.html", blogpost=blogpost)
 
+    # get form info
     action = request.form.get('action')
     title = request.form.get('title')
     short = request.form.get('short')
     body = request.form.get('editor1')
 
+    # set blogpost variables and save in database
     blogpost.title = title
     blogpost.short = short
     blogpost.body = body
     db.session.commit()
 
+    # check action and act accordingly
     if action == "save":
         flash("Wijzigingen opgeslagen", 'success')
     if action == "publish":
@@ -1025,6 +1080,8 @@ def createblog(blog_id):
 @app.route('/stadsgids/dashboard/checkreviews', methods=["GET", "POST"])
 @role_required('Administrator')
 def check():
+
+    # get all reviews
     reviews = Review.query.all()
 
     if request.method == "GET":
@@ -1034,13 +1091,14 @@ def check():
     action = request.form.get('action')
     review_id = request.form.get('review_id')
 
+    # look up review in database
     review = Review.query.filter_by(id=review_id).first()
 
+    # check action and act accordingly
     if action == "accept":
         review.checked = True
         db.session.commit()
         flash("Review geaccepteerd", 'success')
-
     if action == "block":
         review.checked = True
         review.review = "De inhoud van deze recensie is aanstootgevend en dus verwijderd."
@@ -1053,8 +1111,12 @@ def check():
 @role_required('Administrator')
 def highlight():
     if request.method == "GET":
+
+        # get all highlights
         highlights = Highlight.query.all()
         return render_template('highlight.html', highlights=highlights)
+
+    # set highlight variables and save in database
     place_id = request.form.get('place_id')
     name = request.form.get('name')
     previous = Highlight.query.order_by(Highlight.id.desc()).first()
@@ -1067,15 +1129,21 @@ def highlight():
 @app.route('/stadsgids/dashboard/uitgelicht/wijzigen/<highlight_id>', methods=["GET", "POST"])
 @role_required('Administrator')
 def createhighlight(highlight_id):
+
+    # get highlight to change
     highlight = Highlight.query.filter_by(id=highlight_id).first()
     if request.method == "GET":
         return render_template('createhighlight.html', highlight=highlight)
 
+    # get form info
     action = request.form.get('action')
     description = request.form.get('editor1')
 
+    # set highlight variables
     highlight.description = description
     db.session.commit()
+
+    # check action and act accordingly
     if action == "save":
         flash("Wijzigingen opgeslagen", 'success')
         return redirect(url_for('createhighlight', highlight_id=highlight.id))
@@ -1088,17 +1156,22 @@ def createhighlight(highlight_id):
 @app.route('/stadsgids/dashboard/aanvragen')
 @role_required('Administrator')
 def inforequest():
+
+    # get all requests
     inforequests = Request.query.all()
     return render_template('requests.html', requests=inforequests)
 
 @app.route('/stadsgids/dashboard/aanvragen/verwerken/<request_id>', methods=["GET", "POST"])
 @role_required('Administrator')
 def processrequests(request_id):
+
+    # get request to process
     inforequest = Request.query.filter_by(id=request_id).first()
 
     if request.method == "GET":
         return render_template('processrequests.html', request=inforequest)
 
+    # send request info to user via email and save that request is processed
     msg = Message(f"Meer informatie over {location.name}", recipients=[inforequest.user.email])
     msg.html = render_template("newsletterbase.html", name=inforequest.user.firstname, body=request.form.get('editor1'))
     job = queue.enqueue('task.send_mail', msg)
@@ -1109,10 +1182,14 @@ def processrequests(request_id):
 
 @app.route('/stadsgids/<blog_id>/<title>')
 def blogpost(blog_id, title):
+
+    # get blogpost and render
     blog = Blog.query.filter_by(id=blog_id).first()
     return render_template('blogpost.html', blog=blog)
 
 @app.route('/stadsgids/over')
 def aboutguide():
+
+    # show about page (blogpost as about)
     blog = Blog.query.filter_by(id=9).first()
     return render_template('blogpost.html', blog=blog)
