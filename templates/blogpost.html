@@ -14,11 +14,13 @@ Layout blogpost page
 <!-- page content -->
 {% block content %}
 <div class="container">
-	<h2 class="nodec"><a href="{{ url_for('guide') }}"><i class="fas fa-long-arrow-alt-left"></i> Stadsgids</a></h2>
-	<div class="formbox redlink">
+	<h2 class="nodec"><a class="bloglink" href="{{ url_for('guide') }}"><i class="fas fa-long-arrow-alt-left"></i> Stadsgids</a></h2>
+	<div class="formbox redlink lightback">
 		<h1>{{ blog.title }}<span class="blogdate">{{ blog.date.strftime("%-d %B %Y %R") }}</span></h1>
 		<p>{{ blog.short }}</p>
-		{{ blog.body|safe }}
+		<div class="description">
+			{{ blog.body|safe }}
+		</div>
 	</div>
 </div>
 {% endblock %}

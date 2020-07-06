@@ -26,6 +26,7 @@ class User(db.Model, UserMixin):
     requests = db.relationship('Request', cascade="all, delete-orphan")
     reviews = db.relationship('Review', cascade="all, delete-orphan")
     roles = db.relationship('Role', secondary='user_roles')
+    theme = db.Column(db.String(128), nullable=False)
 
     def __init__(self, username, firstname, lastname, password, email, newsletter):
         self.username = username
@@ -41,6 +42,7 @@ class User(db.Model, UserMixin):
         self.favourites = []
         self.requests = []
         self.reviews = []
+        self.theme = "light"
 
     def get_user_roles(self):
         roles = []

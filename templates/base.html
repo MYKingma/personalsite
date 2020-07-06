@@ -7,7 +7,7 @@ Base layout for other pages
 -->
 
 <!DOCTYPE html>
-<html lang="nl">
+<html id="html" lang="nl">
 
 	<!-- page head properties -->
 	<head>
@@ -17,24 +17,15 @@ Base layout for other pages
 		<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.13.0/css/all.css">
 		<link href="https://fonts.googleapis.com/css2?family=Oswald&display=swap" rel="stylesheet">
 		<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300&display=swap" rel="stylesheet">
-		<link rel="apple-touch-icon" sizes="57x57" href="/static/favicon/guide/apple-icon-57x57.png">
-		<link rel="apple-touch-icon" sizes="60x60" href="/static/favicon/guide/apple-icon-60x60.png">
-		<link rel="apple-touch-icon" sizes="72x72" href="/static/favicon/guide/apple-icon-72x72.png">
-		<link rel="apple-touch-icon" sizes="76x76" href="/static/favicon/guide/apple-icon-76x76.png">
-		<link rel="apple-touch-icon" sizes="114x114" href="/static/favicon/guide/apple-icon-114x114.png">
-		<link rel="apple-touch-icon" sizes="120x120" href="/static/favicon/guide/apple-icon-120x120.png">
-		<link rel="apple-touch-icon" sizes="144x144" href="/static/favicon/guide/apple-icon-144x144.png">
-		<link rel="apple-touch-icon" sizes="152x152" href="/static/favicon/guide/apple-icon-152x152.png">
-		<link rel="apple-touch-icon" sizes="180x180" href="/static/favicon/guide/apple-icon-180x180.png">
-		<link rel="icon" type="image/png" sizes="192x192"  href="/static/favicon/guide/android-icon-192x192.png">
+		<link rel="apple-touch-icon" sizes="180x180" href="/static/favicon/guide/apple-touch-icon.png">
 		<link rel="icon" type="image/png" sizes="32x32" href="/static/favicon/guide/favicon-32x32.png">
-		<link rel="icon" type="image/png" sizes="96x96" href="/static/favicon/guide/favicon-96x96.png">
 		<link rel="icon" type="image/png" sizes="16x16" href="/static/favicon/guide/favicon-16x16.png">
-		<link rel="manifest" href="/static/favicon/guide/manifest.json">
-		<meta name="msapplication-TileColor" content="#ffffff">
-		<meta name="msapplication-TileImage" content="/static/favicon/guide/ms-icon-144x144.png">
-		<meta name="theme-color" content="#ffffff">
+		<link rel="manifest" href="/static/favicon/guide/site.webmanifest">
+		<link rel="mask-icon" href="/static/favicon/guide/safari-pinned-tab.svg" color="#5bbad5">
+		<meta name="msapplication-TileColor" content="#b91d47">
+		<meta name="theme-color" content="#544d4d">
 		<title>{%- block title -%}{%- endblock -%}</title>
+		<meta property="preferredtheme" content="{{ current_user.theme }}">
 	</head>
 
 	<!-- page body -->
@@ -69,11 +60,11 @@ Base layout for other pages
 							<form action="{{ url_for('guide') }}" method="post">
 								<div class="form-group">
 									<input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
-									<input class="form-control" type="text" id="usernameinput" name="username" placeholder="Gebruikersnaam">
+									<input class="form-control white" type="text" id="usernameinput" name="username" placeholder="Gebruikersnaam">
 									<div class="invalidlogin" id="invalidusername"></div>
 								</div>
 								<div class="form-group">
-									<input class="form-control" type="password" id="passwordinput" name="password" placeholder="Wachtwoord">
+									<input class="form-control white" type="password" id="passwordinput" name="password" placeholder="Wachtwoord">
 									<div class="invalidlogin" id="invalidpassword"></div>
 								</div>
 								<div class="form-group">
@@ -94,7 +85,7 @@ Base layout for other pages
 				</ul>
 				<form id="searchformnavbar" class="form-inline my-2 my-lg-0" action="{{ url_for('search')}}" method="post">
 					<input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
-					<input class="form-control mr-sm-2" type="search" placeholder="Zoeken" name="search">
+					<input class="form-control mr-sm-2 white" type="search" placeholder="Zoeken" name="search">
 					<input type="hidden" name="form" value="regular">
 					<button class="btn btn-outline-light my-2 my-sm-0" type="submit"><i class="fas fa-search"></i> Zoeken</button>
 					<a class="btn btn-outline-light my-2 my-sm-0" id="advanced" href="{{ url_for('search')}}"><i class="fas fa-sliders-h"></i> Uitgebreid Zoeken</a>
@@ -133,5 +124,6 @@ Base layout for other pages
 		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/js/bootstrap.min.js" integrity="sha384-h0AbiXch4ZDo7tp9hKZ4TsHbi047NrKGLO3SEJAg45jXxnGIfYzk4Si90RDIqNm1" crossorigin="anonymous"></script>
 		{%- block script -%}{%- endblock -%}
 		<script type="text/javascript" src="{{ url_for('static', filename='js/validator.js')}}"></script>
+		<script type="text/javascript" src="{{ url_for('static', filename='js/darkmode.js')}}"></script>
 	</body>
 </html>
