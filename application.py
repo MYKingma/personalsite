@@ -168,7 +168,7 @@ def action_location():
         details = get_location_link_information(place_id=place_id)
         # send confirmation email for request /stadsgids/locatie/<name>/<place_id>
         link = request.url_root + "stadsgids/locatie/" + name + "/" + place_id
-        msg = Message(f"Ontvangstbevestiging informatieaanvraag voor {name}", recipients=[email])
+        msg = Message(f"Ontvangstbevestiging informatieaanvraag voor {name}", recipients=[user.email])
         msg.html = render_template("recommendmail.html", name=user.firstname, location=name, website=website, result=details, TYPES_DICT=TYPES_DICT, ICON_DICT=ICON_DICT)
         mail.send(msg)
         job = queue.enqueue('task.send_mail', msg)
