@@ -17,6 +17,7 @@ Page to reset password
 	<h1>Wachtwoord Resetten</h1>
 	<p>Maak hier een nieuw wachtwoord aan, je kun hierna direct weer inloggen.</p>
 	<form id="reset" class="needs-validation" action="{{ url_for('reset') }}" method="post" novalidate>
+		<input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
 		<div class="form-group">
 			<label>Nieuw wachtwoord</label>
 			<input class="form-control" type="password" id="password1" name="password1" required>
