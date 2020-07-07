@@ -73,11 +73,11 @@ Location page
 					</a>
 					{% if location.guiderating %}
 					<a class="boxlink col-3" href="#ratingbox">
-						<p><i class="fa fa-star" aria-hidden="true"></i><span>{{ location.guiderating }} <span class="small">{{ location.count|string + " reviews" if location.count }}</span></span></p>
+						<p><i class="fa fa-star" aria-hidden="true"></i><span>{{ location.guiderating }} <span class="small">{{ location.count|string + " reviews" if location.count != 1 else location.count|string + " review" }}</span></span></p>
 					</a>
 					{% else %}
 					<a class="boxlink col-3" href="#ratingbox">
-						<p><i class="fa fa-star" aria-hidden="true"></i><span>{{ location.rating }} <span class="small">{{ location.count|string + " reviews" if location.count else " Google" }}</span></span></p>
+						<p><i class="fa fa-star" aria-hidden="true"></i><span>{{ location.rating|round(1)|float }} <span class="small"> Google</span></span></p>
 					</a>
 					{% endif %}
 				</div>
@@ -136,7 +136,7 @@ Location page
 			{% if location.reviews|length == 0 and location.ownreview == None %}
 			<div class="ratingbox">
 				<div id="starbox" class="float_right">
-					<h2 id="ratingnum"><i id="rating" class="fas fa-star"></i> {{ location.rating }}</h2>
+					<h2 id="ratingnum"><i id="rating" class="fas fa-star"></i> {{ location.rating|round(1)|float }}</h2>
 					<p id="ratingcount">Uit {{ location.totalrate }} Google reviews</p>
 				</div>
 				<h2 id="ratingbox">Beoordeling</h2>

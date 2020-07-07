@@ -170,7 +170,6 @@ def action_location():
         link = request.url_root + "stadsgids/locatie/" + name + "/" + place_id
         msg = Message(f"Ontvangstbevestiging informatieaanvraag voor {name}", recipients=[user.email])
         msg.html = render_template("recommendmail.html", name=user.firstname, location=name, website=website, result=details, TYPES_DICT=TYPES_DICT, ICON_DICT=ICON_DICT)
-        mail.send(msg)
         job = queue.enqueue('task.send_mail', msg)
 
         # add request in database
