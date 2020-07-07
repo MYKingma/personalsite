@@ -743,6 +743,7 @@ def search():
                 if recommendation.visible:
                     result["recommended"] = True
                     result["types"] = recommendation.type.replace("{", "").replace("}", "").split(",")
+                    result["price_level"] = recommendation.price_level * "€"
         return render_template("search.html", search=True, results=results, TYPES_DICT=TYPES_DICT, REC_SEARCH_TYPES=REC_SEARCH_TYPES, SEARCH_TYPES=SEARCH_TYPES, ICON_DICT=ICON_DICT)
 
     # set filter when needed
@@ -759,6 +760,7 @@ def search():
             for result in results:
                 if not result["opening_hours"] == "Nu open":
                     results.remove(result)
+
 
     return render_template("search.html", search=True, results=results, TYPES_DICT=TYPES_DICT, REC_SEARCH_TYPES=REC_SEARCH_TYPES, SEARCH_TYPES=SEARCH_TYPES, ICON_DICT=ICON_DICT)
 
