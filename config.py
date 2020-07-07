@@ -12,6 +12,8 @@ import locale
 import ast
 import rq
 import random
+import logging
+from logging.handlers import SMTPHandler
 from flask import Flask, render_template, request, redirect, url_for, flash, jsonify, session
 from flask_session import Session
 from flask_migrate import Migrate
@@ -34,6 +36,8 @@ app = Flask(__name__)
 
 # configure Secret-Key
 app.secret_key = os.getenv('SECRET_KEY')
+
+app.config['ADMINS'] = os.getenv('ADMINS')
 
 # configure database
 if not os.getenv("DATABASE_URL"):
@@ -65,14 +69,12 @@ admin.add_view(AdminView(Review, db.session))
 admin.add_view(AdminView(Event, db.session))
 admin.add_view(AdminView(Request, db.session))
 
-# configure
+# configure link admin menu
 admin.add_link(MenuLink(name='Back to site', url='/stadsgids/dashboard'))
-
 
 # configure Flask-login
 login_manager = LoginManager()
 login_manager.init_app(app)
-
 
 # configure Flask-Mail
 app.config['MAIL_SERVER']='smtp.mail.me.com'
@@ -96,8 +98,25 @@ locale.setlocale(locale.LC_ALL, "nl_NL")
 # set Flask WTF CSRFProtect
 csrf = CSRFProtect(app)
 
+# email logged errors
+if not app.debug:
+    logger = logging.getLogger(__name__)
+    if app.config['MAIL_SERVER']:
+        auth = None
+        if app.config['MAIL_USERNAME'] or app.config['MAIL_PASSWORD']:
+            auth = (app.config['MAIL_USERNAME'], app.config['MAIL_PASSWORD'])
+        secure = None
+        if app.config['MAIL_USE_TLS']:
+            secure = ()
+        mail_handler = SMTPHandler(
+            mailhost=(app.config['MAIL_SERVER'], app.config['MAIL_PORT']),
+            fromaddr=app.config['MAIL_DEFAULT_SENDER'],
+            toaddrs=app.config['ADMINS'], subject='Stadsgids error',
+            credentials=auth, secure=secure)
+        mail_handler.setLevel(logging.DEBUG)
+        logger.addHandler(mail_handler)
 
-
+# check if running on development server
 if os.getenv("PRODUCTION_SERVER") == "True":
     # import worker
     from runworker import conn

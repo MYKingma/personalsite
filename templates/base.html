@@ -84,7 +84,7 @@ Base layout for other pages
 					{% endif %}
 				</ul>
 				<form id="searchformnavbar" class="form-inline my-2 my-lg-0" action="{{ url_for('search')}}" method="post">
-					<input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+					<!-- <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/> -->
 					<input class="form-control mr-sm-2 white" type="search" placeholder="Zoeken" name="search">
 					<input type="hidden" name="form" value="regular">
 					<button class="btn btn-outline-light my-2 my-sm-0" type="submit"><i class="fas fa-search"></i> Zoeken</button>
