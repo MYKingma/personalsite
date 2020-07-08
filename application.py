@@ -26,7 +26,7 @@ def test():
 
 # error handlers
 @app.errorhandler(400)
-def bas_request(e):
+def bad_request(e):
     raise Exception("Bad request")
     message = "Probleem met verzoek."
     return render_template('error.html', status_code="400", message=message), 400
