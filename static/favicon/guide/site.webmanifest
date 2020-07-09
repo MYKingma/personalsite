@@ -3,12 +3,12 @@
     "short_name": "Stadsgids Amsterdam",
     "icons": [
         {
-            "src": "/android-chrome-192x192.png",
+            "src": "/static/favicon/guide/android-chrome-192x192.png?v=yyQMQvWPex",
             "sizes": "192x192",
             "type": "image/png"
         },
         {
-            "src": "/android-chrome-384x384.png",
+            "src": "/static/favicon/guide/android-chrome-384x384.png?v=yyQMQvWPex",
             "sizes": "384x384",
             "type": "image/png"
         }
