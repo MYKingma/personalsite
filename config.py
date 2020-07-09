@@ -45,7 +45,7 @@ if not os.getenv("DATABASE_URL"):
 app.config["SQLALCHEMY_DATABASE_URI"] = os.getenv("DATABASE_URL")
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 app.config["SESSION_COOKIE_HTTPONLY"] = True
-# app.config["SESSION_COOKIE_SECURE"] = True
+app.config["SESSION_COOKIE_SECURE"] = True
 app.config["SESSION_COOKIE_SAMESITE"] = 'Lax'
 db.init_app(app)
 
@@ -75,6 +75,7 @@ admin.add_link(MenuLink(name='Back to site', url='/stadsgids/dashboard'))
 # configure Flask-login
 login_manager = LoginManager()
 login_manager.init_app(app)
+login_manager.session_protection = "strong"
 
 # configure Flask-Mail
 app.config['MAIL_SERVER']='smtp.mail.me.com'
