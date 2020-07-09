@@ -18,7 +18,7 @@ Location page
 		<div class=col-lg-8>
 			<div id="carouselbox">
 				<h1>{{ location.name }}
-					{% if recommendation %}
+					{% if recommendation.visible %}
 					<span><button class="btn btn-danger">AANRADER<i class="fas fa-medal"></i></button></span>
 					{% endif %}
 				</h1>
@@ -98,7 +98,7 @@ Location page
 			{% endif %}
 			{% endif %}
 			{% endfor %}
-			{% if recommendation %}
+			{% if recommendation.visible %}
 			<p class="recommendation">{{ recommendation.review }}</p>
 			{% endif %}
 			{% for role in current_user.roles %}
@@ -229,7 +229,7 @@ Location page
 				<p>{{ details.strip() }}</p>{% if loop.index0 ==0 %}<span><a href="http://maps.apple.com/?address={{ location.applemapslink }}"> maps</a></span>{% endif %}
 				{% endfor %}
 				<h2 class="newdetail"><i class="far fa-clock"></i> Openingstijden</h2>
-		{% if recommendation.opening  %}
+		{% if not recommendation.opening == "notspecified" %}
 			{% if recommendation.opening|length > 30 and recommendation.opening != "{NULL,NULL,NULL,NULL,NULL,NULL,NULL}" %}
 			{% set opening = recommendation.opening.replace('{', '').replace('}', '').split(',') %}
 				<p class="opening_hours" >Maandag<span>{{ opening[0] }}</span></p>
@@ -240,7 +240,6 @@ Location page
 				<p class="opening_hours" >Zaterdag<span>{{ opening[5] }}</span></p>
 				<p class="opening_hours" >Zondag<span>{{ opening[6] }}</span></p>
 			{% else %}
-				<p>word recom</p>
 				<p class="opening_hours" >{{ recommendation.opening }}</p>
 			{% endif %}
 		{% else %}
@@ -260,7 +259,7 @@ Location page
 				<p>Onbekend</p>
 			{% endif %}
 		{% endif %}
-				{% if recommendation.tip %}
+				{% if recommendation.tip and recommendation.visible %}
 				<h2 class="newdetail"><i class="far fa-comment-alt"></i> Tip</h2>
 				<p>{{ recommendation.tip }}</p>
 				{% endif %}

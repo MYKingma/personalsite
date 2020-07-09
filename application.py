@@ -286,7 +286,7 @@ def guide():
         blogposts = Blog.query.filter_by(visible=True).filter(Blog.title!="Privacyverklaring").filter(Blog.title!="Over Stadsgids").order_by(Blog.date.desc()).limit(2).all()
 
         # get radom recommendation-tip
-        randomrec = random.choice(Recommendation.query.all())
+        randomrec = random.choice(Recommendation.query.filter_by(visible=True).all())
 
         # get events and reviews for front-page
         frontpageevent = Event.query.filter(Event.date > datetime.datetime.now()).order_by(Event.date).all()
@@ -527,7 +527,6 @@ def location(place_id, name):
     recommendation = Recommendation.query.filter_by(place_id=place_id).first()
     if recommendation:
         if not recommendation.visible:
-            recommendation = None
             visible = False
         else:
             visible = True
@@ -779,7 +778,7 @@ def search():
     if type:
         type = TYPES_DICT[type]
 
-    locations = Recommendation.query.filter(Recommendation.name.like(f"%{keyword}%"),Recommendation.type.like(f"%{type}%"),Recommendation.price_level > minprice,Recommendation.price_level <= maxprice).all()
+    locations = Recommendation.query.filter(Recommendation.name.like(f"%{keyword}%"),Recommendation.type.like(f"%{type}%"),Recommendation.visible == True,Recommendation.price_level > minprice,Recommendation.price_level <= maxprice).all()
 
     # get link details
     for location in locations:
@@ -933,12 +932,14 @@ def controlnew():
     opening = ["monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"]
     for day in opening:
         time = request.form.get(day)
-        if time == "" or time == "Onbekend" or time == "onbekend":
+        if time == "Onbekend" or time == "Onbekend" or time == "onbekend":
             opening = "Onbekend"
             break
         elif time == '24' or time == "24 uur per dag geopend":
             opening = "24 uur per dag geopend"
             break
+        elif time == "":
+            opening = "notspecified"
         else:
             opentimes.append(time)
     if len(opentimes) == 7:
