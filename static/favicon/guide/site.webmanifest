@@ -1,6 +1,6 @@
 {
-    "name": "Stadsgids",
-    "short_name": "Stadsgids",
+    "name": "Stadsgids Amsterdam",
+    "short_name": "Stadsgids Amsterdam",
     "icons": [
         {
             "src": "/android-chrome-192x192.png",
@@ -13,7 +13,7 @@
             "type": "image/png"
         }
     ],
-    "theme_color": "#544d4d",
-    "background_color": "#544d4d",
+    "theme_color": "#ffffff",
+    "background_color": "#ffffff",
     "display": "standalone"
 }
