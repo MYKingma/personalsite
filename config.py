@@ -45,7 +45,6 @@ if not os.getenv("DATABASE_URL"):
 app.config["SQLALCHEMY_DATABASE_URI"] = os.getenv("DATABASE_URL")
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 app.config["SESSION_COOKIE_HTTPONLY"] = True
-app.config["SESSION_COOKIE_SECURE"] = True
 app.config["SESSION_COOKIE_SAMESITE"] = 'Lax'
 db.init_app(app)
 
@@ -119,6 +118,9 @@ if not app.debug:
 
 # check if running on development server
 if os.getenv("PRODUCTION_SERVER") == "True":
+    # set session cookie secure
+    app.config["SESSION_COOKIE_SECURE"] = True
+
     # import worker
     from runworker import conn
 
