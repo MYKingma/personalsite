@@ -148,7 +148,7 @@ Guide homepage layout
 				<h2>Blog</h2>
 				{% for blog in blogposts %}
 				<a href="{{ url_for('blogpost', blog_id=blog.id, title=blog.title) }}">
-					<div class="blogbox lightback">
+					<div class="blogbox lightback mb">
 						<h2>{{ blog.title }}<span class="blogdate">{{ blog.date.strftime("%-d %B %Y %R") }}</span></h2>
 						<p>{{ blog.short }}</p>
 					</div>
