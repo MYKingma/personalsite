@@ -1203,8 +1203,8 @@ def processrequests(request_id):
         return render_template('processrequests.html', request=inforequest)
 
     # send request info to user via email and save that request is processed
-    msg = Message(f"Meer informatie over {location.name}", recipients=[inforequest.user.email])
-    msg.html = render_template("newsletterbase.html", name=inforequest.user.firstname, body=request.form.get('editor1'))
+    msg = Message(f"Meer informatie over {inforequest.name}", recipients=[inforequest.user.email])
+    msg.html = render_template("requestmailbase.html", name=inforequest.user.firstname, body=request.form.get('editor1'))
     job = queue.enqueue('task.send_mail', msg)
     inforequest.processed = True
     db.session.commit()
