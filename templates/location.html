@@ -229,7 +229,7 @@ Location page
 				<p>{{ details.strip() }}</p>{% if loop.index0 ==0 %}<span><a href="http://maps.apple.com/?address={{ location.applemapslink }}"> maps</a></span>{% endif %}
 				{% endfor %}
 				<h2 class="newdetail"><i class="far fa-clock"></i> Openingstijden</h2>
-		{% if not recommendation.opening == "notspecified" %}
+		{% if not recommendation.opening == "notspecified" and recommendation.opening|length > 0 %}
 			{% if recommendation.opening|length > 30 and recommendation.opening != "{NULL,NULL,NULL,NULL,NULL,NULL,NULL}" %}
 			{% set opening = recommendation.opening.replace('{', '').replace('}', '').split(',') %}
 				<p class="opening_hours" >Maandag<span>{{ opening[0] }}</span></p>
