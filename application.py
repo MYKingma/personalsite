@@ -942,8 +942,9 @@ def controlnew():
         elif time == '24' or time == "24 uur per dag geopend":
             opening = "24 uur per dag geopend"
             break
-        elif time == "":
+        elif time == "" or time == None:
             opening = "notspecified"
+            break
         else:
             opentimes.append(time)
     if len(opentimes) == 7:
