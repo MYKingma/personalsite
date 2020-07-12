@@ -841,14 +841,18 @@ def profile():
 
     # filter favourites
     if action == "filter":
-        filter = request.form.get('filter')
-        if filter != "":
+        recommendations = Recommendation.query.all()
+        if request.form.get('filter') != "":
             filtered = []
             for favourite in favourites:
+                if favourite["recommended"]:
+                    filter = TYPES_DICT[request.form.get('filter')]
+                else:
+                    filter = request.form.get('filter')
                 if filter in favourite["types"]:
                     filtered.append(favourite)
             favourites = filtered
-        return render_template("profile.html", user=user, TYPES_DICT=TYPES_DICT, favourites=favourites, ICON_DICT=ICON_DICT, filter=filter)
+        return render_template("profile.html", user=user, TYPES_DICT=TYPES_DICT, favourites=favourites, ICON_DICT=ICON_DICT, filter=request.form.get('filter'))
 
     # change email address
     if action == "changemail":
