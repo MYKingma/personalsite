@@ -971,7 +971,11 @@ def changenew(place_id, name, types, opening, price_level):
     # get recommendation and set variable for existing weektext
     recommendation = Recommendation.query.filter_by(place_id=place_id).first()
     events = Event.query.filter_by(place_id=place_id).order_by(Event.date).all()
-    weektext = type(recommendation.opening) == list
+    if "00" in recommendation.opening:
+        weektext = recommendation.opening.replace('{', '').replace('}', '').split(',')
+        print(weektext)
+    else:
+        weektext = False
     typeslist = ast.literal_eval(types)
     return render_template("changenew.html", recommendation=recommendation, weektext=weektext, name=name, events=events, types=typeslist, API_TYPES=API_TYPES, TYPES_DICT=TYPES_DICT, opening=opening, price_level=price_level)
 

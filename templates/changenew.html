@@ -74,18 +74,18 @@ Layout page for changing locations
 		</ul>
 		<div class="tab-content" id="myTabContent">
 			<div class="tab-pane fade show active" id="opening" role="tabpanel" aria-labelledby="opening-tab">
-				<p>24 bij maandag voor "24 uur per dag geopend", laat leeg als onbekend.</p>
+				<p>24 bij maandag voor "24 uur per dag geopend", "Onbekend" wanneer onbekend.</p>
 	  			<div class="form-row">
 	  				<div class="col">
 	  					<div class="form-group">
 	  						<label for="openmonday">Openingstijden maandag</label>
-	  						<input class="form-control" value="{{ recommendation.opening[0] if weektext }}" type="text" name="monday" id="openmonday" placeholder="00:00–00:00">
+	  						<input class="form-control" value="{{ weektext[1] if weektext else recommendation.opening }}" type="text" name="monday" id="openmonday" placeholder="00:00–00:00">
 	  					</div>
 	  				</div>
 	  				<div class="col">
 	  					<div class="form-group">
 	  						<label for="opentuesday">Openingstijden dinsdag</label>
-	  						<input value="{{ recommendation.opening[1] if weektext }}" class="form-control" type="text" name="tuesday" id="opentuesday" placeholder="00:00–00:00">
+	  						<input value="{{ weektext[1] if weektext }}" class="form-control" type="text" name="tuesday" id="opentuesday" placeholder="00:00–00:00">
 	  					</div>
 	  				</div>
 	  			</div>
@@ -93,13 +93,13 @@ Layout page for changing locations
 	  				<div class="col">
 	  					<div class="form-group">
 	  						<label for="openwednesday">Openingstijden woensdag</label>
-	  						<input value="{{ recommendation.opening[2] if weektext }}" class="form-control" type="text" name="wednesday" id="openwednesday" placeholder="00:00–00:00">
+	  						<input value="{{ weektext[2] if weektext }}" class="form-control" type="text" name="wednesday" id="openwednesday" placeholder="00:00–00:00">
 	  					</div>
 	  				</div>
 	  				<div class="col">
 	  					<div class="form-group">
 	  						<label for="openthursday">Openingstijden donderdag</label>
-	  						<input value="{{ recommendation.opening[3] if weektext }}" class="form-control" type="text" name="thursday" id="openthursday" placeholder="00:00–00:00">
+	  						<input value="{{ weektext[3] if weektext }}" class="form-control" type="text" name="thursday" id="openthursday" placeholder="00:00–00:00">
 	  					</div>
 	  				</div>
 	  			</div>
@@ -107,13 +107,13 @@ Layout page for changing locations
 	  				<div class="col">
 	  					<div class="form-group">
 	  						<label for="openfriday">Openingstijden vrijdag</label>
-	  						<input value="{{ recommendation.opening[4] if weektext }}" class="form-control" type="text" name="friday" id="openfriday" placeholder="00:00–00:00">
+	  						<input value="{{ weektext[4] if weektext }}" class="form-control" type="text" name="friday" id="openfriday" placeholder="00:00–00:00">
 	  					</div>
 	  				</div>
 	  				<div class="col">
 	  					<div class="form-group">
 	  						<label for="opensaturday">Openingstijden zaterdag</label>
-	  						<input value="{{ recommendation.opening[5] if weektext }}" class="form-control" type="text" name="saturday" id="opensaturday" placeholder="00:00–00:00">
+	  						<input value="{{ weektext[5] if weektext }}" class="form-control" type="text" name="saturday" id="opensaturday" placeholder="00:00–00:00">
 	  					</div>
 	  				</div>
 	  			</div>
@@ -121,7 +121,7 @@ Layout page for changing locations
 	  				<div class="col-6">
 	  					<div class="form-group">
 	  						<label for="opensunday">Openingstijden zondag</label>
-	  						<input value="{{ recommendation.opening[6] if weektext }}" class="form-control" type="text" name="sunday" id="opensunday" placeholder="00:00–00:00">
+	  						<input value="{{ weektext[6] if weektext }}" class="form-control" type="text" name="sunday" id="opensunday" placeholder="00:00–00:00">
 	  					</div>
 	  				</div>
 	  			</div>
