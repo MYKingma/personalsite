@@ -187,6 +187,11 @@ class Newsletter(db.Model):
     body = db.Column(db.Text(), nullable=False)
     send = db.Column(db.Boolean, nullable=False)
 
+class Hidden(db.Model):
+    __tablename__ = 'hidden'
+    id = db.Column(db.Integer(), primary_key=True)
+    place_id = db.Column(db.String(128), nullable=False)
+
 class AdminView(ModelView):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)

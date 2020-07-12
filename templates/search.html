@@ -43,9 +43,7 @@ Search page layout
 					<div class="media-body">
 						<h5 class="mt-0 mb-1">
 							<span class="toright">
-								{% if result.recommended %}
 								<p><button class="btn btn-danger btn-sm">AANRADER<i class="fas fa-medal"></i></button></p>
-								{% endif %}
 								<p class="nomt">
 									{% if result.price_level %}
 									{{ result.price_level }} -
@@ -87,9 +85,6 @@ Search page layout
 					<div class="media-body">
 						<h5 class="mt-0 mb-1">
 							<span class="toright">
-								{% if result.recommended %}
-								<p><button class="btn btn-danger btn-sm">AANRADER<i class="fas fa-medal"></i></button></p>
-								{% endif %}
 								<p class="nomt">
 									{% if result.price_level %}
 									{{ result.price_level }} -
