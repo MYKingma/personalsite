@@ -20,8 +20,8 @@ Layout page for changing locations
 		<h1>Locatie wijzigen</h1>
 		<div class="form-group">
 			<label for="review"><i class="far fa-comment-dots"></i> Beoordeling</label>
-			<textarea id="review" type="text" class="form-control" name="review" required>{{ recommendation.review }}</textarea>
-			<div class="invalid-feedback">Geef een tekstbeoordeling</div>
+			<textarea id="review" type="text" class="form-control" name="review">{{ recommendation.review }}</textarea>
+			<div class="invalid-feedback">Geef een tekstbeoordeling om te kunnen publiceren</div>
 		</div>
 		<div class="form-group">
 			<label for="tip"><i class="far fa-comment-alt"></i> Tip</label>
@@ -79,7 +79,7 @@ Layout page for changing locations
 	  				<div class="col">
 	  					<div class="form-group">
 	  						<label for="openmonday">Openingstijden maandag</label>
-	  						<input class="form-control" value="{{ weektext[1] if weektext else recommendation.opening }}" type="text" name="monday" id="openmonday" placeholder="00:00–00:00">
+	  						<input class="form-control" value="{{ weektext[1] if weektext else '' if recommendation.opening == 'notspecified' else recommendation.opening }}" type="text" name="monday" id="openmonday" placeholder="00:00–00:00">
 	  					</div>
 	  				</div>
 	  				<div class="col">
@@ -188,7 +188,10 @@ Layout page for changing locations
 		<input type="hidden" name="place_id" value="{{ recommendation.place_id }}">
 		<input type="hidden" name="name" value="{{ recommendation.name }}">
 		<input type="hidden" name="action" value="change">
-		<input id="visible" type="submit" class="btn btn-outline-secondary">
+		<input name="submit" id="visible" type="submit" class="btn btn-outline-secondary">
 	</form>
 </div>
 {% endblock %}
+{%- block script -%}
+<script type="text/javascript" src="{{ url_for('static', filename='js/recomcheck.js')}}"></script>
+{%- endblock -%}

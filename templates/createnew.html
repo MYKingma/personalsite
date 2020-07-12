@@ -20,8 +20,8 @@ Layout page for adding new locations
 		<h1>Locatie toevoegen</h1>
 		<div class="form-group">
 			<label for="review"><i class="far fa-comment-dots"></i> Beoordeling</label>
-			<textarea id="review" type="text" class="form-control" name="review" required></textarea>
-			<div class="invalid-feedback">Geef een tekstbeoordeling</div>
+			<textarea id="review" type="text" class="form-control" name="review"></textarea>
+			<div class="invalid-feedback">Geef een tekstbeoordeling om te kunnen publiceren</div>
 		</div>
 		<div class="form-group">
 			<label for="tip"><i class="far fa-comment-alt"></i> Tip</label>
@@ -189,7 +189,10 @@ Layout page for adding new locations
 		<input type="hidden" name="place_id" value="{{ place_id }}">
 		<input type="hidden" name="name" value="{{ name }}">
 		<input type="hidden" name="action" value="new">
-		<input id="visible" type="submit" class="btn btn-outline-secondary">
+		<input name="submit" id="visible" type="submit" class="btn btn-outline-secondary">
 	</form>
 </div>
 {% endblock %}
+{%- block script -%}
+<script type="text/javascript" src="{{ url_for('static', filename='js/recomcheck.js')}}"></script>
+{%- endblock -%}
