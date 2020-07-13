@@ -71,7 +71,7 @@ Base layout for other pages
 							<form action="{{ url_for('guide') }}" method="post">
 								<div class="form-group">
 									<input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
-									<input class="form-control white" type="text" id="usernameinput" name="username" placeholder="Gebruikersnaam">
+									<input class="form-control white" type="text" id="usernameinput" name="username" placeholder="Gebruikersnaam of E-mail">
 									<div class="invalidlogin" id="invalidusername"></div>
 								</div>
 								<div class="form-group">

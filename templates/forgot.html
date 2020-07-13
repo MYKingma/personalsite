@@ -15,7 +15,7 @@ Page to request new password
 {% block content %}
 <div class="container">
 	<h1>Wachtwoord opnieuw instellen</h1>
-	<p>Geef hier je emailadres op, we sturen vervolgens een link om jouw wachtwoord opnieuw in te stellen. Deze link is 1 uur geldig. Email niet ontvangen of link verlopen? Check je spam-inbox of vraag een nieuwe link aan.</p>
+	<p>Geef hier je emailadres op, we sturen vervolgens een e-mail met gebruikersnaam en link om jouw wachtwoord opnieuw in te stellen. Deze link is 1 uur geldig. Email niet ontvangen of link verlopen? Check je spam-inbox of vraag een nieuwe link aan.</p>
 	<form class="needs-validation" action="{{ url_for('forgot') }}" method="post" novalidate>
 		<div class="form-group">
 			<label for="forgotemail">E-mail</label>

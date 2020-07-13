@@ -303,9 +303,12 @@ def guide():
     # get user info
     user = User.query.filter_by(username=username).first()
 
+    if not user:
+        user = User.query.filter_by(email=username).first()
+
     # check if username exists otherwise show message
     if not user:
-        flash("Gebruikersnaam niet bekend, heb je je al geregistreerd?", 'warning')
+        flash("Gebruikersnaam of emailadres niet bekend, heb je je al geregistreerd?", 'warning')
         return redirect(request.referrer)
 
     # if password is a match set session details and login user
@@ -314,7 +317,7 @@ def guide():
             flash(f"E-mailadres nog niet bevestigd, vraag hier een nieuwe link aan als deze verlopen is", 'warning')
             return redirect(url_for('not_confirmed'))
         login_user(user)
-        flash(f"Ingelogd, welkom {username}", 'success')
+        flash(f"Ingelogd, welkom {user.username}", 'success')
         return redirect(request.referrer)
 
     # else return for wrong password
@@ -378,7 +381,7 @@ def register():
     # send email for confirmation
     msg = Message("Bevestig je e-mailadres om je account te activeren", recipients=[email])
     link = request.url_root + "stadsgids/emailbevestigen/" + token
-    msg.html = render_template('confirmmail.html', firstname=firstname, email=email, link=link)
+    msg.html = render_template('confirmmail.html', firstname=firstname, email=email, link=link, username=username)
     job = queue.enqueue('task.send_mail', msg)
 
     # show succes message
@@ -467,7 +470,7 @@ def forgot():
     # send email for confirmation
     msg = Message("Reset je wachwoord", recipients=[email])
     link = request.url_root + "stadsgids/resetwachtwoord/" + token
-    msg.html = render_template('resetpassmail.html', firstname=user.firstname, link=link)
+    msg.html = render_template('resetpassmail.html', firstname=user.firstname, link=link, username=user.username)
     job = queue.enqueue('task.send_mail', msg)
 
     flash(f"E-mail met wachtwoordreset link verstuurd naar {email}", 'success')
