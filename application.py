@@ -15,8 +15,9 @@ API_TYPES = ["art_gallery", "bakery", "bar", "bicycle_store", "book_store", "bow
 TYPES_DICT = {"": "Geen voorkeur", "art_gallery": "Kunstgallerij", "bakery": "Bakkerij", "bar": "Bar", "bicycle_store": "Fietsenwinkel", "book_store": "Boekenwinkel", "bowling_alley": "Bowlingbaan", "cafe": "Cafe", "casino": "Casino", "florist": "Bloemenwinkel", "library": "Bibliotheek", "liquor_store": "Slijterij", "meal_delivery": "Bezorgrestaurant", "meal_takeaway": "Afhaalrestaurant", "movie_rental": "Videotheek", "movie_theater": "Bioscoop", "museum": "Museum", "night_club": "Nachtclub", "park": "Park", "restaurant": "Restaurant", "spa": "Spa", "stadium": "Stadion", "store": "Winkel", "tourist_attraction": "Toeristenattractie", "zoo": "Dierentuin", "brewery": "Brouwerij", "distillery": "Destileerderij", "wineshop": "Wijnwinkel", "coffeeroasters": "Koffiebranders", "beerbar": "Biercafé", "cocktailbar": "Cocktailbar", "terrace": "Terras", "icecream": "IJssalon"}
 RESULT_FILTER = ["sexshop", "sex", "gay", "2020", "kamerverhuur", "fetish", "erotic", "xxx", "lust"]
 SEARCH_TYPES = ["", "bakery", "bar", "book_store", "cafe", "casino", "library", "liquor_store", "movie_theater", "museum", "night_club", "restaurant", "spa", "store"]
-REC_SEARCH_TYPES = ["", "bakery", "bar", "cafe", "museum", "night_club", "restaurant", "store", "liquor_store", "brewery", "distillery", "wineshop", "coffeeroasters", "beerbar", "terrace"]
-ICON_DICT = {"bakery": "bread-slice", "book_store": "book", "casino": "dice", "library": "book-reader", "liquor_store": "wine-bottle", "cinema": "film", "museum": "palette", "night_club": "compact-disc", "spa": "hot-tub", "store": "shopping-basket", "restaurant": "utensils", "brewery": "beer", "beerbar": "beer", "coacktailbar": "cocktail", "cofferoasters": "coffee", "wineshop": "wine-glass-alt", "distillery": "whiskey", "bar": "glass-cheers", "cafe": "mug-hot", "terrace": "umbrella-beach", "icecream": "ice-cream"}
+REC_SEARCH_TYPES_NL = ["Bakkerij", "Bar", "Cafe", "Museum", "Nachtclub", "Restaurant", "Winkel", "Slijterij", "Brouwerij", "Destileerderij", "Wijnwinkel", "Koffiebranders", "Biercafé", "Terras", "IJssalon"]
+REC_SEARCH_TYPES = ["", "bakery", "bar", "cafe", "museum", "night_club", "restaurant", "store", "liquor_store", "brewery", "distillery", "wineshop", "coffeeroasters", "beerbar", "terrace", "icecream"]
+ICON_DICT = {"bakery": "bread-slice", "book_store": "book", "casino": "dice", "library": "book-reader", "liquor_store": "wine-bottle", "cinema": "film", "museum": "palette", "night_club": "compact-disc", "spa": "hot-tub", "store": "shopping-basket", "restaurant": "utensils", "brewery": "beer", "beerbar": "beer", "coacktailbar": "cocktail", "coffeeroasters": "coffee", "wineshop": "wine-glass-alt", "distillery": "whiskey", "bar": "glass-cheers", "cafe": "mug-hot", "terrace": "umbrella-beach", "icecream": "ice-cream"}
 
 
 # test route
@@ -224,6 +225,34 @@ def action_location():
         db.session.commit()
         return jsonify({"success": True, "count": review.get_upvote_count(), "status": "added"})
 
+@app.route('/autocomplete', methods=["POST"])
+def autocomplete():
+    recommendations = Recommendation.query.filter(Recommendation.name.ilike(f"%{request.form.get('query').lower()}%"), Recommendation.visible).all()
+    autolist = {}
+    recommList = {}
+    categList = {}
+    if recommendations:
+        for item in recommendations:
+            recommList[item.name] = item.place_id
+        autolist["recommList"] = recommList
+
+    for type in REC_SEARCH_TYPES_NL:
+        if request.form.get('query').lower() in type.lower():
+            typeList = Recommendation.query.filter(Recommendation.type.ilike(f"%{type.lower()}%"), Recommendation.visible).all()
+            for key, value in TYPES_DICT.items():
+                if value == type:
+                    categTitle = key
+            if typeList:
+                categList[categTitle] = {}
+                for item in typeList:
+                    categList[categTitle][item.name] = item.place_id
+    if categList:
+        autolist["categList"] = categList
+        autolist["ICON_DICT"] = ICON_DICT
+        autolist["TYPES_DICT"] = TYPES_DICT
+    print(recommList)
+    return jsonify(autolist)
+
 # page routes
 @app.route('/')
 def index():
@@ -308,7 +337,7 @@ def guide():
 
     # check if username exists otherwise show message
     if not user:
-        flash("Gebruikersnaam of emailadres niet bekend, heb je je al geregistreerd?", 'warning')
+        flash("Gebruikersnaam of emailadres niet bekend, heb je je al geregistreerd? Je kunt ook met een e-mailadres inloggen.", 'warning')
         return redirect(request.referrer)
 
     # if password is a match set session details and login user

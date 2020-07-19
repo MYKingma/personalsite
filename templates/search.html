@@ -145,7 +145,7 @@ Search page layout
 				</div>
 				<div class="form-group">
 					<label class="advancedlabel" for="typeinput"><i class="fas fa-tag"></i> Categorie</label>
-					<select class="form-control form-control-sm" id="typeinput" name="type">
+					<select class="custom-select" id="typeinput" name="type">
 						{% for key, value in TYPES_DICT.items() %}
 						{% if key in SEARCH_TYPES and key in REC_SEARCH_TYPES %}
 						<option value="{{ key }}">{{ value }}</option>
@@ -161,7 +161,7 @@ Search page layout
 					<div class="col">
 						<div class="form-group">
 							<label class="advancedlabel" for="minpriceinput"><i class="fas fa-euro-sign"></i> Prijsklasse</label>
-							<select class="form-control form-control-sm" id="minpriceinput" name="minprice">
+							<select class="custom-select" id="minpriceinput" name="minprice">
 								<option value="0">Vanaf</option>
 								<option value="1">€</option>
 								<option value="2">€€</option>
@@ -171,7 +171,7 @@ Search page layout
 					</div>
 					<div class="col">
 						<div class="form-group">
-							<select class="form-control form-control-sm" id="maxpriceinput" name="maxprice">
+							<select class="custom-select" id="maxpriceinput" name="maxprice">
 								<option value="1">€€</option>
 								<option value="2">€€€</option>
 								<option value="3">€€€€</option>

@@ -71,7 +71,7 @@ Base layout for other pages
 							<form action="{{ url_for('guide') }}" method="post">
 								<div class="form-group">
 									<input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
-									<input class="form-control white" type="text" id="usernameinput" name="username" placeholder="Gebruikersnaam of E-mail">
+									<input class="form-control white" type="text" id="usernameinput" name="username" placeholder="Gebruikersnaam">
 									<div class="invalidlogin" id="invalidusername"></div>
 								</div>
 								<div class="form-group">
@@ -96,7 +96,9 @@ Base layout for other pages
 				</ul>
 				<form id="searchformnavbar" class="form-inline my-2 my-lg-0" action="{{ url_for('search')}}" method="post">
 					<input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
-					<input class="form-control mr-sm-2 white" type="search" placeholder="Zoeken" name="search">
+					<input autocomplete="off" id="autocomplete" class="form-control mr-sm-2 white" type="search" placeholder="Zoeken" name="search">
+					<div id="autolist">
+					</div>
 					<input type="hidden" name="form" value="regular">
 					<button class="btn btn-outline-light my-2 my-sm-0" type="submit"><i class="fas fa-search"></i> Zoeken</button>
 					<a class="btn btn-outline-light my-2 my-sm-0" id="advanced" href="{{ url_for('search')}}"><i class="fas fa-sliders-h"></i> Uitgebreid Zoeken</a>
@@ -136,5 +138,6 @@ Base layout for other pages
 		{%- block script -%}{%- endblock -%}
 		<script type="text/javascript" src="{{ url_for('static', filename='js/validator.js')}}"></script>
 		<script type="text/javascript" src="{{ url_for('static', filename='js/darkmode.js')}}"></script>
+		<script type="text/javascript" src="{{ url_for('static', filename='js/autocomplete.js')}}"></script>
 	</body>
 </html>
