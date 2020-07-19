@@ -14,7 +14,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // get checkbox and see if it is checked
         if (document.querySelector('input[name="visible"]').checked) {
-            if (document.getElementById('review').length > 0) {
+            if (document.getElementById('review').value.length > 0) {
                 document.querySelector('#review').setCustomValidity('')
             } else {
                 document.querySelector('#review').setCustomValidity('invalid')
