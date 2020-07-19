@@ -792,27 +792,45 @@ nav img {
   cursor: default;
 }
 
-#autolist {
+#autolist, .autolist {
+  width: 100%;
   background-color: white;
-  position: fixed;
-  top: 215px;
-  padding: 5px;
+  border: 1px solid grey;
+  border-top: none;
   border-bottom-right-radius: 3px;
   border-bottom-left-radius: 3px;
   font-size: 13px;
-  padding-right: 19.5px;
+  width: 250px;
+  position: absolute;
   padding-top: 10px;
-  margin-top: 4px;
-  margin-left: 1px;
+  top: -7px;
 }
-#autolist .item {
-  padding: 5px;
-  padding-left: 10px;
+#autolist .item, .autolist .item {
   color: black;
+  padding: 2px;
+  padding-left: 10px;
+  padding-right: 5px;
 }
-#autolist .item:hover {
-  background-color: lightgrey;
+#autolist .item:hover, .autolist .item:hover {
   color: #5e0408;
+  background-color: #F0DDDD;
+  border-radius: 3px;
+}
+
+.listbox {
+  width: 250px;
+  margin-right: 10px;
+}
+.listbox input {
+  min-width: 100%;
+}
+
+#autolist {
+  top: 215px;
+}
+
+.autolist {
+  top: 175px;
 }
 
 #maxpriceinput {
@@ -971,9 +989,8 @@ nav img {
     margin-bottom: 10px;
   }
 
-  #autolist {
+  #autolist, .autolist {
     top: 40px;
-    min-width: 1em;
   }
 }
 @-webkit-keyframes swing-in-top-fwd {

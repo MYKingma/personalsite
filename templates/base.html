@@ -46,7 +46,6 @@ Base layout for other pages
 				<img src="{{ url_for('static', filename='picto/cross.png') }}" class="d-inline-block align-top" alt="">
 				Stadsgids
 			</a>
-
 			<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarTogglerDemo02" aria-controls="navbarTogglerDemo02" aria-expanded="false" aria-label="Toggle navigation">
 				<span class="navbar-toggler-icon"></span>
 			</button>
@@ -96,12 +95,19 @@ Base layout for other pages
 				</ul>
 				<form id="searchformnavbar" class="form-inline my-2 my-lg-0" action="{{ url_for('search')}}" method="post">
 					<input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
-					<input autocomplete="off" id="autocomplete" class="form-control mr-sm-2 white" type="search" placeholder="Zoeken" name="search">
-					<div id="autolist">
+					<div class="listbox">
+						<input autocomplete="off" id="autocomplete" class="form-control mr-sm-2 white" type="search" placeholder="Zoeken" name="search">
+						{% if current_user.is_authenticated %}
+						<div id="autolist">
+						</div>
+						{% else %}
+						<div class="autolist">
+						</div>
+						{% endif %}
 					</div>
 					<input type="hidden" name="form" value="regular">
-					<button class="btn btn-outline-light my-2 my-sm-0" type="submit"><i class="fas fa-search"></i> Zoeken</button>
-					<a class="btn btn-outline-light my-2 my-sm-0" id="advanced" href="{{ url_for('search')}}"><i class="fas fa-sliders-h"></i> Uitgebreid Zoeken</a>
+					<button class="btn btn-outline-light my-2 my-sm-0 fixpos" type="submit"><i class="fas fa-search"></i> Zoeken</button>
+					<a class="btn btn-outline-light my-2 my-sm-0 fixpos" id="advanced" href="{{ url_for('search')}}"><i class="fas fa-sliders-h"></i> Uitgebreid Zoeken</a>
 				</form>
 			</div>
 		</nav>
