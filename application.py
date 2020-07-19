@@ -250,7 +250,6 @@ def autocomplete():
         autolist["categList"] = categList
         autolist["ICON_DICT"] = ICON_DICT
         autolist["TYPES_DICT"] = TYPES_DICT
-    print(recommList)
     return jsonify(autolist)
 
 # page routes
@@ -747,6 +746,7 @@ def search():
                 if recommendation.visible:
                     result["recommended"] = True
                     result["types"] = recommendation.type.replace("{", "").replace("}", "").split(",")
+                    result["price_level"] = recommendation.price_level * "€"
         return render_template("search.html", search=True, results=results, TYPES_DICT=TYPES_DICT, REC_SEARCH_TYPES=REC_SEARCH_TYPES, SEARCH_TYPES=SEARCH_TYPES, ICON_DICT=ICON_DICT)
 
     # get filters if advanced search
@@ -1010,7 +1010,6 @@ def changenew(place_id, name, types, opening, price_level):
     events = Event.query.filter_by(place_id=place_id).order_by(Event.date).all()
     if "00" in recommendation.opening:
         weektext = recommendation.opening.replace('{', '').replace('}', '').split(',')
-        print(weektext)
     else:
         weektext = False
     typeslist = ast.literal_eval(types)
