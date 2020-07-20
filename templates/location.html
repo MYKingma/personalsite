@@ -17,11 +17,10 @@ Location page
 	<div class="row">
 		<div class=col-lg-8>
 			<div id="carouselbox">
-				<h1>{{ location.name }}
-					{% if recommendation.visible %}
-					<span><button class="btn btn-danger">AANRADER<i class="fas fa-medal"></i></button></span>
-					{% endif %}
-				</h1>
+				{% if recommendation.visible %}
+				<span><button class="btn btn-danger reclabel">AANRADER<i class="fas fa-medal"></i></button></span>
+				{% endif %}
+				<h2 class="locationTitle">{{ location.name.replace(' Amsterdam-', ' ').replace(' Amsterdam', '').replace(' amsterdam', '') }}</h2>
 				<div id="demo" class="carousel slide" data-ride="carousel">
 
 				  <!-- Indicators -->
@@ -293,7 +292,7 @@ Location page
 				<p>Telefoon <span>{{ location.phone }}</span></p>
 				{% endif %}
 				{% if location.website %}
-				<p>Website<span><a href="{{ location.website }}">{{ location.name }}</a></span></p>
+				<p>Website<span><a href="{{ location.website }}">{{ location.name.split()[:2]|join(' ') }}</a></span></p>
 				{% endif %}
 			</div>
 		</div>

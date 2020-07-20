@@ -43,6 +43,12 @@ html, body {
   color: #9c0315;
   font-weight: bold;
 }
+.highlight a {
+  color: #9c0315;
+}
+.highlight a:hover {
+  color: lightgrey;
+}
 
 .description img {
   display: block;
@@ -766,22 +772,20 @@ nav img {
   margin-top: 0px;
 }
 #carouselbox button {
-  padding-right: 40px;
+  padding: 5px;
+  font-family: "Oswald", sans-serif;
+}
+#carouselbox .locationTitle {
+  margin-top: 0px;
+  padding-top: 0px;
 }
 #carouselbox .fa-medal {
-  font-size: 31px;
   position: absolute;
   color: white;
   margin-left: 5px;
-  top: 16px;
 }
 #carouselbox span {
   float: right;
-}
-#carouselbox h1 {
-  margin-top: 0px;
-  margin-bottom: 20px;
-  padding-top: 0px;
 }
 
 #checklabel {
@@ -937,6 +941,22 @@ nav img {
   #searchformnavbar button, #searchformnavbar a {
     font-size: 10pt;
   }
+
+  .locationTitle {
+    font-size: 20pt;
+  }
+
+  .reclabel {
+    font-size: 7pt;
+  }
+  .reclabel .fa-medal {
+    font-size: 20px;
+    top: 17px;
+  }
+
+  #carouselbox button {
+    padding-right: 30px;
+  }
 }
 @media (max-width: 720px) {
   .highlight .media, .smallist .media {
@@ -952,6 +972,7 @@ nav img {
   }
   .highlight .media .media-body button .fa-medal, .smallist .media .media-body button .fa-medal {
     font-size: 17px;
+    top: 16px;
   }
   .highlight .media h5, .smallist .media h5 {
     font-size: 20px;
@@ -971,15 +992,6 @@ nav img {
     display: block;
   }
 }
-@media (min-width: 992px) {
-  .onecolumn {
-    display: none;
-  }
-
-  .twocolumn {
-    display: block;
-  }
-}
 @media (min-width: 489px) {
   #hide {
     display: block;
@@ -987,6 +999,22 @@ nav img {
 
   #show {
     display: none;
+  }
+
+  .locationTitle {
+    font-size: 30pt;
+  }
+
+  .reclabel {
+    font-size: 15pt;
+  }
+  .reclabel .fa-medal {
+    font-size: 30px;
+    top: 16px;
+  }
+
+  #carouselbox button {
+    padding-right: 40px;
   }
 }
 @media (min-width: 992px) {
@@ -996,6 +1024,14 @@ nav img {
 
   #autolist, .autolist {
     top: 40px;
+  }
+
+  .onecolumn {
+    display: none;
+  }
+
+  .twocolumn {
+    display: block;
   }
 }
 @-webkit-keyframes swing-in-top-fwd {

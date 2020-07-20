@@ -42,6 +42,12 @@ html, body {
 		font-weight: bold;
 	}
 	margin-bottom: 15px;
+	a {
+		color: #9c0315;
+	}
+	a:hover {
+		color: lightgrey;
+	}
 }
 
 .description {
@@ -774,22 +780,21 @@ nav {
 		}
 	}
 	button {
-		padding-right: 40px;
+		padding: 5px;
+		// padding-right: 40px;
+		font-family: 'Oswald', sans-serif;
+	}
+	.locationTitle {
+		margin-top: 0px;
+		padding-top: 0px;
 	}
 	.fa-medal {
-		font-size: 31px;
 		position: absolute;
 		color: white;
 		margin-left: 5px;
-		top: 16px;
 	}
 	span {
 		float: right;
-	}
-	h1 {
-		margin-top: 0px;
-		margin-bottom: 20px;
-		padding-top: 0px;
 	}
 }
 
@@ -952,6 +957,19 @@ nav {
 			font-size: 10pt;
 		}
 	}
+	.locationTitle {
+		font-size: 20pt;
+	}
+	.reclabel {
+		font-size: 7pt;
+		.fa-medal {
+			font-size: 20px;
+			top: 17px;
+		}
+	}
+	#carouselbox button {
+		padding-right: 30px;
+	}
 }
 
 @media (max-width: 720px) {
@@ -966,6 +984,7 @@ nav {
 				font-size: 10px;
 				.fa-medal {
 					font-size: 17px;
+					top: 16px;
 				}
 			}
 		}
@@ -988,14 +1007,6 @@ nav {
 	}
 }
 
-@media (min-width: 992px){
-	.onecolumn {
-		display: none;
-	}
-	.twocolumn {
-		display: block;
-	}
-}
 
 // Large
 @media (min-width: 489px){
@@ -1005,6 +1016,19 @@ nav {
 	#show {
 		display: none;
 	}
+	.locationTitle {
+		font-size: 30pt;
+	}
+	.reclabel {
+		font-size: 15pt;
+		.fa-medal {
+			font-size: 30px;
+			top: 16px;
+		}
+	}
+	#carouselbox button {
+		padding-right: 40px;
+	}
 }
 
 @media (min-width: 992px){
@@ -1013,6 +1037,12 @@ nav {
 	}
 	#autolist, .autolist {
 		top: 40px;
+	}
+	.onecolumn {
+		display: none;
+	}
+	.twocolumn {
+		display: block;
 	}
 }
 

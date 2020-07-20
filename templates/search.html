@@ -68,7 +68,7 @@ Search page layout
 								</p>
 								<p>{{ result.opening_hours }}</p>
 							</span>
-							{{ result.name }}
+							{{ result.name.replace(' Amsterdam-', ' ').replace(' Amsterdam', '').replace(' amsterdam', '') }}
 						</h5>
 						<p class="searchadress"><span id="stars">{{ result.rating }}</span></p>
 						<p class="searchadress">{{ result["formatted_address"][0] }}</p>
@@ -109,7 +109,7 @@ Search page layout
 								</p>
 								<p>{{ result.opening_hours }}</p>
 							</span>
-							{{ result.name }}
+							{{ result.name.replace(' Amsterdam-', ' ').replace(' Amsterdam', '').replace(' amsterdam', '') }}
 						</h5>
 						<p class="searchadress"><span id="stars">{{ result.rating }}</span></p>
 						<p class="searchadress">{{ result["formatted_address"][0] }}</p>
