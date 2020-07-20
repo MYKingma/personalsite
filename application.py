@@ -629,7 +629,16 @@ def location(place_id, name):
                 location["phone"] = data["result"]["formatted_phone_number"]
             location["opening"] = True
             if "opening_hours" in data["result"]:
-                if "weekday_text" in data["result"]["opening_hours"]:
+                if "periods" in data["result"]["opening_hours"]:
+                    location["opening_hours"] = ["Gesloten", "Gesloten", "Gesloten", "Gesloten", "Gesloten", "Gesloten", "Gesloten"]
+                    for item in data["result"]["opening_hours"]["periods"]:
+                        day = item["open"]["day"] - 1
+                        if location["opening_hours"][day] == "Gesloten":
+                            location["opening_hours"][day] = item["open"]["time"][:2] + ":" + item["open"]["time"][2:] + "-" + item["close"]["time"][:2] + ":" + item["close"]["time"][2:]
+                        else:
+                            location["opening_hours"][day] = location["opening_hours"][day].split("-")[0] + "-" + item["close"]["time"][:2] + ":" + item["close"]["time"][2:]
+
+                elif "weekday_text" in data["result"]["opening_hours"]:
                     for i in range(len(data["result"]["opening_hours"]["weekday_text"])):
                         data["result"]["opening_hours"]["weekday_text"][i] = data["result"]["opening_hours"]["weekday_text"][i].split()[1]
                     location["opening_hours"] = data["result"]["opening_hours"]["weekday_text"]
@@ -682,6 +691,7 @@ def location(place_id, name):
             map = requests.get("https://www.google.com/maps/embed/v1/place", params={"key": GOOGLE_API_KEY, "q": "place_id:" + place_id})
             if map.status_code == 200:
                 location["map"] = map.url
+
         return render_template("location.html", location=location, recommendation=recommendation, visible=visible, events=events)
 
     # get review information
