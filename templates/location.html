@@ -20,7 +20,11 @@ Location page
 				{% if recommendation.visible %}
 				<span><button class="btn btn-danger reclabel">AANRADER<i class="fas fa-medal"></i></button></span>
 				{% endif %}
+				{% if location.name|length > 20 %}
+				<h2 class="locationTitle small">{{ location.name.replace(' Amsterdam-', ' ').replace(' Amsterdam', '').replace(' amsterdam', '') }}</h2>
+				{% else %}
 				<h2 class="locationTitle">{{ location.name.replace(' Amsterdam-', ' ').replace(' Amsterdam', '').replace(' amsterdam', '') }}</h2>
+				{% endif %}
 				<div id="demo" class="carousel slide" data-ride="carousel">
 
 				  <!-- Indicators -->

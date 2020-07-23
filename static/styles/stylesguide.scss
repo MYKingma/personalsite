@@ -578,7 +578,7 @@ nav {
 
 .message-container {
 	position: fixed;
-	top: 60px;
+	top: 70px;
 	width: 100%;
 	z-index: 10;
 }
@@ -784,7 +784,6 @@ nav {
 		font-family: 'Oswald', sans-serif;
 	}
 	.locationTitle {
-		margin-top: 0px;
 		padding-top: 0px;
 	}
 	.fa-medal {
@@ -959,6 +958,10 @@ nav {
 	.locationTitle {
 		font-size: 20pt;
 	}
+	.small {
+		font-size: 15pt;
+
+	}
 	.reclabel {
 		font-size: 7pt;
 		.fa-medal {
@@ -1017,6 +1020,11 @@ nav {
 	}
 	.locationTitle {
 		font-size: 30pt;
+		margin-top: 3px;
+	}
+	.small {
+		font-size: 20pt;
+
 	}
 	.reclabel {
 		font-size: 15pt;
@@ -1024,6 +1032,8 @@ nav {
 			font-size: 30px;
 			top: 16px;
 		}
+		margin-bottom: 10px;
+		margin-top: 0;
 	}
 	#carouselbox button {
 		padding-right: 40px;
