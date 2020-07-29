@@ -6,12 +6,11 @@ Minor Programmeren - Web App Studio
 Javascript for displaing rating as amount of stars
 */
 
-// wait for page to load
-document.addEventListener('DOMContentLoaded', () => {
+function stars() {
 	const elements = document.querySelectorAll('#stars');
 	for (var j = 0; j < elements.length; j++) {
 		const rating = Math.round(elements[j].innerHTML * 2) / 2;
-		
+
 	  // Round to nearest half
 
 	    let output = [];
@@ -26,8 +25,12 @@ document.addEventListener('DOMContentLoaded', () => {
 	    // Fill the empty stars
 	    for (let i = (5 - rating); i >= 1; i--)
 	      output.push('<i class="far fa-star" aria-hidden="true"></i>&nbsp;');
-		
-		
+
+
 		elements[j].innerHTML = output.join('')
+		elements[j].id = ""
 	};
-});
+};
+
+// wait for page to load and start function
+document.addEventListener('DOMContentLoaded', stars());

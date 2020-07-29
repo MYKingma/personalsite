@@ -252,6 +252,46 @@ def autocomplete():
         autolist["TYPES_DICT"] = TYPES_DICT
     return jsonify(autolist)
 
+@app.route('/loadhighlight', methods=["POST"])
+def loadhighlight():
+    week = request.form.get('week')
+    shift = request.form.get('shift')
+    weeknum = int(week) + int(shift)
+    data = {}
+
+    highlights = Highlight.query.all()
+    for location in highlights:
+        if location.week.isocalendar()[1] == weeknum:
+            data["description"] = location.description
+            data["name"] = location.name
+            data["week"] = location.week.isocalendar()[1]
+            data["totalshift"] = int(datetime.datetime.now().isocalendar()[1]) - weeknum
+            data["linkinfo"] = get_location_link_information(location.place_id)
+            data["types"] = []
+            for type in data["linkinfo"]["types"]:
+                for key, value in TYPES_DICT.items():
+                    if type == value:
+                        if key in ICON_DICT:
+                            data["types"].append(ICON_DICT[key])
+            for type in data["linkinfo"]["types"]:
+                if type in ICON_DICT:
+                    data["types"].append(ICON_DICT[type])
+            break
+
+    data["previous"] = False
+    for location in highlights:
+        if location.week.isocalendar()[1] == weeknum - 1:
+            data["previous"] = True
+            break
+
+    data["next"] = True
+    if datetime.datetime.now().isocalendar()[1] == weeknum:
+        data["next"] = False
+
+    return jsonify(data)
+
+
+
 # page routes
 @app.route('/')
 def index():

@@ -45,9 +45,7 @@ html, body {
 	a {
 		color: #9c0315;
 	}
-	a:hover {
-		color: lightgrey;
-	}
+	padding-bottom: 10px;
 }
 
 .description {
@@ -74,9 +72,7 @@ h1 {
 }
 
 h2 {
-	margin-top: 10px;
 	font-size: 20px;
-	margin-top: 0px;
 }
 
 h1, h2, h3, h4, h5, {
@@ -506,8 +502,20 @@ nav {
 		text-align: right;
 	}
 }
+
 .float_right {
 	float: right;
+}
+
+.highlightLink {
+	h2 {
+		font-size: 15px;
+	}
+	min-height: 30px;
+	padding-top: 10px;
+	span:hover {
+		cursor: pointer;
+	}
 }
 
 .searchadress {

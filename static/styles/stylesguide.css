@@ -28,6 +28,7 @@ html, body {
   border: 1px solid #DBDBE0;
   border-radius: 4px;
   margin-bottom: 15px;
+  padding-bottom: 10px;
 }
 .highlight h1 {
   font-size: 17px;
@@ -45,9 +46,6 @@ html, body {
 }
 .highlight a {
   color: #9c0315;
-}
-.highlight a:hover {
-  color: lightgrey;
 }
 
 .description img {
@@ -72,9 +70,7 @@ h1 {
 }
 
 h2 {
-  margin-top: 10px;
   font-size: 20px;
-  margin-top: 0px;
 }
 
 h1, h2, h3, h4, h5 {
@@ -504,6 +500,17 @@ nav img {
 
 .float_right {
   float: right;
+}
+
+.highlightLink {
+  min-height: 30px;
+  padding-top: 10px;
+}
+.highlightLink h2 {
+  font-size: 15px;
+}
+.highlightLink span:hover {
+  cursor: pointer;
 }
 
 .searchadress {
