@@ -47,6 +47,9 @@ html, body {
 .highlight p a {
   color: #9c0315;
 }
+.highlight p a:hover {
+  color: grey;
+}
 
 .description img {
   display: block;
