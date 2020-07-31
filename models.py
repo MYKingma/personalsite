@@ -115,6 +115,25 @@ class Request(db.Model):
         self.date = datetime.datetime.now()
         self.user = current_user
 
+class Comment(db.Model):
+    __tablename__ = "comments"
+    id = db.Column(db.Integer(), primary_key=True)
+    user_id = db.Column(db.Integer(), db.ForeignKey('users.id', ondelete='CASCADE'), nullable=False)
+    blog_id = db.Column(db.Integer(), db.ForeignKey('blog.id', ondelete='CASCADE'), nullable=False)
+    thread = db.Column(db.Integer(), db.ForeignKey('comments.id', ondelete='CASCADE'))
+    date = db.Column(db.DateTime(), nullable=False)
+    comment = db.Column(db.Text())
+    user = db.relationship('User')
+    checked = db.Column(db.Boolean, nullable=False)
+
+    def __init__(self, blog_id, comment):
+        self.blog_id = blog_id
+        self.user_id = current_user.id
+        self.date = datetime.datetime.now()
+        self.user = current_user
+        self.comment = comment
+        self.checked = False
+
 class Review(db.Model):
     __tablename__ = 'reviews'
     id = db.Column(db.Integer(), primary_key=True)

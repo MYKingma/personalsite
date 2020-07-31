@@ -44,6 +44,8 @@ def get_location_link_information(place_id):
         details["recommended"] = True
         details["types"] = recommendation.type.replace("}", "").replace("{", "").split(",")
         details["price_level"] = recommendation.price_level * "€"
+        if recommendation.visible:
+            details["visible"] = True
     else:
         details["recommended"] = False
 

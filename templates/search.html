@@ -36,7 +36,7 @@ Search page layout
 			{% endif %}
 			{% endif %}
 			{% for result in results %}
-			{% if result.recommended %}
+			{% if result.visible %}
 			<a class="list" href="{{ url_for('location', place_id=result.place_id, name=result.name) }}">
 				<li class="media">
 					<div class="center-cropped" style="background-image: url('{{ result.photos }}');"></div>
@@ -78,7 +78,7 @@ Search page layout
 			{% endif %}
 			{% endfor %}
 			{% for result in results %}
-			{% if not result.recommended %}
+			{% if not result.visible %}
 			<a class="list" href="{{ url_for('location', place_id=result.place_id, name=result.name) }}">
 				<li class="media">
 					<div class="center-cropped" style="background-image: url('{{ result.photos }}');"></div>
@@ -90,9 +90,9 @@ Search page layout
 									{{ result.price_level }} -
 									{% endif %}
 									{% if result.recommended %}
-									{% for type in result.guidetype %}
+									{% for item in result.types %}
 									{% for key, value in TYPES_DICT.items() %}
-										{% if type == value %}
+										{% if item == value %}
 										{% if key in ICON_DICT %}
 										<i class="fas fa-{{ ICON_DICT[key] }}"></i>
 										{% endif %}

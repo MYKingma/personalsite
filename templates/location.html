@@ -1,3 +1,4 @@
+
 <!-- location.html for implementing a city guide webapp
 
 Maurice Kingma
@@ -29,9 +30,9 @@ Location page
 
 				  <!-- Indicators -->
 				  <ul class="carousel-indicators">
-				  	<li data-target="#demo" data-slide-to="0" class="active"></li>
-				    <li data-target="#demo" data-slide-to="1"></li>
-				    <li data-target="#demo" data-slide-to="2"></li>
+				  	<li data-target="#demo" data-slide-to="0" class="active noZensmooth"></li>
+				    <li data-target="#demo" data-slide-to="1" class="noZensmooth"></li>
+				    <li data-target="#demo" data-slide-to="2" class="noZensmooth"></li>
 				  </ul>
 
 				  <!-- The slideshow -->
@@ -54,10 +55,10 @@ Location page
 			    </div>
 
 				  <!-- Left and right controls -->
-				  <a class="carousel-control-prev" href="#demo" data-slide="prev">
+				  <a class="noZensmooth carousel-control-prev" href="#demo" data-slide="prev">
 					  <span class="carousel-control-prev-icon"></span>
 				  </a>
-				  <a class="carousel-control-next" href="#demo" data-slide="next">
+				  <a class="noZensmooth carousel-control-next" href="#demo" data-slide="next">
 					  <span class="carousel-control-next-icon"></span>
 				  </a>
 				</div>
@@ -158,7 +159,7 @@ Location page
 						</fieldset>
 						<p for="reviewinput">Schrijf iets over {{ location.name }}</p>
 						<textarea class="form-control" type="text" id="reviewinput" name=review></textarea>
-						<input class="btn btn-secondary" type="submit" id="review">
+						<input class="btn btn-secondary mb" type="submit" id="review">
 						<p class="errorrev"></p>
 					</form>
 				</div>
@@ -178,7 +179,7 @@ Location page
 				<div class="scrollreview">
 					{% if location.ownreview != None %}
 					<div id="reviewform" class="reviewbox">
-						<h3>{{ location.ownreview.user.username }}<span>{{ location.ownreview.date.strftime("%-d %B %Y %R") }}</span><span id="stars">{{ location.ownreview.stars }}</span></h3>
+						<h3>{{ location.ownreview.user.username }}<span>{{ location.ownreview.date.strftime("%-d %B %Y %R") }}</span><br><span id="stars">{{ location.ownreview.stars }}</span></h3>
 						<p>{{ location.ownreview.review if location.ownreview.review else "Geen toelichting" }}</p>
 						<span class="delete"><a href="{{ url_for('deletereview', name=location.name, place_id=location.place_id) }}"><i class="fas fa-trash-alt"></i> Verwijderen</a></span>
 						<p id="usefull"><i class="fas fa-thumbs-up"></i> {{ location.ownreview.get_upvote_count() }} {{ "gebruiker vindt" if location.ownreview.get_upvote_count() == 1 else "gebruikers vinden" }} dit nuttig </p>

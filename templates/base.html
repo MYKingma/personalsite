@@ -116,7 +116,7 @@ Base layout for other pages
 				{%- if messages -%}
 					{%- for category, message in messages -%}
 			<div class="alert alert-{{ category }} alert-dismissible fade show">
-			  <a href="#" class="close" data-dismiss="alert" aria-label="close"><i class="fas fa-times"></i></a>
+			  <a href="#" class="close noZensmooth" data-dismiss="alert" aria-label="close"><i class="fas fa-times"></i></a>
 			  {{ message }}
 			</div>
 					{%- endfor -%}

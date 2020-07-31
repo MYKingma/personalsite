@@ -67,6 +67,8 @@ admin.add_view(AdminView(Highlight, db.session))
 admin.add_view(AdminView(Review, db.session))
 admin.add_view(AdminView(Event, db.session))
 admin.add_view(AdminView(Request, db.session))
+admin.add_view(AdminView(Comment, db.session))
+
 
 # configure link admin menu
 admin.add_link(MenuLink(name='Back to site', url='/stadsgids/dashboard'))

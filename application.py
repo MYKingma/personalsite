@@ -793,10 +793,11 @@ def search():
         for result in results:
             recommendation = Recommendation.query.filter_by(place_id=result["place_id"]).first()
             if recommendation:
+                result["recommended"] = True
+                result["types"] = recommendation.type.replace("{", "").replace("}", "").split(",")
+                result["price_level"] = recommendation.price_level * "€"
                 if recommendation.visible:
-                    result["recommended"] = True
-                    result["types"] = recommendation.type.replace("{", "").replace("}", "").split(",")
-                    result["price_level"] = recommendation.price_level * "€"
+                    result["visible"] = True
         return render_template("search.html", search=True, results=results, TYPES_DICT=TYPES_DICT, REC_SEARCH_TYPES=REC_SEARCH_TYPES, SEARCH_TYPES=SEARCH_TYPES, ICON_DICT=ICON_DICT)
 
     # get filters if advanced search
@@ -850,10 +851,11 @@ def search():
         for result in results:
             recommendation = Recommendation.query.filter_by(place_id=result["place_id"]).first()
             if recommendation:
+                result["recommended"] = True
+                result["types"] = recommendation.type.replace("{", "").replace("}", "").split(",")
+                result["price_level"] = recommendation.price_level * "€"
                 if recommendation.visible:
-                    result["recommended"] = True
-                    result["types"] = recommendation.type.replace("{", "").replace("}", "").split(",")
-                    result["price_level"] = recommendation.price_level * "€"
+                    result["visible"] = True
         return render_template("search.html", search=True, results=results, TYPES_DICT=TYPES_DICT, REC_SEARCH_TYPES=REC_SEARCH_TYPES, SEARCH_TYPES=SEARCH_TYPES, ICON_DICT=ICON_DICT)
 
     # set filter when needed
@@ -1301,12 +1303,24 @@ def processrequests(request_id):
     flash("Informatieaanvraag verwerkt", "success")
     return redirect(url_for('inforequest'))
 
-@app.route('/stadsgids/<blog_id>/<title>')
+@app.route('/stadsgids/<blog_id>/<title>', methods=["GET", "POST"])
 def blogpost(blog_id, title):
+    if request.method == "GET":
+        # get blogpost and render
+        blog = Blog.query.filter_by(id=blog_id).first()
+        blogposts = Blog.query.filter(Blog.id != blog_id).filter(Blog.title!="Privacyverklaring").filter(Blog.title!="Over Stadsgids").order_by(Blog.date.desc()).all()
+        comments = Comment.query.filter_by(blog_id=blog_id).all()
+        return render_template('blogpost.html', blog=blog, blogposts=blogposts, comments=comments)
 
-    # get blogpost and render
-    blog = Blog.query.filter_by(id=blog_id).first()
-    return render_template('blogpost.html', blog=blog)
+    # get form info
+    comment = request.form.get('comment')
+
+    comment = Comment(blog_id=blog_id, comment=comment)
+    db.session.add(comment)
+    db.session.commit()
+    flash("Reactie geplaatst", "success")
+    return redirect(url_for('blogpost', blog_id=blog_id, title=title))
+
 
 @app.route('/stadsgids/over')
 def aboutguide():

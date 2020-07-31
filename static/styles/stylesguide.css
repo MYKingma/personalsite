@@ -23,6 +23,10 @@ html, body {
   background-size: cover;
 }
 
+.carousel-control-next, .carousel-control-prev {
+  padding-top: 80px;
+}
+
 .highlight {
   padding: 20px;
   border: 1px solid #DBDBE0;
@@ -360,6 +364,14 @@ nav img {
   font-size: 13pt;
 }
 
+.commentform textarea {
+  width: 100%;
+  padding: 12px;
+  border-radius: 4px;
+  box-sizing: border-box;
+  resize: none;
+}
+
 .reviewbox {
   background-color: white;
   border-radius: 5px;
@@ -386,6 +398,7 @@ nav img {
   font-style: italic;
   font-size: 15px;
   margin-bottom: 10px;
+  margin-top: 25px;
 }
 .reviewbox button {
   font-size: 7pt;
@@ -866,8 +879,11 @@ nav img {
   margin-bottom: 10px;
 }
 
-#redlink {
+.redlink p a {
   color: #9c0315;
+}
+.redlink p a:hover {
+  color: grey;
 }
 
 #footer {
