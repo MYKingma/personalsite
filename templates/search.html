@@ -17,21 +17,43 @@ Search page layout
 	<div class="row">
 		<div class="col-lg-8">
 			{% if not search %}
-			<div class="greybox">
-				<p><i class="fas fa-search"></i>Gebruik het zoekveld om locaties te vinden.</p>
-				<p class="last"><i class="fas fa-sliders-h"></i>Gebruik filters om specifiek te zoeken</p>
+			<div class="formbox lightback mb searchbox">
+				<h5 class="ml emb">Doorzoek hier alle {{ amountRecommendations }} aanraders</h5>
+				<div class="row">
+					<i class="fas fa-search"></i>
+					<p>Gebruik het zoekveld om locaties te vinden</p>
+				</div>
+				<div class="row">
+					<i class="fas fa-sliders-h"></i>
+					<p>Gebruik filters om specifiek te zoeken</p>
+				</div>
 			</div>
 			{% else %}
 			{% if results|length > 0 %}
 			<h1>Resultaten</h1>
 			<ul class="list-unstyled">
 			{% else %}
-			<div class="greybox">
-				<h5 class="title"><i class="fas fa-times"></i>Geen resultaten gevonden</h5>
-				<p><i class="fas fa-sliders-h"></i>Probeer een andere zoekopdracht of stel filters in.</p>
-				<p><i class="fas fa-i-cursor"></i>Weer niks gevonden? Probeer dan bijvoorbeeld:</p>
-				<p><i class="fas fa-quote-left"></i>"Pizza in het centrum" of "Restaurant spuistraat"</p>
-				<p class="last"><i class="fas fa-exclamation-circle"></i>Let op: dit werkt niet als het filter "Aanraders" geselecteerd is</p>
+			<div class="formbox lightback mb searchbox">
+				<div class="row">
+					<i class="fas fa-times large"></i>
+					<h5>Geen resultaten gevonden</h5>
+				</div>
+				<div class="row">
+					<i class="fas fa-sliders-h"></i>
+					<p>Probeer een andere zoekopdracht of stel filters in</p>
+				</div>
+				<div class="row">
+					<i class="fas fa-i-cursor"></i>
+					<p>Weer niks gevonden? Probeer dan bijvoorbeeld:</p>
+				</div>
+				<div class="row">
+					<i class="fas fa-quote-left"></i>
+					<p>"Pizza in het centrum" of "Restaurant spuistraat"</p>
+				</div>
+				<div class="row">
+					<i class="fas fa-exclamation-circle"></i>
+					<p>Let op: dit werkt niet als het filter "Aanraders" <br>geselecteerd is</p>
+				</div>
 			</div>
 			{% endif %}
 			{% endif %}
@@ -121,7 +143,7 @@ Search page layout
 			</ul>
 		</div>
 		<div class="col-lg-4">
-			<form class="advanced formbox" action="{{ url_for('search') }}" method="post">
+			<form class="advanced formbox detailbox" action="{{ url_for('search') }}" method="post">
 				<input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
 				<h2><i class="fas fa-search"></i> Geavanceerd zoeken</h2>
 				<div class="form-group">

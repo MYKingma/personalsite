@@ -51,6 +51,21 @@ html, body {
   color: grey;
 }
 
+.searchbox {
+  padding: 15px;
+}
+.searchbox i {
+  width: 25px;
+  margin-left: 15px;
+  margin-right: 20px;
+  margin-top: 3px;
+  text-align: center;
+}
+.searchbox .large {
+  font-size: 15pt;
+  margin-bottom: 20px;
+}
+
 .description img {
   display: block;
   margin-left: auto;
@@ -629,38 +644,6 @@ nav img {
   color: grey;
 }
 
-.greybox {
-  width: 100%;
-  background: #EAEAEA;
-  padding: 15px;
-  padding-left: 25px;
-  border-radius: 3px;
-  border: 2px solid #E4E4E4;
-  color: #A5A5A5;
-  font-size: 10pt;
-  margin-bottom: 15px;
-  font-weight: bold;
-}
-.greybox .last {
-  padding-bottom: 0;
-}
-.greybox i {
-  margin-right: 10px;
-}
-.greybox h5 {
-  margin-bottom: 15px;
-}
-.greybox .offsett {
-  width: 30px;
-  margin-left: 15px;
-}
-.greybox .fa-hand-point-up, .greybox .fa-edit {
-  color: black;
-}
-.greybox a, .greybox a:hover {
-  text-decoration: none;
-}
-
 .profilegroupbox {
   padding: 25px;
   margin-bottom: 15px;
@@ -946,19 +929,6 @@ nav img {
     display: block;
   }
 
-  .greybox {
-    padding-left: 7px;
-  }
-  .greybox .offsett {
-    width: 15px;
-  }
-  .greybox p {
-    font-size: 7pt;
-  }
-  .greybox .title {
-    margin-left: 10px;
-  }
-
   #searchformnavbar button, #searchformnavbar a {
     font-size: 10pt;
   }
@@ -981,6 +951,20 @@ nav img {
 
   #carouselbox button {
     padding-right: 30px;
+  }
+
+  .searchbox i, .searchbox p {
+    font-size: 10px;
+  }
+  .searchbox i {
+    width: 12px;
+    margin-right: 7px;
+  }
+  .searchbox h5 {
+    margin-left: 0;
+  }
+  .searchbox .large, .searchbox h5 {
+    font-size: 8pt;
   }
 }
 @media (max-width: 720px) {
@@ -1015,6 +999,13 @@ nav img {
 
   .bigscreen {
     display: block;
+  }
+
+  .searchbox i, .searchbox p {
+    font-size: 10pt;
+  }
+  .searchbox .large, .searchbox h5 {
+    font-size: 15pt;
   }
 }
 @media (min-width: 489px) {
@@ -1158,13 +1149,6 @@ nav img {
 }
 .dark .formbox, .dark .profilegroupbox {
   border-color: #782323;
-}
-.dark .greybox {
-  background-color: black;
-  border-color: #716464;
-}
-.dark .greybox p {
-  color: #716464;
 }
 .dark option {
   background-color: black;

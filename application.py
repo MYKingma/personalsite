@@ -338,9 +338,6 @@ def guide():
                 highlight = location
                 break
 
-        # get amount of recommendations
-        amountRecommendations = int(len(Recommendation.query.filter_by(visible=True).all()))
-
         # get details for highlight-location link
         highlightDetails = get_location_link_information(place_id=highlight.place_id)
 
@@ -362,7 +359,7 @@ def guide():
         # get events and reviews for front-page
         frontpageevent = Event.query.filter(Event.date > datetime.datetime.now()).order_by(Event.date).all()
         reviews = Review.query.order_by(Review.date.desc()).limit(3).all()
-        return render_template("guide.html", highlight=highlight, highlightDetails=highlightDetails, TYPES_DICT=TYPES_DICT, ICON_DICT=ICON_DICT, newRecommendations=newRecommendations, blogposts=blogposts, tip=randomrec, events=frontpageevent, reviews=reviews, amountRecommendations=amountRecommendations)
+        return render_template("guide.html", highlight=highlight, highlightDetails=highlightDetails, TYPES_DICT=TYPES_DICT, ICON_DICT=ICON_DICT, newRecommendations=newRecommendations, blogposts=blogposts, tip=randomrec, events=frontpageevent, reviews=reviews)
 
     # get form information
     username = request.form.get("username")
@@ -755,7 +752,9 @@ def new():
 @app.route('/stadsgids/zoeken', methods=["GET", "POST"])
 def search():
     if request.method == "GET":
-        return render_template("search.html", search=False, TYPES_DICT=TYPES_DICT, REC_SEARCH_TYPES=REC_SEARCH_TYPES, SEARCH_TYPES=SEARCH_TYPES, ICON_DICT=ICON_DICT)
+        # get amount of recommendations
+        amountRecommendations = int(len(Recommendation.query.filter_by(visible=True).all()))
+        return render_template("search.html", search=False, TYPES_DICT=TYPES_DICT, REC_SEARCH_TYPES=REC_SEARCH_TYPES, SEARCH_TYPES=SEARCH_TYPES, ICON_DICT=ICON_DICT, amountRecommendations=amountRecommendations)
 
     # declare result list
     results = []

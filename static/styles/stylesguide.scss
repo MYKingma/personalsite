@@ -51,6 +51,21 @@ html, body {
 	padding-bottom: 10px;
 }
 
+.searchbox {
+	padding: 15px;
+	i {
+		width: 25px;
+		margin-left: 15px;
+		margin-right: 20px;
+		margin-top: 3px;
+		text-align: center;
+	}
+	.large {
+		font-size: 15pt;
+		margin-bottom: 20px;
+	}
+}
+
 .description {
 	img {
 		display: block;
@@ -641,38 +656,6 @@ nav {
 	}
 }
 
-.greybox {
-	width: 100%;
-	background: #EAEAEA;
-	padding: 15px;
-	padding-left: 25px;
-	border-radius: 3px;
-	border: 2px solid #E4E4E4;
-	color: #A5A5A5;
-	font-size: 10pt;
-	.last {
-		padding-bottom: 0;
-	}
-	i {
-		margin-right: 10px;
-	}
-	margin-bottom: 15px;
-	font-weight: bold;
-	h5 {
-		margin-bottom: 15px;
-	}
-	.offsett {
-		width: 30px;
-		margin-left: 15px;
-	}
-	.fa-hand-point-up, .fa-edit {
-		color: black;
-	}
-	a, a:hover {
-		text-decoration: none;
-	}
-}
-
 .profilegroupbox {
 	padding: 25px;
 	margin-bottom: 15px;
@@ -968,18 +951,6 @@ nav {
 			display: block;
 		}
 	}
-	.greybox {
-		padding-left: 7px;
-		.offsett {
-			width: 15px;
-		}
-		p {
-			font-size: 7pt;
-		}
-		.title {
-			margin-left: 10px;
-		}
-	}
 	#searchformnavbar {
 		button, a {
 			font-size: 10pt;
@@ -1001,6 +972,21 @@ nav {
 	}
 	#carouselbox button {
 		padding-right: 30px;
+	}
+	.searchbox {
+		i, p {
+			font-size: 10px;
+		}
+		i {
+			width: 12px;
+			margin-right: 7px;
+		}
+		h5 {
+			margin-left: 0;
+		}
+		.large, h5 {
+			font-size: 8pt;
+		}
 	}
 }
 
@@ -1036,6 +1022,14 @@ nav {
 	}
 	.bigscreen {
 		display: block;
+	}
+	.searchbox {
+		i, p {
+			font-size: 10pt;
+		}
+		.large, h5 {
+			font-size: 15pt;
+		}
 	}
 }
 
@@ -1180,13 +1174,6 @@ nav {
 	}
 	.formbox, .profilegroupbox {
 		border-color: #782323;
-	}
-	.greybox {
-		background-color: black;
-		border-color: #716464;
-		p {
-			color: #716464;
-		}
 	}
 	option {
 		background-color: black;
