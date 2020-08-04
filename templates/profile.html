@@ -35,7 +35,7 @@ Layout profile page
 						<div class="form-row">
 							<div class="form-group ml">
 								<label class="advancedlabel" for="typeinput">Filter op categorie</label>
-								<select class="form-control form-control-sm" id="typeinput" name="filter">
+								<select class="custom-select" id="typeinput" name="filter">
 									{% for key, value in TYPES_DICT.items() %}
 									<option value="{{ key }}">{{ value }}</option>
 									{% endfor %}
@@ -49,7 +49,7 @@ Layout profile page
 					</form>
 					{% if favourites|length > 0 %}
 					{% for favourite in favourites %}
-					<a class="list" href="{{ url_for('location', place_id=favourite.place_id, name=favourite.name) }}">
+					<a class="list smallist" href="{{ url_for('location', place_id=favourite.place_id, name=favourite.name) }}">
 						<li class="media">
 							<div class="center-cropped" style="background-image: url('{{ favourite.photos }}');"></div>
 							<div class="media-body">
@@ -82,7 +82,7 @@ Layout profile page
 										</p>
 										<p>{{ favourite.opening_hours }}</p>
 									</span>
-									{{ favourite.name }}
+									{{ favourite.name.replace(' Amsterdam-', ' ').replace(' Amsterdam', '').replace(' amsterdam', '') }}
 								</h5>
 								<p class="searchadress"><span id="stars">{{ favourite.rating }}</span></p>
 								<p class="searchadress">{{ favourite["formatted_address"][0] }}</p>
@@ -91,7 +91,7 @@ Layout profile page
 					</a>
 					{% endfor %}
 					{% else %}
-					<p>Nog geen favoriete locaties met categorie {{ TYPES_DICT[filter] }}</p>
+					<p>Nog geen favoriete locaties met categorie '{{ TYPES_DICT[filter]|lower }}'</p>
 					{% endif %}
 					{% else %}
 					<p>Nog geen opgeslagen favoriete locaties</p>
@@ -143,8 +143,9 @@ Layout profile page
 								<label class="form-check-label" for="newletter">Ik wil de nieuwsbrief ontvangen</label>
 							</div>
 						</div>
-						<button id="button" class="btn btn-dark" type="submit" name="action" value="newsletter">Bewerken</button>
+						<input id="button" class="btn btn-dark" type="submit" value="Bewerken">
 						<input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+						<input type="hidden" name="action" value="newsletter"/>
 						<input type="hidden" name="anchor" value="v-pills-newsletter"/>
 					</form>
 				</div>
@@ -210,8 +211,9 @@ Layout profile page
 									</small>
 								</div>
 							</div>
-							<button id="passwordbutton" class="btn btn-dark" name="action" value="changepass" type="submit">Wijzig wachtwoord</button>
+							<input id="passwordbuttonsmall" class="btn btn-dark" value="Wijzig wachtwoord" type="submit">
 							<input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+							<input type="hidden" name="action" value="changepass"/>
 						</form>
 					</div>
 				</div>
@@ -245,7 +247,7 @@ Layout profile page
 					<div class="form-row">
 						<div class="form-group ml">
 							<label class="advancedlabel" for="typeinput">Filter op categorie</label>
-							<select class="form-control form-control-sm" id="typeinput" name="filter">
+							<select class="custom-select" id="typeinput" name="filter">
 								{% for key, value in TYPES_DICT.items() %}
 								<option value="{{ key }}">{{ value }}</option>
 								{% endfor %}
@@ -259,7 +261,7 @@ Layout profile page
 				</form>
 				{% if favourites|length > 0 %}
 				{% for favourite in favourites %}
-				<a class="list" href="{{ url_for('location', place_id=favourite.place_id, name=favourite.name) }}">
+				<a class="list smallist" href="{{ url_for('location', place_id=favourite.place_id, name=favourite.name) }}">
 					<li class="media">
 						<div class="center-cropped" style="background-image: url('{{ favourite.photos }}');"></div>
 						<div class="media-body">
@@ -292,7 +294,7 @@ Layout profile page
 									</p>
 									<p>{{ favourite.opening_hours }}</p>
 								</span>
-								{{ favourite.name }}
+								{{ favourite.name.replace(' Amsterdam-', ' ').replace(' Amsterdam', '').replace(' amsterdam', '') }}
 							</h5>
 							<p class="searchadress"><span id="stars">{{ favourite.rating }}</span></p>
 							<p class="searchadress">{{ favourite["formatted_address"][0] }}</p>
@@ -301,7 +303,7 @@ Layout profile page
 				</a>
 				{% endfor %}
 				{% else %}
-				<p>Nog geen favoriete locaties met categorie {{ TYPES_DICT[filter] }}</p>
+				<p>Nog geen favoriete locaties met categorie '{{ TYPES_DICT[filter]|lower }}'</p>
 				{% endif %}
 				{% else %}
 				<p>Nog geen opgeslagen favoriete locaties</p>
@@ -353,8 +355,9 @@ Layout profile page
 							<label class="form-check-label" for="newletter">Ik wil de nieuwsbrief ontvangen</label>
 						</div>
 					</div>
-					<button id="button" class="btn btn-dark" type="submit" name="action" value="newsletter">Bewerken</button>
+					<input id="button" class="btn btn-dark" type="submit" value="Bewerken">
 					<input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+					<input type="hidden" name="action" value="newsletter"/>
 					<input type="hidden" name="anchor" value="newsletters"/>
 				</form>
 			</div>
@@ -420,8 +423,9 @@ Layout profile page
 								</small>
 							</div>
 						</div>
-						<button id="passwordbuttonsmall" class="btn btn-dark" name="action" value="changepass" type="submit">Wijzig wachtwoord</button>
+						<input id="passwordbuttonsmall" class="btn btn-dark" value="Wijzig wachtwoord" type="submit">
 						<input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+						<input type="hidden" name="action" value="changepass"/>
 					</form>
 				</div>
 			</div>
