@@ -55,12 +55,7 @@ Location page
 			    </div>
 
 				  <!-- Left and right controls -->
-				  <a class="noZensmooth carousel-control-prev" href="#demo" data-slide="prev">
-					  <span class="carousel-control-prev-icon"></span>
-				  </a>
-				  <a class="noZensmooth carousel-control-next" href="#demo" data-slide="next">
-					  <span class="carousel-control-next-icon"></span>
-				  </a>
+
 				</div>
 			</div>
 			{% if current_user.is_authenticated %}
@@ -225,7 +220,7 @@ Location page
 			{% endif %}
 		</div>
 		<div class="col-lg-4">
-			<div class="detailbox">
+			<div class="detailbox spanfloat">
 				<h2><i class="far fa-map"></i> Kaart</h2>
 				<iframe width="700" height="450" frameborder="0" style="border:0"
 				src="{{ location.map }}" allowfullscreen></iframe>

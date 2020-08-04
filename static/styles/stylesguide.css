@@ -23,10 +23,6 @@ html, body {
   background-size: cover;
 }
 
-.carousel-control-next, .carousel-control-prev {
-  padding-top: 80px;
-}
-
 .highlight {
   padding: 20px;
   border: 1px solid #DBDBE0;
@@ -444,9 +440,6 @@ nav img {
 .detailbox .newdetail {
   margin-top: 15px;
 }
-.detailbox span {
-  float: right;
-}
 .detailbox a {
   text-decoration: underline;
   color: black;
@@ -455,6 +448,10 @@ nav img {
 }
 .detailbox a:hover {
   color: #9c0315;
+}
+
+.spanfloat span {
+  float: right;
 }
 
 .nodec a {

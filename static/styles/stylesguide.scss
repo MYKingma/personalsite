@@ -23,10 +23,6 @@ html, body {
 	background-size: cover;
 }
 
-.carousel-control-next, .carousel-control-prev {
-	padding-top: 80px;
-}
-
 .highlight {
 	padding: 20px;
 	border: 1px solid #DBDBE0;
@@ -447,9 +443,6 @@ nav {
 	.newdetail {
 		margin-top: 15px;
 	}
-	span {
-		float: right;
-	}
 	a {
 		text-decoration: underline;
 		color: black;
@@ -458,6 +451,12 @@ nav {
 	}
 	a:hover {
 		color: #9c0315;
+	}
+}
+
+.spanfloat {
+	span {
+		float: right;
 	}
 }
 
