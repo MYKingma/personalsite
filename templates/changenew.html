@@ -71,6 +71,9 @@ Layout page for changing locations
 			<li class="nav-item">
 				<a class="nav-link" id="types-tab" data-toggle="tab" href="#types" role="tab" aria-controls="events" aria-selected="false"><i class="fas fa-tags"></i><span class="mobile"> Categorieën</span></a>
 			</li>
+			<li class="nav-item">
+				<a class="nav-link" id="doubles-tab" data-toggle="tab" href="#doubles" role="tab" aria-controls="doubles" aria-selected="false"><i class="fas fa-window-restore"></i><span class="mobile"> Meerdere locaties</span></a>
+			</li>
 		</ul>
 		<div class="tab-content" id="myTabContent">
 			<div class="tab-pane fade show active" id="opening" role="tabpanel" aria-labelledby="opening-tab">
@@ -148,10 +151,10 @@ Layout page for changing locations
 				<div id="types">
 					{% if recommendation.type %}
 					{% set typelist = recommendation.type.replace('{', '').replace('}', '').split(',') %}
-					<p>Geselecteerde categorieën</p>
+					<label>Geselecteerde categorieën</label>
 					<div class="form-row">
 						{% for type in typelist %}
-						<div class="form-group col-6">
+						<div class="form-group ml">
 							<div id="visible" class="form-check">
 								<input class="form-check-input" type="checkbox" value="{{ type }}" name="type" checked>
 								<label class="form-check-label">{{ type }}</label>
@@ -160,12 +163,12 @@ Layout page for changing locations
 						{% endfor %}
 					</div>
 					{% endif %}
-					<p>Andere categorieën</p>
+					<label>Andere categorieën</label>
 					<div class="form-row">
 						{% for type in API_TYPES %}
 						{% set nltype = TYPES_DICT[type] %}
 						{% if nltype not in types or nltype not in typelist %}
-						<div class="form-group">
+						<div class="form-group ml">
 							<div id="visible" class="form-check">
 								<input class="form-check-input" type="checkbox" value="{{ nltype }}" name="type">
 								<label class="form-check-label">{{ nltype }}</label>
@@ -173,6 +176,37 @@ Layout page for changing locations
 						</div>
 						{% endif %}
 						{% endfor %}
+					</div>
+				</div>
+			</div>
+			<div class="tab-pane fade" id="doubles" role="tabpanel" aria-labelledby="types-tab">
+				<p>Selecteer hier een hoofdlocatie als dit een andere vestiging van {{ name }} is</p>
+				<label>Mogelijke hoofdlocatie</label>
+				<div class="form-row">
+					{% for double in possibleDoubles %}
+					<div class="form-group ml">
+						<div id="visible" class="form-check">
+							{% if double.place_id == databaseDouble.place_id %}
+							<input onchange="disable()" class="form-check-input" type="checkbox" value="{{ double.place_id }}" name="double" checked>
+							{% else %}
+							<input onchange="disable()" class="form-check-input" type="checkbox" value="{{ double.place_id }}" name="double">
+							{% endif %}
+							<label class="form-check-label">{{ double.name }}</label>
+						</div>
+					</div>
+					{% endfor %}
+				</div>
+				<label>Aanrader overnemen</label>
+				<div class="form-row">
+					<div class="form-group ml">
+						<div id="visible" class="form-check">
+							{% if sameRec %}
+							<input id="sameRec" class="form-check-input" disabled="true" type="checkbox" value="True" name="sameRec" checked>
+							{% else %}
+							<input id="sameRec" class="form-check-input" disabled="true" type="checkbox" value="True" name="sameRec">
+							{% endif %}
+							<label class="form-check-label">Gebruik dezelfde Aanrader-informatie</label>
+						</div>
 					</div>
 				</div>
 			</div>
@@ -194,4 +228,5 @@ Layout page for changing locations
 {% endblock %}
 {%- block script -%}
 <script type="text/javascript" src="{{ url_for('static', filename='js/recomcheck.js')}}"></script>
+<script type="text/javascript" src="{{ url_for('static', filename='js/recomcheckboxes.js')}}"></script>
 {%- endblock -%}

@@ -6,6 +6,7 @@ from flask_admin.contrib.sqla import ModelView
 from flask import redirect, url_for
 import datetime
 import time
+import ast
 
 db = SQLAlchemy()
 
@@ -73,6 +74,7 @@ class Recommendation(db.Model):
     opening = db.Column(db.String())
     price_level = db.Column(db.Integer())
     visible = db.Column(db.Boolean(), nullable=False)
+    doubles = db.relationship('Double', cascade="all, delete-orphan")
 
     def __init__(self, place_id, name, review, tip, opening, price_level, visible, type):
         self.place_id = place_id
@@ -84,6 +86,48 @@ class Recommendation(db.Model):
         self.price_level = int(price_level)
         self.visible = visible
         self.type = type
+
+    def add_double_location(self, place_id, same_recommendation):
+        double = Double.query.filter_by(place_id=self.place_id).first()
+        if not double:
+            double = Double(recommendation_id=self.id, place_id=self.place_id)
+            db.session.add(double)
+            db.session.commit()
+
+        double.add_double(place_id=place_id, same_recommendation=same_recommendation)
+
+    def delete_double_if_exist(self, place_id):
+        double = Double.query.filter_by(place_id=self.place_id).first()
+        if double:
+            if place_id in double.double_place_id:
+                doubleDict = ast.literal_eval(double.double_place_id)
+                del doubleDict[place_id]
+                if len(doubleDict) == 0:
+                    db.session.delete(double)
+                    db.session.commit()
+                    return
+                double.double_place_id = str(doubleDict)
+                db.session.commit()
+
+class Double(db.Model):
+    __tablename__ = 'doubles'
+    id = db.Column(db.Integer(), primary_key=True)
+    recommendation_id = db.Column(db.Integer(), db.ForeignKey('recommendations.id', ondelete='CASCADE'), nullable=False)
+    place_id = db.Column(db.String(128), nullable=False)
+    double_place_id = db.Column(db.String(128), nullable=False)
+    recommendation = db.relationship('Recommendation')
+
+    def __init__(self, place_id, recommendation_id):
+        self.place_id = place_id
+        self.recommendation_id = recommendation_id
+        self.double_place_id = []
+
+    def add_double(self, place_id, same_recommendation):
+        double_place_id = ast.literal_eval(self.double_place_id)
+        double_place_id[place_id] = same_recommendation
+        self.double_place_id = str(double_place_id)
+        db.session.commit()
+
 
 class Favourite(db.Model):
     __tablename__ = 'favourites'

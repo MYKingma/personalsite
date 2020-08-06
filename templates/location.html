@@ -97,8 +97,10 @@ Location page
 			{% endif %}
 			{% endif %}
 			{% endfor %}
-			{% if recommendation.visible %}
+			{% if recommendation.visible and sameRec == None %}
 			<p class="recommendation">{{ recommendation.review }}</p>
+			{% elif recommendation.visible and sameRec != None %}
+			<p class="recommendation">{{ sameRec.review }}</p>
 			{% endif %}
 			{% for role in current_user.roles %}
 			{% if "Administrator" == role.name %}
@@ -258,9 +260,13 @@ Location page
 				<p>Onbekend</p>
 			{% endif %}
 		{% endif %}
-				{% if recommendation.tip and recommendation.visible %}
+				{% if recommendation.tip and recommendation.visible or sameRec %}
 				<h2 class="newdetail"><i class="far fa-comment-alt"></i> Tip</h2>
+				{% if sameRec == None %}
 				<p>{{ recommendation.tip }}</p>
+				{% else %}
+				<p>{{ sameRec.tip }}</p>
+				{% endif %}
 				{% endif %}
 				<h2 class="newdetail"><i class="far fa-file-alt"></i> Details</h2>
 				{% if recommendation.type %}
@@ -293,6 +299,18 @@ Location page
 				{% endif %}
 				{% if location.website %}
 				<p>Website<span><a href="{{ location.website }}">{{ location.name.split()[:2]|join(' ') }}</a></span></p>
+				{% endif %}
+				{% if doubles %}
+				<h4 class="newdetail"><i class="far fa-window-restore"></i> Andere locaties van {{ location.name }}</h4>
+				{% for double in doubles %}
+				<div class="nodec double mb lightback">
+					<a href="{{ url_for('location', name=double.result.name, place_id=double.result.place_id)}}">
+						<h4 class="float_right"><i class="fas fa-external-link-alt"></i></h4>
+						<h4>{{ double.result.name }}</h4>
+						<p>{{ double.result.formatted_address.split(',')[0] }}</p>
+					</a>
+				</div>
+				{% endfor %}
 				{% endif %}
 			</div>
 		</div>

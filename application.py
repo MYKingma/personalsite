@@ -8,6 +8,7 @@
 import os
 from config import *
 from locationinfo import *
+from functions import *
 
 # declare constants and filters
 GOOGLE_API_KEY = os.getenv("GOOGLE_API_KEY")
@@ -232,6 +233,21 @@ def autocomplete():
     recommList = {}
     categList = {}
     if recommendations:
+        doubles = []
+        for item in recommendations:
+            if item.doubles:
+                place_ids = get_double_place_ids(item.place_id)
+                for double_place_id in place_ids:
+                    doubles.append(double_place_id)
+
+        resultsNoDoubles = []
+        for item in recommendations:
+            if item.place_id not in doubles:
+                resultsNoDoubles.append(item)
+
+        recommendations = resultsNoDoubles
+
+
         for item in recommendations:
             recommList[item.name] = item.place_id
         autolist["recommList"] = recommList
@@ -601,6 +617,10 @@ def location(place_id, name):
             visible = False
         else:
             visible = True
+    sameRec = get_info_parent_rec_from_double_if_sameRec(place_id)
+
+    doubles = get_link_info_doubles(get_double_place_ids(place_id))
+
 
     # check if location has events an get event info when date is yet to come
     events = Event.query.filter_by(place_id=place_id).order_by(Event.date).all()
@@ -732,7 +752,7 @@ def location(place_id, name):
             if map.status_code == 200:
                 location["map"] = map.url
 
-        return render_template("location.html", location=location, recommendation=recommendation, visible=visible, events=events)
+        return render_template("location.html", location=location, recommendation=recommendation, visible=visible, events=events, sameRec=sameRec, doubles=doubles)
 
     # get review information
     stars = request.form.get('rating')
@@ -766,6 +786,22 @@ def search():
         res = requests.get("https://maps.googleapis.com/maps/api/place/findplacefromtext/json", params={"key": GOOGLE_API_KEY, "input": request.form.get('search'), "inputtype": "textquery", "fields": "name,formatted_address,place_id,types,photos,opening_hours,price_level,rating,icon", "locationbias": "circle:10000@52.348460,4.885954", "language": "nl"})
         if res.status_code == 200:
             data = res.json()
+
+            doubles = []
+            for candidate in data["candidates"]:
+                parentRec = get_parent_rec_from_double(candidate["place_id"])
+                if parentRec:
+                    place_ids = get_double_place_ids(parentRec.place_id)
+                    for double_place_id in place_ids:
+                        doubles.append(double_place_id)
+
+            resultsNoDoubles = []
+            for candidate in data["candidates"]:
+                if candidate["place_id"] not in doubles:
+                    resultsNoDoubles.append(candidate)
+
+            data["candidates"] = resultsNoDoubles
+
             for candidate in data["candidates"]:
 
                 # check if place in amsterdam and filter for types and adult content
@@ -827,6 +863,22 @@ def search():
         res = requests.get("https://maps.googleapis.com/maps/api/place/nearbysearch/json", params=params)
         data = res.json()
 
+        doubles = []
+        for result in data["results"]:
+            parentRec = get_parent_rec_from_double(result["place_id"])
+            if parentRec:
+                place_ids = get_double_place_ids(parentRec.place_id)
+                for double_place_id in place_ids:
+                    doubles.append(double_place_id)
+
+        resultsNoDoubles = []
+        for result in data["results"]:
+            if result["place_id"] not in doubles:
+                resultsNoDoubles.append(result)
+
+        data["results"] = resultsNoDoubles
+
+
         for result in data["results"]:
             # check if place in amsterdam and filter for types and adult content
             if "Amsterdam" in result["vicinity"].replace(',', '').split() and any(item in API_TYPES for item in result["types"]) and not any(item in RESULT_FILTER for item in result["name"].lower().split()):
@@ -864,7 +916,22 @@ def search():
     if type:
         type = TYPES_DICT[type]
 
-    locations = Recommendation.query.filter(Recommendation.name.like(f"%{keyword}%"),Recommendation.type.like(f"%{type}%"),Recommendation.visible == True,Recommendation.price_level > minprice,Recommendation.price_level <= maxprice).all()
+    locations = Recommendation.query.filter(Recommendation.name.ilike(f"%{keyword}%"),Recommendation.type.like(f"%{type}%"),Recommendation.visible == True,Recommendation.price_level > minprice,Recommendation.price_level <= maxprice).all()
+
+    doubles = []
+    for location in locations:
+        parentRec = get_parent_rec_from_double(location.place_id)
+        if parentRec:
+            place_ids = get_double_place_ids(parentRec.place_id)
+            for double_place_id in place_ids:
+                doubles.append(double_place_id)
+
+    resultsNoDoubles = []
+    for location in locations:
+        if location.place_id not in doubles:
+            resultsNoDoubles.append(location)
+
+    locations = resultsNoDoubles
 
     # get link details
     for location in locations:
@@ -1051,6 +1118,17 @@ def controlnew():
         recommendation.price_level = price_level
         recommendation.opening = opening
         recommendation.type = types
+        if request.form.get('double'):
+            sameRec = False
+            if request.form.get('sameRec'):
+                sameRec = True
+            parentRec = Recommendation.query.filter_by(place_id=request.form.get('double')).first()
+            parentRec.add_double_location(place_id=place_id, same_recommendation=sameRec)
+        else:
+            parentRec = get_parent_rec_from_double(place_id)
+            if parentRec:
+                parentRec.delete_double_if_exist(place_id)
+
         db.session.commit()
         flash("Aanbeveling gewijzigd", 'success' )
     return redirect(url_for('location', place_id=place_id, name=name))
@@ -1061,18 +1139,35 @@ def changenew(place_id, name, types, opening, price_level):
     # get recommendation and set variable for existing weektext
     recommendation = Recommendation.query.filter_by(place_id=place_id).first()
     events = Event.query.filter_by(place_id=place_id).order_by(Event.date).all()
+    recommendations = Recommendation.query.all()
+    possibleDoubles = []
+    for double in recommendations:
+        if similar(name, double.name) >= 0.6 and double.place_id != place_id:
+            possibleDoubles.append(double)
+    databaseDouble = Double.query.filter(Double.double_place_id.like(f"%{place_id}%")).first()
+    sameRec = False
+    if databaseDouble:
+        doubleDict = ast.literal_eval(databaseDouble.double_place_id)
+        if place_id in doubleDict:
+            if doubleDict[place_id]:
+                sameRec = True
     if "00" in recommendation.opening:
         weektext = recommendation.opening.replace('{', '').replace('}', '').split(',')
     else:
         weektext = False
     typeslist = ast.literal_eval(types)
-    return render_template("changenew.html", recommendation=recommendation, weektext=weektext, name=name, events=events, types=typeslist, API_TYPES=API_TYPES, TYPES_DICT=TYPES_DICT, opening=opening, price_level=price_level)
+    return render_template("changenew.html", recommendation=recommendation, weektext=weektext, name=name, events=events, types=typeslist, API_TYPES=API_TYPES, TYPES_DICT=TYPES_DICT, opening=opening, price_level=price_level, possibleDoubles=possibleDoubles, databaseDouble=databaseDouble, sameRec=sameRec)
 
 @app.route('/stadsgids/dashboard/nieuw/opstellen/<name>/<place_id>/<types>/<opening>/<price_level>')
 @role_required('Administrator')
 def createnew(name, place_id, types, opening, price_level):
     typeslist = ast.literal_eval(types)
-    return render_template("createnew.html", name=name, place_id=place_id, types=typeslist, API_TYPES=API_TYPES, TYPES_DICT=TYPES_DICT, opening=opening, price_level=price_level)
+    recommendations = Recommendation.query.all()
+    possibleDoubles = []
+    for double in recommendations:
+        if similar(name, double.name) >= 0.6 and double.place_id != place_id:
+            possibleDoubles.append(double)
+    return render_template("createnew.html", name=name, place_id=place_id, types=typeslist, API_TYPES=API_TYPES, TYPES_DICT=TYPES_DICT, opening=opening, price_level=price_level, possibleDoubles=possibleDoubles)
 
 @app.route('/stadsgids/dashboard/nieuw/evenement/<name>/<place_id>', methods=["GET", "POST"])
 @role_required('Administrator')

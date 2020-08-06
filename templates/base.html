@@ -93,7 +93,7 @@ Base layout for other pages
 					</li>
 					{% endif %}
 				</ul>
-				<form id="searchformnavbar" class="form-inline my-2 my-lg-0" action="{{ url_for('search')}}" method="post">
+				<form id="searchformnavbar" class="form-inline my-2 my-lg-0 ml" action="{{ url_for('search')}}" method="post">
 					<input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
 					<div class="listbox">
 						<input autocomplete="off" id="autocomplete" class="form-control mr-sm-2 white" type="search" placeholder="Zoeken" name="search">
