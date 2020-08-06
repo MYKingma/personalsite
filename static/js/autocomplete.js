@@ -27,7 +27,7 @@ document.addEventListener('DOMContentLoaded', () => {
     document.querySelector('#autocomplete').oninput = () => {
         const query = document.querySelector('#autocomplete').value;
 
-        if (query.length < 2) {
+        if (query.length <= 2) {
             autolist.innerHTML = '';
             autolist.style.display = 'none';
         } else {

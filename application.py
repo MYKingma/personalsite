@@ -260,6 +260,22 @@ def autocomplete():
                     categTitle = key
             if typeList:
                 categList[categTitle] = {}
+
+                doubles = []
+                for item in typeList:
+                    if item.doubles:
+                        place_ids = get_double_place_ids(item.place_id)
+                        for double_place_id in place_ids:
+                            doubles.append(double_place_id)
+
+                resultsNoDoubles = []
+                for item in typeList:
+                    if item.place_id not in doubles:
+                        resultsNoDoubles.append(item)
+
+                typeList = resultsNoDoubles
+
+
                 for item in typeList:
                     categList[categTitle][item.name] = item.place_id
     if categList:
