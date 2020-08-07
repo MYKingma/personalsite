@@ -137,6 +137,17 @@ def unauthorized():
     return redirect(url_for('guide'))
 
 # request routes
+@app.route('/hidelocation', methods=["POST"])
+def hide_location():
+    place_id = request.form.get('place_id')
+    name = request.form.get('name')
+
+    newHidden = Hidden(name=name, place_id=place_id)
+    db.session.add(newHidden)
+    db.session.commit()
+
+    return jsonify({"success": True})
+
 @app.route('/usernamecheck', methods=["POST"])
 def usernamecheck():
     # get form information
@@ -625,6 +636,8 @@ def location(place_id, name):
     location = {}
     user = None
     visible = None
+    sameRec = None
+    doubles = None
 
     # check if location is recommended and get recommendation info
     recommendation = Recommendation.query.filter_by(place_id=place_id).first()
@@ -633,9 +646,9 @@ def location(place_id, name):
             visible = False
         else:
             visible = True
-    sameRec = get_info_parent_rec_from_double_if_sameRec(place_id)
+        sameRec = get_info_parent_rec_from_double_if_sameRec(place_id)
 
-    doubles = get_link_info_doubles(get_double_place_ids(place_id))
+        doubles = get_link_info_doubles(get_double_place_ids(place_id))
 
 
     # check if location has events an get event info when date is yet to come
@@ -803,6 +816,11 @@ def search():
         if res.status_code == 200:
             data = res.json()
 
+            hidden = []
+            toHide = Hidden.query.all()
+            for hide in toHide:
+                hidden.append(hide.place_id)
+
             doubles = []
             for candidate in data["candidates"]:
                 parentRec = get_parent_rec_from_double(candidate["place_id"])
@@ -813,12 +831,12 @@ def search():
 
             resultsNoDoubles = []
             for candidate in data["candidates"]:
-                if candidate["place_id"] not in doubles:
+                if candidate["place_id"] not in doubles and candidate["place_id"] not in hidden:
                     resultsNoDoubles.append(candidate)
 
             data["candidates"] = resultsNoDoubles
 
-            for candidate in data["candidates"]:
+            for candidate in data["candidates"][:10]:
 
                 # check if place in amsterdam and filter for types and adult content
                 if "Amsterdam" in candidate["formatted_address"].replace(',', '').split() and any(item in API_TYPES for item in candidate["types"]) and not any(item in RESULT_FILTER for item in candidate["name"].lower().split()):
@@ -864,7 +882,7 @@ def search():
 
     if not recommended:
         # set params for request
-        params = {"key": GOOGLE_API_KEY, "keyword": keyword, "location": "52.348460,4.885954", "radius": "10000"}
+        params = {"key": GOOGLE_API_KEY, "keyword": keyword, "location": "52.348460,4.885954", "radius": "10000", "language": "nl"}
 
         # add params for filters
         if opennow:
@@ -895,7 +913,7 @@ def search():
         data["results"] = resultsNoDoubles
 
 
-        for result in data["results"]:
+        for result in data["results"][:10]:
             # check if place in amsterdam and filter for types and adult content
             if "Amsterdam" in result["vicinity"].replace(',', '').split() and any(item in API_TYPES for item in result["types"]) and not any(item in RESULT_FILTER for item in result["name"].lower().split()):
 

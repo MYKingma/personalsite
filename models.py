@@ -253,6 +253,7 @@ class Newsletter(db.Model):
 class Hidden(db.Model):
     __tablename__ = 'hidden'
     id = db.Column(db.Integer(), primary_key=True)
+    name = db.Column(db.String(128), nullable=False)
     place_id = db.Column(db.String(128), nullable=False)
 
 class AdminView(ModelView):

@@ -51,6 +51,18 @@ html, body {
   color: grey;
 }
 
+.hideButton {
+  padding: 0;
+  margin: 0;
+  font-size: 10px;
+  padding-top: 5px;
+  float: right;
+}
+
+.hideButton:hover {
+  color: #9c0315;
+}
+
 .searchbox {
   padding: 15px;
 }
@@ -949,7 +961,9 @@ nav img {
   }
 
   .reclabel {
-    font-size: 7pt;
+    font-size: 10pt;
+    height: 70%;
+    top: 15%;
   }
   .reclabel .fa-medal {
     font-size: 20px;
