@@ -396,8 +396,8 @@ def guide():
         # get 3 recent added blogposts
         blogposts = Blog.query.filter_by(visible=True).filter(Blog.title!="Privacyverklaring").filter(Blog.title!="Over Stadsgids").order_by(Blog.date.desc()).limit(2).all()
 
-        # get radom recommendation-tip
-        randomrec = random.choice(Recommendation.query.filter_by(visible=True).all())
+        # get random recommendation-tip
+        randomrec = random.choice(Recommendation.query.filter_by(visible=True).filter(Recommendation.tip!="").all())
 
         # get events and reviews for front-page
         frontpageevent = Event.query.filter(Event.date > datetime.datetime.now()).order_by(Event.date).all()
