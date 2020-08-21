@@ -47,7 +47,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     for (key in autoList["recommList"]) {
                         var item = document.createElement('DIV');
                         var a = document.createElement('A');
-                        a.href = window.location.origin + "/stadsgids/locatie/" + encodeURI(key)+ '/' + encodeURI(autoList["recommList"][key])
+                        a.href = window.location.origin + "/locatie/" + encodeURI(key)+ '/' + encodeURI(autoList["recommList"][key])
                         item.className = "item"
                         var text = document.createTextNode(key);
                         item.appendChild(text);
@@ -69,7 +69,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         for (key1 in autoList["categList"][key]) {
                             var item = document.createElement('DIV');
                             var a = document.createElement('A');
-                            a.href = window.location.origin + "/stadsgids/locatie/" + encodeURI(key1)+ '/' + encodeURI(autoList["categList"][key][key1])
+                            a.href = window.location.origin + "/locatie/" + encodeURI(key1)+ '/' + encodeURI(autoList["categList"][key][key1])
                             item.className = "item"
                             var text = document.createTextNode(key1);
                             a.appendChild(item);
