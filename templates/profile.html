@@ -189,9 +189,21 @@ Layout profile page
 								<div class="form-group ml">
 									<label>Thema</label>
 									<select class="custom-select" name="theme">
-										<option value="light">Licht</option>
-										<option value="dark">Donker</option>
-										<option value="auto">Auto</option>
+										<option value="light"
+										{% if user.theme == "light" %}
+											selected
+										{% endif %}
+										>Licht</option>
+										<option value="dark"
+										{% if user.theme == "dark" %}
+											selected
+										{% endif %}
+										>Donker</option>
+										<option value="auto"
+										{% if user.theme == "auto" %}
+											selected
+										{% endif %}
+										>Auto</option>
 									</select>
 								</div>
 							</div>
@@ -420,9 +432,21 @@ Layout profile page
 							<div class="form-group ml">
 								<label>Thema</label>
 								<select class="custom-select" name="theme">
-									<option value="light">Licht</option>
-									<option value="dark">Donker</option>
-									<option value="auto">Auto</option>
+									<option value="light"
+									{% if user.theme == "light" %}
+										selected
+									{% endif %}
+									>Licht</option>
+									<option value="dark"
+									{% if user.theme == "dark" %}
+										selected
+									{% endif %}
+									>Donker</option>
+									<option value="auto"
+									{% if user.theme == "auto" %}
+										selected
+									{% endif %}
+									>Auto</option>
 								</select>
 							</div>
 						</div>
