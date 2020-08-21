@@ -105,7 +105,7 @@ def new_conformation():
 
     # send email for confirmation
     msg = Message("Bevestig je e-mailadres om je account te activeren", recipients=[email])
-    link = request.url_root + "stadsgids/emailbevestigen/" + token
+    link = request.url_root + "emailbevestigen/" + token
     msg.html = render_template('confirmmail.html')
     job = queue.enqueue('task.send_mail', msg)
     flash(f"E-mail verstuurd naar {email} met een nieuwe bevestigingslink", "success")
@@ -209,7 +209,7 @@ def action_location():
 
         details = get_location_link_information(place_id=place_id)
         # send confirmation email for request /stadsgids/locatie/<name>/<place_id>
-        link = request.url_root + "stadsgids/locatie/" + name + "/" + place_id
+        link = request.url_root + "locatie/" + name + "/" + place_id
         msg = Message(f"Ontvangstbevestiging informatieaanvraag voor {name}", recipients=[user.email])
         msg.html = render_template("recommendmail.html", name=user.firstname, location=name, website=website, result=details, TYPES_DICT=TYPES_DICT, ICON_DICT=ICON_DICT)
         job = queue.enqueue('task.send_mail', msg)
@@ -491,7 +491,7 @@ def register():
 
     # send email for confirmation
     msg = Message("Bevestig je e-mailadres om je account te activeren", recipients=[email])
-    link = request.url_root + "stadsgids/emailbevestigen/" + token
+    link = request.url_root + "emailbevestigen/" + token
     msg.html = render_template('confirmmail.html', firstname=firstname, email=email, link=link, username=username)
     job = queue.enqueue('task.send_mail', msg)
 
@@ -503,11 +503,11 @@ def register():
     db.session.commit()
     return redirect(url_for('register'))
 
-@app.route('/stadsgids/emailbevestigen')
+@app.route('/emailbevestigen')
 def not_confirmed():
     return render_template("confirm.html")
 
-@app.route('/stadsgids/emailbevestigen/<token>')
+@app.route('/emailbevestigen/<token>')
 def confirm_email(token):
     # configure serializer and check token (3600s is 1h)
     serializer = URLSafeTimedSerializer(app.config['SECRET_KEY'])
@@ -532,7 +532,7 @@ def confirm_email(token):
     login_user(user)
     return redirect(url_for('guide'))
 
-@app.route('/stadsgids/emailwijzigen/<token>')
+@app.route('/emailwijzigen/<token>')
 def change_email(token):
     # configure serializer and check token (3600s is 1h)
     serializer = URLSafeTimedSerializer(app.config['SECRET_KEY'])
@@ -560,7 +560,7 @@ def change_email(token):
     login_user(user)
     return redirect(url_for('guide'))
 
-@app.route('/stadsgids/wachtwoordvergeten', methods=["GET", "POST"])
+@app.route('/wachtwoordvergeten', methods=["GET", "POST"])
 def forgot():
     if request.method == "GET":
         return render_template("forgot.html")
@@ -580,14 +580,14 @@ def forgot():
 
     # send email for confirmation
     msg = Message("Reset je wachwoord", recipients=[email])
-    link = request.url_root + "stadsgids/resetwachtwoord/" + token
+    link = request.url_root + "resetwachtwoord/" + token
     msg.html = render_template('resetpassmail.html', firstname=user.firstname, link=link, username=user.username)
     job = queue.enqueue('task.send_mail', msg)
 
     flash(f"E-mail met wachtwoordreset link verstuurd naar {email}", 'success')
     return redirect(url_for('forgot'), "303")
 
-@app.route('/stadsgids/resetwachtwoord', methods=["POST"])
+@app.route('/resetwachtwoord', methods=["POST"])
 def reset():
     # get email and passwords
     email = request.form.get("email")
@@ -616,7 +616,7 @@ def reset():
     flash("Wachtwoord opnieuw ingesteld, je kunt gelijk inloggen", "success")
     return redirect(url_for('guide'))
 
-@app.route('/stadsgids/resetwachtwoord/<token>')
+@app.route('/resetwachtwoord/<token>')
 def resetpass(token):
     # configure serializer and check token (3600s is 1h)
     serializer = URLSafeTimedSerializer(app.config['SECRET_KEY'])
@@ -630,7 +630,7 @@ def resetpass(token):
         return redirect(url_for('forgot'))
     return render_template("resetpass.html", email=email)
 
-@app.route('/stadsgids/locatie/<name>/<place_id>', methods=["GET", "POST"])
+@app.route('/locatie/<name>/<place_id>', methods=["GET", "POST"])
 def location(place_id, name):
     # declare location variables
     location = {}
@@ -794,11 +794,11 @@ def location(place_id, name):
     flash(f"Review geplaatst", "success")
     return redirect(url_for('location', place_id=place_id, name=name))
 
-@app.route('/stadsgids/nieuw')
+@app.route('/nieuw')
 def new():
     return render_template("new.html")
 
-@app.route('/stadsgids/zoeken', methods=["GET", "POST"])
+@app.route('/zoeken', methods=["GET", "POST"])
 def search():
     if request.method == "GET":
         # get amount of recommendations
@@ -979,12 +979,12 @@ def search():
 
     return render_template("search.html", search=True, results=results, TYPES_DICT=TYPES_DICT, REC_SEARCH_TYPES=REC_SEARCH_TYPES, SEARCH_TYPES=SEARCH_TYPES, ICON_DICT=ICON_DICT)
 
-@app.route('/stadsgids/weekend')
+@app.route('/weekend')
 @login_required
 def weekend():
     return render_template("weekend.html")
 
-@app.route('/stadsgids/profiel', methods=["GET", "POST"])
+@app.route('/profiel', methods=["GET", "POST"])
 @login_required
 def profile():
     # get current user
@@ -1056,7 +1056,7 @@ def profile():
 
         # send email for confirmation
         msg = Message("Bevestig je nieuwe e-mailadres", recipients=[email])
-        link = request.url_root + "stadsgids/emailwijzigen/" + token
+        link = request.url_root + "emailwijzigen/" + token
         db.session.commit()
         msg.html = render_template('changeemail.html', firstname=user.firstname, email=email, link=link)
         job = queue.enqueue('task.send_mail', msg)
@@ -1080,12 +1080,12 @@ def profile():
         db.session.commit()
         return redirect(url_for('profile'))
 
-@app.route('/stadsgids/dashboard')
+@app.route('/dashboard')
 @role_required('Administrator')
 def dashboard():
     return render_template("dashboard.html")
 
-@app.route('/stadsgids/dashboard/nieuw', methods=["GET", "POST"])
+@app.route('/dashboard/nieuw', methods=["GET", "POST"])
 @role_required('Administrator')
 def controlnew():
     if request.method == "GET":
@@ -1167,7 +1167,7 @@ def controlnew():
         flash("Aanbeveling gewijzigd", 'success' )
     return redirect(url_for('location', place_id=place_id, name=name))
 
-@app.route('/stadsgids/dashboard/nieuw/wijzigen/<name>/<place_id>/<types>/<opening>/<price_level>')
+@app.route('/dashboard/nieuw/wijzigen/<name>/<place_id>/<types>/<opening>/<price_level>')
 @role_required('Administrator')
 def changenew(place_id, name, types, opening, price_level):
     # get recommendation and set variable for existing weektext
@@ -1192,7 +1192,7 @@ def changenew(place_id, name, types, opening, price_level):
     typeslist = ast.literal_eval(types)
     return render_template("changenew.html", recommendation=recommendation, weektext=weektext, name=name, events=events, types=typeslist, API_TYPES=API_TYPES, TYPES_DICT=TYPES_DICT, opening=opening, price_level=price_level, possibleDoubles=possibleDoubles, databaseDouble=databaseDouble, sameRec=sameRec)
 
-@app.route('/stadsgids/dashboard/nieuw/opstellen/<name>/<place_id>/<types>/<opening>/<price_level>')
+@app.route('/dashboard/nieuw/opstellen/<name>/<place_id>/<types>/<opening>/<price_level>')
 @role_required('Administrator')
 def createnew(name, place_id, types, opening, price_level):
     typeslist = ast.literal_eval(types)
@@ -1203,7 +1203,7 @@ def createnew(name, place_id, types, opening, price_level):
             possibleDoubles.append(double)
     return render_template("createnew.html", name=name, place_id=place_id, types=typeslist, API_TYPES=API_TYPES, TYPES_DICT=TYPES_DICT, opening=opening, price_level=price_level, possibleDoubles=possibleDoubles)
 
-@app.route('/stadsgids/dashboard/nieuw/evenement/<name>/<place_id>', methods=["GET", "POST"])
+@app.route('/dashboard/nieuw/evenement/<name>/<place_id>', methods=["GET", "POST"])
 @role_required('Administrator')
 def create_event(name, place_id):
     if request.method == "GET":
@@ -1228,7 +1228,7 @@ def create_event(name, place_id):
     flash("Evenement geplaatst", 'success' )
     return redirect(url_for("location", name=request.form.get("name"), place_id=request.form.get("place_id")))
 
-@app.route('/stadsgids/dashboard/nieuwsbrief', methods=['GET', 'POST'])
+@app.route('/dashboard/nieuwsbrief', methods=['GET', 'POST'])
 @role_required('Administrator')
 def newsletter():
     if request.method == "GET":
@@ -1242,7 +1242,7 @@ def newsletter():
     db.session.commit()
     return redirect(url_for('createnewsletter', newsletter_id=newsletter.id))
 
-@app.route('/stadsgids/dashboard/nieuwsbrief/opstellen/<newsletter_id>', methods=["GET", "POST"])
+@app.route('/dashboard/nieuwsbrief/opstellen/<newsletter_id>', methods=["GET", "POST"])
 @role_required('Administrator')
 def createnewsletter(newsletter_id):
     # get newsletter to change
@@ -1280,7 +1280,7 @@ def createnewsletter(newsletter_id):
 
     return render_template("createnewsletter.html", newsletter=newsletter)
 
-@app.route('/stadsgids/dashboard/blog', methods=['GET', 'POST'])
+@app.route('/dashboard/blog', methods=['GET', 'POST'])
 @role_required('Administrator')
 def blog():
     if request.method == 'GET':
@@ -1294,7 +1294,7 @@ def blog():
     db.session.commit()
     return redirect(url_for('createblog', blog_id=blogpost.id))
 
-@app.route('/stadsgids/dashboard/blog/opstellen/<blog_id>', methods=['GET', 'POST'])
+@app.route('/dashboard/blog/opstellen/<blog_id>', methods=['GET', 'POST'])
 @role_required('Administrator')
 def createblog(blog_id):
 
@@ -1330,7 +1330,7 @@ def createblog(blog_id):
         return redirect(url_for('blog'))
     return render_template("createblog.html", blogpost=blogpost)
 
-@app.route('/stadsgids/dashboard/checkreviews', methods=["GET", "POST"])
+@app.route('/dashboard/checkreviews', methods=["GET", "POST"])
 @role_required('Administrator')
 def check():
 
@@ -1360,7 +1360,7 @@ def check():
 
     return render_template("check.html", reviews=reviews)
 
-@app.route('/stadsgids/dashboard/uitgelicht', methods=["GET", "POST"])
+@app.route('/dashboard/uitgelicht', methods=["GET", "POST"])
 @role_required('Administrator')
 def highlight():
     if request.method == "GET":
@@ -1379,7 +1379,7 @@ def highlight():
     db.session.commit()
     return redirect(url_for('createhighlight', highlight_id=highlight.id))
 
-@app.route('/stadsgids/dashboard/uitgelicht/wijzigen/<highlight_id>', methods=["GET", "POST"])
+@app.route('/dashboard/uitgelicht/wijzigen/<highlight_id>', methods=["GET", "POST"])
 @role_required('Administrator')
 def createhighlight(highlight_id):
 
@@ -1408,7 +1408,7 @@ def createhighlight(highlight_id):
     if action == "preview":
         return render_template('guidepreview.html', highlight=highlight)
 
-@app.route('/stadsgids/dashboard/aanvragen')
+@app.route('/dashboard/aanvragen')
 @role_required('Administrator')
 def inforequest():
 
@@ -1416,7 +1416,7 @@ def inforequest():
     inforequests = Request.query.all()
     return render_template('requests.html', requests=inforequests)
 
-@app.route('/stadsgids/dashboard/aanvragen/verwerken/<request_id>', methods=["GET", "POST"])
+@app.route('/dashboard/aanvragen/verwerken/<request_id>', methods=["GET", "POST"])
 @role_required('Administrator')
 def processrequests(request_id):
 
@@ -1435,7 +1435,7 @@ def processrequests(request_id):
     flash("Informatieaanvraag verwerkt", "success")
     return redirect(url_for('inforequest'))
 
-@app.route('/stadsgids/<blog_id>/<title>', methods=["GET", "POST"])
+@app.route('/<blog_id>/<title>', methods=["GET", "POST"])
 def blogpost(blog_id, title):
     if request.method == "GET":
         # get blogpost and render
@@ -1454,7 +1454,7 @@ def blogpost(blog_id, title):
     return redirect(url_for('blogpost', blog_id=blog_id, title=title))
 
 
-@app.route('/stadsgids/over')
+@app.route('/over')
 def aboutguide():
 
     # show about page (blogpost as about)
