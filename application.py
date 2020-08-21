@@ -339,7 +339,7 @@ def loadhighlight():
 @app.route('/')
 def index():
     if "stadsgids." in request.url or "stadsgidsadam" in request.url or "stadsgids-ams" in request.url:
-        return guide()
+        return redirect(url_for('guide'))
     return render_template("index.html")
 
 @app.route('/about')
