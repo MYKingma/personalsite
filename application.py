@@ -208,7 +208,7 @@ def action_location():
                 return jsonify({"success": False})
 
         details = get_location_link_information(place_id=place_id)
-        # send confirmation email for request /stadsgids/locatie/<name>/<place_id>
+        # send confirmation email for request /locatie/<name>/<place_id>
         link = request.url_root + "locatie/" + name + "/" + place_id
         msg = Message(f"Ontvangstbevestiging informatieaanvraag voor {name}", recipients=[user.email])
         msg.html = render_template("recommendmail.html", name=user.firstname, location=name, website=website, result=details, TYPES_DICT=TYPES_DICT, ICON_DICT=ICON_DICT)
@@ -369,7 +369,7 @@ def contact():
 
     return render_template('contact.html')
 
-@app.route('/stadsgids', methods=["GET", "POST"])
+@app.route('/home', methods=["GET", "POST"])
 def guide():
     if request.method == "GET":
 
@@ -436,7 +436,7 @@ def guide():
         flash("Wachtwoord onjuist, probeer het nog eens of vraag een nieuw wachtwoord aan", 'warning')
         return redirect(request.referrer)
 
-@app.route('/stadsgids/registreren', methods=["GET", "POST"])
+@app.route('/registreren', methods=["GET", "POST"])
 def register():
     # check for login otherwise return registration.html
     if request.method == "GET":
