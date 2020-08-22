@@ -23,6 +23,18 @@ Layout for creating a newsletter
                 {{ highlight.description }}
             </textarea>
         </div>
+        <div class="form-row ml mt">
+            <div class="form-group">
+                <label for="videolink">Youtube video ID</label>
+                <input class="form-control" id="videolink" type="text" name="videolink" value="{{ highlight.videolink if highlight.videolink != None }}">
+            </div>
+        </div>
+        <div class="form-row ml">
+            <div class="form-group">
+                <label for="videolength">Lengte in seconden</label>
+                <input class="form-control" id="videolength" type="text" name="videolength" value="{{ highlight.videolength if highlight.videolength != None }}">
+            </div>
+        </div>
         <div class="form-check float_right mt">
             <div class="btn btn-outline-dark" id="unlock">
                 <i id="lock" class="fas fa-lock"></i>

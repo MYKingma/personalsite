@@ -76,7 +76,18 @@ document.addEventListener('DOMContentLoaded', () => {
                 document.querySelector('#previousStars').appendChild(span)
                 document.querySelector('#previousAddress').innerHTML = data.linkinfo.formatted_address[0];
                 stars()
+                if (document.querySelector('.videolink')) {
+                    document.querySelector('.videolink').remove()
+                }
                 zenscroll.to(document.querySelector('#top'))
+                if (data.videolink) {
+                    var videolink = document.createElement('div')
+                    videolink.className = "videolink"
+                    videolink.dataset.link = "https://www.youtube.com/embed/" + data.videolink + "?controls=0&showinfo=0&rel=0&autoplay=1&loop=1&mute=1"
+                    videolink.dataset.length = data.videolength
+                    document.querySelector('#top').appendChild(videolink)
+                }
+                videoplayersetup()
             };
 
             // add username to request

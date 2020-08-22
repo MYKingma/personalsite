@@ -232,6 +232,8 @@ class Highlight(db.Model):
     name = db.Column(db.String(128), nullable=False)
     week = db.Column(db.DateTime(), nullable=False)
     description = db.Column(db.Text(), nullable=False)
+    videolink = db.Column(db.Text(), nullable=True)
+    videolength = db.Column(db.Text(), nullable=True)
 
 class Blog(db.Model):
     __tablename__ = 'blog'

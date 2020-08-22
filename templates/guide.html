@@ -39,6 +39,7 @@ Guide homepage layout
 				<div class="description" data-week="{{ highlight.week.isocalendar()[1] }}">
 					{{ highlight.description|safe }}
 				</div>
+				<div class="videolink" data-link="https://www.youtube.com/embed/{{ highlight.videolink }}?controls=0&showinfo=0&rel=0&autoplay=1&loop=1&mute=1" data-length="{{ highlight.videolength }}"></div>
 				<a id="previousLink" class="list" href="{{ url_for('location', place_id=highlightDetails.place_id, name=highlightDetails.name) }}">
 					<li class="media">
 						<div id="previousImg" class="center-cropped" style="background-image: url('{{ highlightDetails.photos }}');"></div>
@@ -210,5 +211,6 @@ Guide homepage layout
 
 {% block script %}
 <script type="text/javascript" src="{{ url_for('static', filename='js/star.js')}}"></script>
+<script type="text/javascript" src="{{ url_for('static', filename='js/videoplayer.js')}}"></script>
 <script type="text/javascript" src="{{ url_for('static', filename='js/loadhighlight.js')}}"></script>
 {% endblock %}

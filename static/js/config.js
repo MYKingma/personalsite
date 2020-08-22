@@ -5,5 +5,5 @@
 
 CKEDITOR.editorConfig = function( config ) {
 	config.height = "25vw";
-    config.width = "100%"
+    config.width = "100%";
 };

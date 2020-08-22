@@ -311,6 +311,8 @@ def loadhighlight():
             data["totalshift"] = int(datetime.datetime.now().isocalendar()[1]) - weeknum
             data["linkinfo"] = get_location_link_information(location.place_id)
             data["types"] = []
+            data["videolink"] = location.videolink
+            data["videolength"] = location.videolength
             for type in data["linkinfo"]["types"]:
                 for key, value in TYPES_DICT.items():
                     if type == value:
@@ -1391,9 +1393,13 @@ def createhighlight(highlight_id):
     # get form info
     action = request.form.get('action')
     description = request.form.get('editor1')
+    videolink = request.form.get('videolink')
+    videolength = request.form.get('videolength')
 
     # set highlight variables
     highlight.description = description
+    highlight.videolink = videolink
+    highlight.videolength = videolength
     db.session.commit()
 
     # check action and act accordingly
