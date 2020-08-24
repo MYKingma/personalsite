@@ -32,7 +32,7 @@ function videoplayersetup() {
 			setTimeout(function() {
 				document.querySelector('.video').style.display = "block";
 				img.style.display = "none"
-			}, 4100);
+			}, 4500);
 			setTimeout(function() {
 				document.querySelector('.video').style.display = "none";
 			}, (length * 1000) - 4000);
