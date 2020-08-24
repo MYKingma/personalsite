@@ -85,7 +85,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     videolink.className = "videolink"
                     videolink.dataset.link = "https://www.youtube.com/embed/" + data.videolink + "?controls=0&showinfo=0&rel=0&autoplay=1&loop=1&mute=1"
                     videolink.dataset.length = data.videolength
-                    document.querySelector('#top').appendChild(videolink)
+                    document.querySelector('#top').appendChild(videoplayer)
                 }
                 videoplayersetup()
             };

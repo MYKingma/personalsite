@@ -39,7 +39,9 @@ Guide homepage layout
 				<div class="description" data-week="{{ highlight.week.isocalendar()[1] }}">
 					{{ highlight.description|safe }}
 				</div>
-				<div class="videolink" data-link="https://www.youtube.com/embed/{{ highlight.videolink }}?controls=0&showinfo=0&rel=0&autoplay=1&loop=1&mute=1" data-length="{{ highlight.videolength }}"></div>
+				{% if highlight.videolink %}
+				<div class="videolink" data-link="https://www.youtube.com/embed/{{ highlight.videolink }}?controls=0&showinfo=0&rel=0&autoplay=1&loop=1&mute=1"></div>
+				{% endif %}
 			</div>
 		</div>
 		<div class="col-lg-4">
