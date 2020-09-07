@@ -244,9 +244,10 @@ Location page
 				<p class="opening_hours" >{{ recommendation.opening }}</p>
 			{% endif %}
 		{% else %}
-			{% if location.opening_hours.0 == "24" %}
+			{% if location.opening_hours %}
+				{% if location.opening_hours.0 == "24" %}
 				<p class="opening_hours" >24 uur per dag geopend</p>
-			{% elif location.opening_hours.0 != "24" %}
+				{% elif location.opening_hours.0 != "24" %}
 				<p class="opening_hours" >Maandag<span>{{ location.opening_hours.0 }}</span></p>
 				<p class="opening_hours" >Dinsdag<span>{{ location.opening_hours.1 }}</span></p>
 				<p class="opening_hours" >Woensdag<span>{{ location.opening_hours.2 }}</span></p>
@@ -254,6 +255,7 @@ Location page
 				<p class="opening_hours" >Vrijdag<span>{{ location.opening_hours.4 }}</span></p>
 				<p class="opening_hours" >Zaterdag<span>{{ location.opening_hours.5 }}</span></p>
 				<p class="opening_hours" >Zondag<span>{{ location.opening_hours.6 }}</span></p>
+				{% endif %}
 			{% elif location.open %}
 				<p class="opening_hours" >{{ location.open }}</p>
 			{% else %}
