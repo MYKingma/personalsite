@@ -167,7 +167,8 @@ Layout page for changing locations
 					<div class="form-row">
 						{% for type in API_TYPES %}
 						{% set nltype = TYPES_DICT[type] %}
-						{% if nltype not in types or nltype not in typelist %}
+						{% set typelist = recommendation.type.replace('{', '').replace('}', '').split(',') %}
+						{% if nltype not in types and nltype not in typelist %}
 						<div class="form-group ml">
 							<div id="visible" class="form-check">
 								<input class="form-check-input" type="checkbox" value="{{ nltype }}" name="type">
