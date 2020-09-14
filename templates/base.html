@@ -128,6 +128,9 @@ Base layout for other pages
 			<img id="footerimg" src="{{ url_for('static', filename='picto/cross.png') }}">
 			<p>STADSGIDSADAM.NL</p>
 			<p id="copyright">©2020 M. Kingma</p>
+			<a href="https://www.mauricekingma.nl/">
+				<img id="watermark" src="{{ url_for('static', filename='picto/watermark-light.png') }}">
+			</a>
 		</div>
 		<script type="text/javascript">
 			var csrf_token = "{{ csrf_token() }}";
