@@ -1,4 +1,4 @@
-from application import app
+from application import app, app_tree
 from flask_mail import Mail, Message
 mail = Mail(app)
 
