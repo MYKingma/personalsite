@@ -89,6 +89,17 @@ app.config['MAIL_USE_SSL'] = False
 app.config['MAIL_DEFAULT_SENDER'] = "mauricekingma@me.com"
 mail = Mail(app)
 
+# configure Flask-Mail for tree-buy
+app_tree = Flask(__name__)
+app_tree.config['MAIL_SERVER']='smtp.strato.com'
+app_tree.config['MAIL_PORT'] = 587
+app_tree.config['MAIL_USERNAME'] = os.getenv("MAIL_USERNAME_TREE")
+app_tree.config['MAIL_PASSWORD'] = os.getenv("MAIL_PASSWORD_TREE")
+app_tree.config['MAIL_USE_TLS'] = True
+app_tree.config['MAIL_USE_SSL'] = False
+app_tree.config['MAIL_DEFAULT_SENDER'] = "noreply@studio-t-landje.nl"
+
+
 # set password for timestamp-emailtoken
 if not os.getenv("SECURITY_PASSWORD_SALT"):
     raise RuntimeError("SECURITY_PASSWORD_SALT is not set")
