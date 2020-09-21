@@ -15,9 +15,12 @@ document.addEventListener('DOMContentLoaded', () => {
     document.querySelectorAll('#previousHighlight').forEach(item => {
         item.onclick = () => {
             var shift = item.dataset.shift;
-            clearTimeout(timeout1);
-            clearTimeout(timeout2);
-
+            if (typeof timeout1 !== 'undefined') {
+                clearTimeout(timeout1);
+            }
+            if (typeof timeout1 !== 'undefined') {
+                clearTimeout(timeout2);
+            }
             const request = new XMLHttpRequest();
 			request.open('POST', window.location.origin + '/loadhighlight', false);
 
