@@ -100,7 +100,8 @@ document.addEventListener('DOMContentLoaded', () => {
                     }
                     document.querySelector('#top').appendChild(videolink)
                 }
-                zenscroll.toY(0)
+                var top = document.querySelector('#top')
+                zenscroll.to(top)
                 if (!mobileCheck()) {
             		videoplayersetup()
             	}

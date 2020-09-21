@@ -32,10 +32,11 @@ function videoplayersetup() {
             if (document.querySelector('.videolink').dataset.linkavailable) {
                 timeout1 = setTimeout(function() {
     				document.querySelector('.video').style.display = "block";
-    				img.style.display = "none"
+                    videoplayer.style.backgroundImage = "none"
     			}, 4500);
     			timeout2 = setTimeout(function() {
     				document.querySelector('.video').style.display = "none";
+                    videoplayer.style.backgroundImage ='url("' + img.src + '")'
     			}, (length * 1000) - 4000);
             }
 		}
