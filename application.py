@@ -313,6 +313,7 @@ def loadhighlight():
             data["types"] = []
             data["videolink"] = location.videolink
             data["videolength"] = location.videolength
+            data["videostart"] = location.videostart
             for type in data["linkinfo"]["types"]:
                 for key, value in TYPES_DICT.items():
                     if type == value:
@@ -1395,11 +1396,13 @@ def createhighlight(highlight_id):
     description = request.form.get('editor1')
     videolink = request.form.get('videolink')
     videolength = request.form.get('videolength')
+    videostart = request.form.get('videostart')
 
     # set highlight variables
     highlight.description = description
     highlight.videolink = videolink
     highlight.videolength = videolength
+    highlight.videostart = videostart
     db.session.commit()
 
     # check action and act accordingly

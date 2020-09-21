@@ -29,6 +29,12 @@ Layout for creating a newsletter
                 <input class="form-control" id="videolink" type="text" name="videolink" value="{{ highlight.videolink if highlight.videolink != None }}">
             </div>
         </div>
+        <div class="form-row ml mt">
+            <div class="form-group">
+                <label for="videolink">Afspelen vanaf</label>
+                <input class="form-control" id="videolink" type="text" name="videostart" value="{{ highlight.videostart if highlight.videostart != None }}">
+            </div>
+        </div>
         <div class="form-row ml">
             <div class="form-group">
                 <label for="videolength">Lengte in seconden</label>

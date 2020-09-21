@@ -15,6 +15,8 @@ document.addEventListener('DOMContentLoaded', () => {
     document.querySelectorAll('#previousHighlight').forEach(item => {
         item.onclick = () => {
             var shift = item.dataset.shift;
+            clearTimeout(timeout1);
+            clearTimeout(timeout2);
 
             const request = new XMLHttpRequest();
 			request.open('POST', window.location.origin + '/loadhighlight', false);
@@ -79,15 +81,26 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (document.querySelector('.videolink')) {
                     document.querySelector('.videolink').remove()
                 }
-                zenscroll.to(document.querySelector('#top'))
                 if (data.videolink) {
                     var videolink = document.createElement('div')
                     videolink.className = "videolink"
-                    videolink.dataset.link = "https://www.youtube.com/embed/" + data.videolink + "?controls=0&showinfo=0&rel=0&autoplay=1&loop=1&mute=1"
+                    if (data.videostart) {
+                        videolink.dataset.link = "https://www.youtube.com/embed/" + data.videolink + "?controls=0&showinfo=0&rel=0&autoplay=1&loop=1&mute=1&start=" + data.videostart
+                    } else {
+                        videolink.dataset.link = "https://www.youtube.com/embed/" + data.videolink + "?controls=0&showinfo=0&rel=0&autoplay=1&loop=1&mute=1"
+                    }
                     videolink.dataset.length = data.videolength
+                    if (data.videolink) {
+                        videolink.dataset.linkavailable = true
+                    } else {
+                        videolink.dataset.linkavailable =false
+                    }
                     document.querySelector('#top').appendChild(videolink)
                 }
-                videoplayersetup()
+                zenscroll.toY(0)
+                if (!mobileCheck()) {
+            		videoplayersetup()
+            	}
             };
 
             // add username to request

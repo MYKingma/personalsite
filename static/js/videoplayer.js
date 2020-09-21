@@ -12,7 +12,7 @@ function mobileCheck() {
 };
 function videoplayersetup() {
 	if (document.querySelector('.videolink')) {
-		if (document.querySelector('.videolink').dataset.link.length > 83) {
+		if (document.querySelector('.videolink').dataset.linkavailable) {
 			var description = document.querySelector('.description');
 			var img = description.querySelector('img');
 			img.style.display = "none"
@@ -29,13 +29,15 @@ function videoplayersetup() {
 			videoplayer.appendChild(iframe)
 			img.parentNode.insertBefore(videoplayer, img.nextSibling);
 			var length = document.querySelector('.videolink').dataset.length
-			setTimeout(function() {
-				document.querySelector('.video').style.display = "block";
-				img.style.display = "none"
-			}, 4500);
-			setTimeout(function() {
-				document.querySelector('.video').style.display = "none";
-			}, (length * 1000) - 4000);
+            if (document.querySelector('.videolink').dataset.linkavailable) {
+                timeout1 = setTimeout(function() {
+    				document.querySelector('.video').style.display = "block";
+    				img.style.display = "none"
+    			}, 4500);
+    			timeout2 = setTimeout(function() {
+    				document.querySelector('.video').style.display = "none";
+    			}, (length * 1000) - 4000);
+            }
 		}
 	}
 }

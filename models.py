@@ -234,6 +234,7 @@ class Highlight(db.Model):
     description = db.Column(db.Text(), nullable=False)
     videolink = db.Column(db.Text(), nullable=True)
     videolength = db.Column(db.Text(), nullable=True)
+    videostart = db.Column(db.Text(), nullable=True)
 
 class Blog(db.Model):
     __tablename__ = 'blog'
