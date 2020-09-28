@@ -1448,12 +1448,13 @@ def processrequests(request_id):
 def blogpost(blog_id, title):
     if request.method == "GET":
         # get blogpost and render
-        if not isinstance(blog_id, int):
-            blog = Blog.query.filter_by(title="Over Stadsgids").first()
-        else:
-            blog = Blog.query.filter_by(id=blog_id).first()
+        try:
+            int(blog_id)
+        except:
+            return redirect(url_for('aboutguide'))
+        blog = Blog.query.filter_by(id=blog_id).first()
         blogposts = Blog.query.filter(Blog.id != blog.id).filter(Blog.title!="Privacyverklaring").filter(Blog.title!="Over Stadsgids").order_by(Blog.date.desc()).all()
-        comments = Comment.query.filter_by(blog_id=blog_id).all()
+        comments = Comment.query.filter_by(id=blog.id).all()
         return render_template('blogpost.html', blog=blog, blogposts=blogposts, comments=comments)
 
     # get form info
