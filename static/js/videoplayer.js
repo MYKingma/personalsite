@@ -12,7 +12,7 @@ function mobileCheck() {
 };
 function videoplayersetup() {
 	if (document.querySelector('.videolink')) {
-		if (document.querySelector('.videolink').dataset.linkavailable) {
+		if (document.querySelector('.videolink').dataset.linkavailable == 'True') {
 			var description = document.querySelector('.description');
 			var img = description.querySelector('img');
 			img.style.display = "none"
