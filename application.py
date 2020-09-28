@@ -1444,7 +1444,7 @@ def processrequests(request_id):
     flash("Informatieaanvraag verwerkt", "success")
     return redirect(url_for('inforequest'))
 
-@app.route('/<blog_id>/<title>', methods=["GET", "POST"])
+@app.route('/blog/<blog_id>/<title>', methods=["GET", "POST"])
 def blogpost(blog_id, title):
     if request.method == "GET":
         # get blogpost and render
@@ -1452,7 +1452,7 @@ def blogpost(blog_id, title):
             blog = Blog.query.filter_by(title="Over Stadsgids").first()
         else:
             blog = Blog.query.filter_by(id=blog_id).first()
-        blogposts = Blog.query.filter(Blog.id != blog_id).filter(Blog.title!="Privacyverklaring").filter(Blog.title!="Over Stadsgids").order_by(Blog.date.desc()).all()
+        blogposts = Blog.query.filter(Blog.id != blog.id).filter(Blog.title!="Privacyverklaring").filter(Blog.title!="Over Stadsgids").order_by(Blog.date.desc()).all()
         comments = Comment.query.filter_by(blog_id=blog_id).all()
         return render_template('blogpost.html', blog=blog, blogposts=blogposts, comments=comments)
 
