@@ -72,7 +72,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
 
                 document.querySelector('#previousImg').style.backgroundImage = "url('" + data.linkinfo.photos + "')";
-                document.querySelector('#previousLink').href = window.location.origin + "/stadsgids/locatie/" + data.linkinfo.name + "/" + data.linkinfo.place_id
+                document.querySelector('#previousLink').href = window.location.origin + "/locatie/" + data.linkinfo.name + "/" + data.linkinfo.place_id
                 document.querySelector('#previousName').innerHTML = data.linkinfo.name;
                 var span = document.createElement('SPAN');
                 span.id = "stars";
