@@ -94,9 +94,9 @@ document.addEventListener('DOMContentLoaded', () => {
                     }
                     videolink.dataset.length = data.videolength
                     if (data.videolink) {
-                        videolink.dataset.linkavailable = true
+                        videolink.dataset.linkavailable = 'True'
                     } else {
-                        videolink.dataset.linkavailable =false
+                        videolink.dataset.linkavailable = 'False'
                     }
                     document.querySelector('#top').appendChild(videolink)
                 }
