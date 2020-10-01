@@ -863,7 +863,6 @@ nav {
 }
 
 #autolist, .autolist {
-	width: 100%;
 	background-color: white;
 	border: 1px solid lightgrey;
 	border-top: none;
@@ -873,7 +872,6 @@ nav {
 	width: 250px;
 	position: absolute;
 	padding-top: 10px;
-	top: -7px;
 	.item {
 		color: black;
 		padding: 2px;
@@ -894,16 +892,6 @@ nav {
 		min-width: 100%;
 	}
 }
-
-#autolist {
-	top: 215px;
-}
-
-.autolist {
-	top: 175px;
-	margin-left: 10px;
-}
-
 
 #maxpriceinput {
 	margin-top: 31px;
@@ -1080,6 +1068,13 @@ nav {
 	}
 }
 
+@media (max-width: 992px){
+	.autolist, #autolist {
+		top: 220px;
+		left: 26px;
+	}
+}
+
 
 // Large
 @media (min-width: 489px){
@@ -1117,6 +1112,7 @@ nav {
 	}
 	#autolist, .autolist {
 		top: 40px;
+		right: 290.5px;
 	}
 	.onecolumn {
 		display: none;

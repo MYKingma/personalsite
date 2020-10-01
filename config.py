@@ -72,7 +72,7 @@ admin.add_view(AdminView(Hidden, db.session))
 
 
 # configure link admin menu
-admin.add_link(MenuLink(name='Back to site', url='/stadsgids/dashboard'))
+admin.add_link(MenuLink(name='Back to site', url='/dashboard'))
 
 # configure Flask-login
 login_manager = LoginManager()

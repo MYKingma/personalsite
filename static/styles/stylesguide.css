@@ -850,7 +850,6 @@ nav img {
 }
 
 #autolist, .autolist {
-  width: 100%;
   background-color: white;
   border: 1px solid lightgrey;
   border-top: none;
@@ -860,7 +859,6 @@ nav img {
   width: 250px;
   position: absolute;
   padding-top: 10px;
-  top: -7px;
 }
 #autolist .item, .autolist .item {
   color: black;
@@ -880,15 +878,6 @@ nav img {
 }
 .listbox input {
   min-width: 100%;
-}
-
-#autolist {
-  top: 215px;
-}
-
-.autolist {
-  top: 175px;
-  margin-left: 10px;
 }
 
 #maxpriceinput {
@@ -1058,6 +1047,12 @@ nav img {
     font-size: 15pt;
   }
 }
+@media (max-width: 992px) {
+  .autolist, #autolist {
+    top: 220px;
+    left: 26px;
+  }
+}
 @media (min-width: 489px) {
   #hide {
     display: block;
@@ -1097,6 +1092,7 @@ nav img {
 
   #autolist, .autolist {
     top: 40px;
+    right: 290.5px;
   }
 
   .onecolumn {

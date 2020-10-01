@@ -1155,19 +1155,20 @@ def controlnew():
         recommendation.price_level = price_level
         recommendation.opening = opening
         recommendation.type = types
-        if request.form.get('double'):
-            sameRec = False
-            if request.form.get('sameRec'):
-                sameRec = True
-            parentRec = Recommendation.query.filter_by(place_id=request.form.get('double')).first()
-            parentRec.add_double_location(place_id=place_id, same_recommendation=sameRec)
-        else:
-            parentRec = get_parent_rec_from_double(place_id)
-            if parentRec:
-                parentRec.delete_double_if_exist(place_id)
-
         db.session.commit()
         flash("Aanbeveling gewijzigd", 'success' )
+
+    if request.form.get('double'):
+        sameRec = False
+        if request.form.get('sameRec'):
+            sameRec = True
+        parentRec = Recommendation.query.filter_by(place_id=request.form.get('double')).first()
+        parentRec.add_double_location(place_id=place_id, same_recommendation=sameRec)
+    else:
+        parentRec = get_parent_rec_from_double(place_id)
+        if parentRec:
+            parentRec.delete_double_if_exist(place_id)
+
     return redirect(url_for('location', place_id=place_id, name=name))
 
 @app.route('/dashboard/nieuw/wijzigen/<name>/<place_id>/<types>/<opening>/<price_level>')
@@ -1181,6 +1182,14 @@ def changenew(place_id, name, types, opening, price_level):
     for double in recommendations:
         if similar(name, double.name) >= 0.6 and double.place_id != place_id:
             possibleDoubles.append(double)
+    if len(possibleDoubles) == 0:
+        for double in recommendations:
+            if similar(name, double.name) >= 0.5 and double.place_id != place_id:
+                possibleDoubles.append(double)
+    if len(possibleDoubles) == 0:
+        for double in recommendations:
+            if similar(name, double.name) >= 0.4 and double.place_id != place_id:
+                possibleDoubles.append(double)
     databaseDouble = Double.query.filter(Double.double_place_id.like(f"%{place_id}%")).first()
     sameRec = False
     if databaseDouble:
@@ -1204,6 +1213,14 @@ def createnew(name, place_id, types, opening, price_level):
     for double in recommendations:
         if similar(name, double.name) >= 0.6 and double.place_id != place_id:
             possibleDoubles.append(double)
+    if len(possibleDoubles) == 0:
+        for double in recommendations:
+            if similar(name, double.name) >= 0.5 and double.place_id != place_id:
+                possibleDoubles.append(double)
+    if len(possibleDoubles) == 0:
+        for double in recommendations:
+            if similar(name, double.name) >= 0.4 and double.place_id != place_id:
+                possibleDoubles.append(double)
     return render_template("createnew.html", name=name, place_id=place_id, types=typeslist, API_TYPES=API_TYPES, TYPES_DICT=TYPES_DICT, opening=opening, price_level=price_level, possibleDoubles=possibleDoubles)
 
 @app.route('/dashboard/nieuw/evenement/<name>/<place_id>', methods=["GET", "POST"])
