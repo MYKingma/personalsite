@@ -394,6 +394,7 @@ def guide():
         # get details for location-links
         for recommendation in recommendations:
             linkDetails = get_location_link_information(place_id=recommendation.place_id)
+            linkDetails['sameRec'] = get_info_parent_rec_from_double_if_sameRec(recommendation.place_id)
             newRecommendations.append(linkDetails)
 
         # get 3 recent added blogposts

@@ -17,7 +17,8 @@ def get_location_link_information(place_id):
     if res.status_code == 200:
         data = res.json()
         details["name"] = data["result"]["name"]
-        details["rating"] = data["result"]["rating"]
+        if "rating" in data["result"]:
+            details["rating"] = data["result"]["rating"]
         details["place_id"] = data["result"]["place_id"]
         if "price_level" in data["result"]:
             details["price_level"] = data["result"]["price_level"] * "€"

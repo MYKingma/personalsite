@@ -294,7 +294,7 @@ Location page
 				{% elif location.price_level %}
 				<p>Prijsklasse <span>{{ location.price_level }}</span></p>
 				{% elif sameRec.price_level %}
-				<p>Prijsklasse <span>{{ sameRec.price_level }}</span></p>
+				<p>Prijsklasse <span>{{ sameRec.price_level|int * '€' }}</span></p>
 				{% else %}
 				<p>Prijsklasse <span>Onbekend</span></p>
 				{% endif %}

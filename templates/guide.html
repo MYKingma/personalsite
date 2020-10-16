@@ -105,6 +105,8 @@ Guide homepage layout
 									<p class="nomt">
 										{% if recommendation.price_level %}
 										{{ recommendation.price_level }} -
+										{% elif recommendation.sameRec %}
+										{{ recommendation.sameRec.price_level|int * '€' }} -
 										{% endif %}
 										{% if recommendation.recommended %}
 										{% for type in recommendation.types %}
