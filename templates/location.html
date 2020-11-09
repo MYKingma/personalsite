@@ -28,34 +28,31 @@ Location page
 				{% endif %}
 				<div id="demo" class="carousel slide" data-ride="carousel">
 
-				  <!-- Indicators -->
-				  <ul class="carousel-indicators">
-				  	<li data-target="#demo" data-slide-to="0" class="active noZensmooth"></li>
-				    <li data-target="#demo" data-slide-to="1" class="noZensmooth"></li>
-				    <li data-target="#demo" data-slide-to="2" class="noZensmooth"></li>
-				  </ul>
+					<!-- Indicators -->
+					<ul class="carousel-indicators">
+						<li data-target="#demo" data-slide-to="0" class="active noZensmooth"></li>
+						<li data-target="#demo" data-slide-to="1" class="noZensmooth"></li>
+						<li data-target="#demo" data-slide-to="2" class="noZensmooth"></li>
+					</ul>
 
-				  <!-- The slideshow -->
-				  <div class="carousel-inner embed-responsive embed-responsive-16by9">
-				      <div class="carousel-item active embed-responsive-item" style="background-image: url('{{ location.photo1 }}');">
+					<!-- The slideshow -->
+					<div class="carousel-inner embed-responsive embed-responsive-16by9">
+						<div class="carousel-item active embed-responsive-item" style="background-image: url('{{ location.photo1 }}');">
 						  	<div class="bottomright">
 						  		{{ location.photo1source|safe }}
 						  	</div>
-				      </div>
-				      <div class="carousel-item embed-responsive-item" style="background-image: url('{{ location.photo2 }}');">
-						  <div class="bottomright">
-							  {{ location.photo2source|safe }}
-						  </div>
-				      </div>
-				      <div class="carousel-item embed-responsive-item" style="background-image: url('{{ location.photo3 }}');">
-						  <div class="bottomright">
-							  {{ location.photo3source|safe }}
-						  </div>
-				      </div>
-			    </div>
-
-				  <!-- Left and right controls -->
-
+						</div>
+						<div class="carousel-item embed-responsive-item" style="background-image: url('{{ location.photo2 }}');">
+							<div class="bottomright">
+								{{ location.photo2source|safe }}
+							</div>
+						</div>
+						<div class="carousel-item embed-responsive-item" style="background-image: url('{{ location.photo3 }}');">
+							<div class="bottomright">
+								{{ location.photo3source|safe }}
+							</div>
+						</div>
+					</div>
 				</div>
 			</div>
 			{% if current_user.is_authenticated %}
